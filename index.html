@@ -8,20 +8,20 @@
   <!-- SEO -->
   <meta name="description" content="واجهة عربية فاخرة مع خلفية ثلاثية الأبعاد تفاعلية باستخدام three.js ودردشة أنيقة تنسدل بسلاسة. تصميم زجاجي، تأثيرات حديثة، وتحسينات وصول وSEO.">
   <meta name="keywords" content="three.js, واجهة عربية, دردشة, خلفية ثلاثية الأبعاد, Glassmorphism, UI/UX, VOXA">
-  <link rel="canonical" href="https://example.com/">
+  <link rel="canonical" href="https://www.yourwebsite.com/"> <!-- #تحسين: ضع رابط موقعك هنا -->
 
   <!-- Open Graph -->
   <meta property="og:title" content="VOXA | واجهة فاخرة بخلفية ثلاثية ودردشة أنيقة">
   <meta property="og:description" content="خلفية ثلاثية تفاعلية + دردشة أنيقة + تصميم زجاجي احترافي.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://example.com/">
-  <meta property="og:image" content="https://picsum.photos/1200/630?blur=2">
+  <meta property="og:url" content="https://www.yourwebsite.com/"> <!-- #تحسين: ضع رابط موقعك هنا -->
+  <meta property="og:image" content="https://www.yourwebsite.com/images/og-image.jpg"> <!-- #تحسين: ضع رابط صورتك هنا -->
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="VOXA | واجهة فاخرة بخلفية ثلاثية ودردشة أنيقة">
   <meta name="twitter:description" content="خلفية three.js + دردشة تنسدل بسلاسة + تأثيرات حديثة.">
-  <meta name="twitter:image" content="https://picsum.photos/1200/630?blur=2">
+  <meta name="twitter:image" content="https://www.yourwebsite.com/images/twitter-image.jpg"> <!-- #تحسين: ضع رابط صورتك هنا -->
 
   <!-- Theme -->
   <meta name="theme-color" content="#0b0f1a">
@@ -33,11 +33,11 @@
     "@context":"https://schema.org",
     "@type":"Organization",
     "name":"VOXA",
-    "url":"https://example.com",
-    "logo":"https://picsum.photos/200/200",
+    "url":"https://www.yourwebsite.com", <!-- #تحسين: ضع رابط موقعك هنا -->
+    "logo":"https://www.yourwebsite.com/images/logo.png", <!-- #تحسين: ضع رابط شعارك هنا -->
     "sameAs":[
-      "https://behance.net/voxa",
-      "https://dribbble.com/voxa"
+      "https://behance.net/yourprofile", <!-- #تحسين: استبدل بروابطك الحقيقية -->
+      "https://dribbble.com/yourprofile"  <!-- #تحسين: استبدل بروابطك الحقيقية -->
     ]
   }
   </script>
@@ -71,6 +71,17 @@
       --danger:#ef4444;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --ring: 0 0 0 4px rgba(139,92,246,.22);
+    }
+
+    /* #تحسين: إضافة تعريف لـ visually-hidden لتحسين إمكانية الوصول */
+    .visually-hidden {
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
     }
 
     *,*::before,*::after{ box-sizing:border-box }
@@ -298,6 +309,11 @@
     .msg.bot{ align-self:flex-start; border-top-left-radius: 6px }
     .msg.user{ align-self:flex-end; border-top-right-radius:6px; background: linear-gradient(180deg, rgba(139,92,246,.3), rgba(34,211,238,.18)); border-color: rgba(255,255,255,.28) }
 
+    /* #تحسين: تحديد style للمقترحات بشكل مستقل */
+    .msg .suggestions{
+        margin-top: 8px; /* الأصل كان inline style */
+    }
+
     .typing{ display:inline-flex; gap:4px; align-items:center }
     .typing .dot{ width:6px; height:6px; border-radius:50%; background: #cfe9ff; opacity:.6; animation: bounce 1.1s infinite ease-in-out }
     .typing .dot:nth-child(2){ animation-delay: .15s } .typing .dot:nth-child(3){ animation-delay: .3s }
@@ -353,7 +369,8 @@
         <a href="#hero">الرئيسية</a>
         <a href="#features">خدماتنا</a>
         <a href="#contact">تواصل</a>
-        <a href="#" id="nav-open-chat" aria-controls="chat" aria-expanded="false">افتح الدردشة</a>
+        <!-- #تحسين: استخدام data-action بدلاً من href="#" لعدم تغيير الرابط في المتصفح -->
+        <a href="javascript:void(0)" id="nav-open-chat" aria-controls="chat" aria-expanded="false">افتح الدردشة</a>
       </div>
     </div>
   </nav>
@@ -362,7 +379,8 @@
   <header id="hero" class="hero container">
     <div class="hero-content" role="banner" aria-label="مقدمة VOXA">
       <div class="logo-line">
-        <i class="fa-solid fa-wand-magic-sparkles fa-bounce" style="--fa-animation-iteration-count:1;"></i>
+        <!-- #تحسين: إزالة inline style لـ fa-animation-iteration-count، الأفضل تحكم به عبر CSS Class إذا كان مؤقتاً -->
+        <i class="fa-solid fa-wand-magic-sparkles fa-bounce"></i>
         <span class="name">VOXA</span>
       </div>
       <h1 class="title">واجهة فاخرة بخلفية ثلاثية ودردشة انسيابية</h1>
@@ -446,7 +464,8 @@
     </div>
 
     <div class="chat-body" id="chat-body">
-      <div class="msg bot">
+      <!-- #تحسين: سيتم إنشاء رسالة الترحيب الأولى و suggestions ديناميكياً بواسطة JS -->
+      <!-- <div class="msg bot">
         أهلًا وسهلًا! جاهز ساعدك بكل ما يخص التصميم والتسويق. اختر اختصارًا أو اكتب سؤالك.
         <div class="suggestions" style="margin-top:8px">
           <button data-quick="بدي أعرف سعر تصميم شعار">سعر شعار</button>
@@ -457,11 +476,12 @@
       </div>
       <div class="msg bot">
         <span class="typing" id="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-      </div>
+      </div> -->
     </div>
 
     <form class="chat-input" id="chat-form">
-      <label class="visually-hidden" for="chat-input" style="position:absolute;clip:rect(0,0,0,0)">اكتب رسالة</label>
+      <!-- #تحسين: إزالة inline style لـ visually-hidden واستخدام الكلاس -->
+      <label class="visually-hidden" for="chat-input">اكتب رسالة</label>
       <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
       <button type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
     </form>
@@ -472,8 +492,9 @@
     <div class="footer-inner">
       <div>© <span id="year"></span> VOXA — كل الحقوق محفوظة</div>
       <div class="footer-links">
-        <a href="#" aria-label="سياسة الخصوصية">سياسة الخصوصية</a>
-        <a href="#" aria-label="الشروط والأحكام">الشروط</a>
+        <!-- #تحسين: استخدام href="javascript:void(0)" أو رابط حقيقي للمحافظة على مسار URL -->
+        <a href="javascript:void(0);" aria-label="سياسة الخصوصية">سياسة الخصوصية</a>
+        <a href="javascript:void(0);" aria-label="الشروط والأحكام">الشروط</a>
         <a href="mailto:hello@voxa.example" aria-label="إرسال بريد">hello@voxa.example</a>
       </div>
     </div>
@@ -635,21 +656,200 @@
     const form = $('#chat-form');
     const input = $('#chat-input');
     const yearEl = $('#year');
+    const typingIndicator = `<span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
+    const initialSuggestions = [
+      { text: "سعر شعار", quick: "بدي أعرف سعر تصميم شعار" },
+      { text: "سعر هوية", quick: "قدّيش بتكلف الهوية البصرية؟" },
+      { text: "مدة تسليم", quick: "كم مدة تسليم الموقع؟" },
+      { text: "طرق الدفع", quick: "شو طرق الدفع المتاحة؟" }
+    ];
 
     if(yearEl) yearEl.textContent = new Date().getFullYear();
 
     let lastFocused = null;
+    let isTyping = false; // #تحسين: لتجنب إضافة مؤشر "جاري الكتابة" عدة مرات
+
+    // #خطأ_مبرمجي_حرج #تحسين: إضافة دالة trapFocus
+    function trapFocus(element) {
+      const focusableEls = element.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), select:not([disabled])');
+      const firstFocusableEl = focusableEls[0];
+      const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+      if (!firstFocusableEl) return;
+
+      element.addEventListener('keydown', function(e) {
+        const isTabPressed = (e.key === 'Tab');
+
+        if (!isTabPressed) {
+          return;
+        }
+
+        if (e.shiftKey) { // if shift key pressed for shift + tab
+          if (document.activeElement === firstFocusableEl) {
+            lastFocusableEl.focus(); // move focus to the last focusable element
+            e.preventDefault();
+          }
+        } else { // if tab key pressed
+          if (document.activeElement === lastFocusableEl) {
+            firstFocusableEl.focus(); // move focus to the first focusable element
+            e.preventDefault();
+          }
+        }
+      });
+      // Set initial focus
+      firstFocusableEl.focus();
+    }
 
     function openChat(){
       lastFocused = document.activeElement;
       chat.classList.add('is-open');
       chat.setAttribute('aria-hidden','false');
-      [openBtn, navOpen, floatingOpen].forEach(b=> b?.setAttribute('aria-expanded','true'));
-      setTimeout(()=> input?.focus(), 150);
-      trapFocus(chat);
+      [openBtn, navOpen, floatingOpen].forEach(b => b && b.setAttribute('aria-expanded','true')); // #تحسين: التحقق من وجود العنصر قبل استخدام setAttribute
+      // #تحسين: استدعاء trapFocus بعد فتح الدردشة
+      setTimeout(()=> {
+        input?.focus();
+        trapFocus(chat);
+      }, 150);
+      // #تحسين: إضافة رسالة الترحيب والمقترحات عند الفتح
+      if (chatBody.children.length === 0) { // أضف الرسالة الأولى فقط إذا كان لا يوجد رسائل
+        addBotMessage("أهلًا وسهلًا! جاهز ساعدك بكل ما يخص التصميم والتسويق. اختر اختصارًا أو اكتب سؤالك.", initialSuggestions);
+      }
     }
 
     function closeChat(){
       chat.classList.remove('is-open');
       chat.setAttribute('aria-hidden','true');
-      [openBtn, navOpen,
+      [openBtn, navOpen, floatingOpen].forEach(b => b && b.setAttribute('aria-expanded','false')); // #تحسين: التحقق من وجود العنصر
+      if (lastFocused) {
+        lastFocused.focus();
+        lastFocused = null;
+      }
+    }
+
+    // #تحسين: دالة لإضافة الرسائل مع دعم للمرسل (bot/user) والمقترحات
+    function addMessage(text, sender = 'bot', suggestions = null) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('msg', sender);
+        msgDiv.innerHTML = text;
+
+        if (suggestions && suggestions.length > 0) {
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.classList.add('suggestions');
+            suggestions.forEach(sug => {
+                const button = document.createElement('button');
+                button.textContent = sug.text;
+                button.setAttribute('data-quick', sug.quick);
+                button.addEventListener('click', handleQuickSuggestion);
+                suggestionsDiv.appendChild(button);
+            });
+            msgDiv.appendChild(suggestionsDiv);
+        }
+
+        chatBody.appendChild(msgDiv);
+        scrollToBottom(); // #تحسين: التمرير إلى الأسفل بعد إضافة رسالة
+        return msgDiv;
+    }
+
+    function addBotMessage(text, suggestions = null) {
+      // #تحسين: إزالة مؤشر جاري الكتابة قبل إضافة الرسالة الجديدة
+      removeTypingIndicator();
+      addMessage(text, 'bot', suggestions);
+    }
+
+    function addUserMessage(text) {
+      addMessage(text, 'user');
+    }
+
+    // #تحسين: دالة لإضافة مؤشر جاري الكتابة
+    function showTypingIndicator() {
+        if (isTyping) return;
+        isTyping = true;
+        const typingMsg = document.createElement('div');
+        typingMsg.classList.add('msg', 'bot', 'typing-indicator'); // إضافة كلاس لتحديد المؤشر
+        typingMsg.innerHTML = typingIndicator;
+        chatBody.appendChild(typingMsg);
+        scrollToBottom();
+    }
+
+    // #تحسين: دالة لإزالة مؤشر جاري الكتابة
+    function removeTypingIndicator() {
+        const currentTypingIndicator = $('.typing-indicator', chatBody);
+        if (currentTypingIndicator) {
+            chatBody.removeChild(currentTypingIndicator);
+            isTyping = false;
+        }
+    }
+
+    // #تحسين: دالة للتمرير التلقائي لأسفل المحادثة
+    function scrollToBottom() {
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      addUserMessage(userMessage);
+      input.value = ''; // مسح حقل الإدخال
+
+      showTypingIndicator(); // #تحسين: عرض مؤشر "جاري الكتابة"
+
+      // #تحسين: محاكاة رد البوت بعد تأخير
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000)); // تأخير عشوائي
+
+      let botResponse = "عذراً، لم أفهم سؤالك. يرجى إعادة الصياغة أو اختيار أحد المقترحات.";
+      const lowerCaseMessage = userMessage.toLowerCase();
+
+      if (lowerCaseMessage.includes("شعار") || lowerCaseMessage.includes("تكلفة شعار")) {
+        botResponse = "تصميم الشعار يبدأ من 500\$ ويختلف حسب التعقيد وعدد الخيارات. يمكننا مناقشة التفاصيل أكثر.";
+      } else if (lowerCaseMessage.includes("هوية بصرية") || lowerCaseMessage.includes("تكلفة هوية")) {
+        botResponse = "تتراوح تكلفة الهوية البصرية الكاملة بين 1500\$ و 5000\$ بناءً على حجم المشروع والعناصر المطلوبة.";
+      } else if (lowerCaseMessage.includes("مدة تسليم") || lowerCaseMessage.includes("موقع")) {
+        botResponse = "عادةً ما يستغرق تسليم الموقع الإلكتروني من 3 إلى 6 أسابيع، حسب حجم وتعقيد المشروع.";
+      } else if (lowerCaseMessage.includes("طرق الدفع") || lowerCaseMessage.includes("كيف أدفع")) {
+        botResponse = "نقبل الدفع عن طريق التحويل البنكي، بطاقات الائتمان، وبايبال. الدفع يتم على دفعتين، 50% مقدماً و 50% عند التسليم.";
+      } else if (lowerCaseMessage.includes("أهلًا") || lowerCaseMessage.includes("مرحبا")) {
+        botResponse = "أهلًا بك! كيف يمكنني مساعدتك اليوم؟";
+      }
+
+      addBotMessage(botResponse, initialSuggestions); // #تحسين: إعادة عرض المقترحات بعد الرد
+    }
+
+    function handleQuickSuggestion(e) {
+        const quickText = e.target.getAttribute('data-quick');
+        if (quickText) {
+            addUserMessage(e.target.textContent); // أظهر ما ضغط عليه المستخدم كرسالته
+            input.value = quickText; // املأ الحقل بنص السؤال الفعلي
+            handleFormSubmit({preventDefault: () => {}}); // أرسل الرسالة برمجياً
+        }
+    }
+
+    // إعداد المستمعين للأحداث
+    openBtn?.addEventListener('click', openChat);
+    navOpen?.addEventListener('click', openChat);
+    floatingOpen?.addEventListener('click', openChat);
+    minimize?.addEventListener('click', closeChat);
+    form?.addEventListener('submit', handleFormSubmit);
+
+    // #تحسين: إضافة مستمع للأزرار السريعة التي تظهر في رسالة الترحيب الأولية
+    // بما أننا ننشئ الرسالة الأولى ديناميكياً، فإن هذا المستمع سيتم استدعاؤه بعد إضافة الرسالة.
+    // (يمكن أيضاً استخدام Delegation)
+    chatBody.addEventListener('click', (e) => {
+        if (e.target.matches('.suggestions button')) {
+            handleQuickSuggestion(e);
+        }
+    });
+
+    // #تحسين: إضافة وظيفة ظهور العناصر (reveal on scroll)
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1, // يبدأ الظهور عندما يكون 10% من العنصر مرئياً
+      rootMargin: '0px 0px -50px 0px'
