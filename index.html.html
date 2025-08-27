@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VOXA | واجهة فاخرة بخلفية ثلاثية ودردشة أنيقة</title>
+
+  <!-- SEO -->
+  <meta name="description" content="واجهة عربية فاخرة مع خلفية ثلاثية الأبعاد تفاعلية باستخدام three.js ودردشة أنيقة تنسدل بسلاسة. تصميم زجاجي، تأثيرات حديثة، وتحسينات وصول وSEO.">
+  <meta name="keywords" content="three.js, واجهة عربية, دردشة, خلفية ثلاثية الأبعاد, Glassmorphism, UI/UX, VOXA">
+  <link rel="canonical" href="https://example.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="VOXA | واجهة فاخرة بخلفية ثلاثية ودردشة أنيقة">
+  <meta property="og:description" content="خلفية ثلاثية تفاعلية + دردشة أنيقة + تصميم زجاجي احترافي.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:image" content="https://picsum.photos/1200/630?blur=2">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VOXA | واجهة فاخرة بخلفية ثلاثية ودردشة أنيقة">
+  <meta name="twitter:description" content="خلفية three.js + دردشة تنسدل بسلاسة + تأثيرات حديثة.">
+  <meta name="twitter:image" content="https://picsum.photos/1200/630?blur=2">
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#0b0f1a">
+  <meta name="color-scheme" content="dark light">
+
+  <!-- Structured Data (Organization) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"VOXA",
+    "url":"https://example.com",
+    "logo":"https://picsum.photos/200/200",
+    "sameAs":[
+      "https://behance.net/voxa",
+      "https://dribbble.com/voxa"
+    ]
+  }
+  </script>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <!-- Favicon (Placeholders) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+
+  <style>
+    :root{
+      --bg-1:#0b0f1a;
+      --bg-2:#091326;
+      --txt:#f5f7fb;
+      --muted:#b9c3d8;
+      --accent-1:#8b5cf6; /* بنفسجي */
+      --accent-2:#22d3ee; /* فيروزي */
+      --accent-3:#ffd166; /* ذهبي */
+      --glass: rgba(255,255,255,.08);
+      --glass-border: rgba(255,255,255,.18);
+      --success:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --ring: 0 0 0 4px rgba(139,92,246,.22);
+    }
+
+    *,*::before,*::after{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0;
+      font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans Arabic", sans-serif;
+      color:var(--txt);
+      background: radial-gradient(1200px 800px at 15% 10%, #0e1630 0%, transparent 60%),
+                  radial-gradient(1000px 700px at 85% 90%, #0a1230 0%, transparent 60%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color:#cde7ff; text-decoration: none }
+    a:focus-visible, button:focus-visible, input:focus-visible{ outline:none; box-shadow: var(--ring) }
+
+    /* Canvas خلفية */
+    canvas#bg{
+      position: fixed; inset: 0; width:100%; height:100%; z-index:-2; display:block;
+    }
+    .backdrop-gradient{
+      position: fixed; inset: 0; z-index:-1; pointer-events:none;
+    }
+    .backdrop-gradient::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(800px 500px at 20% 20%, rgba(139,92,246,.35), transparent 60%),
+        radial-gradient(900px 600px at 80% 80%, rgba(34,211,238,.25), transparent 60%),
+        radial-gradient(700px 400px at 50% 0%, rgba(255,209,102,.16), transparent 60%);
+      mix-blend-mode: screen;
+      filter: blur(2px) saturate(120%);
+    }
+
+    /* Navbar زجاجي */
+    .navbar{
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(14px) saturate(140%);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border-bottom:1px solid var(--glass-border);
+    }
+    .nav-inner{
+      width:min(1200px, 92%);
+      margin-inline:auto; display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding: 10px 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px;
+      color:#eaf2ff;
+    }
+    .brand i{
+      font-size:20px; color: var(--accent-2);
+      filter: drop-shadow(0 0 8px rgba(34,211,238,.45));
+      animation: float 3s ease-in-out infinite;
+    }
+    .nav-links{
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .nav-links a{
+      padding:8px 12px; border-radius:999px; color:#eaf2ff; font-weight:600; font-size:14px;
+      border:1px solid transparent; transition: border-color .2s ease, background .2s ease, transform .15s ease;
+    }
+    .nav-links a:hover{ background: rgba(255,255,255,.06); border-color: var(--glass-border); transform: translateY(-1px) }
+
+    /* الحاويات */
+    .container{ width:min(1100px, 92%); margin-inline:auto; padding: clamp(20px, 4vw, 48px) }
+    header.hero{ min-height: 100dvh; display:grid; place-items:center; position:relative; text-align:center }
+
+    .hero-content{
+      width:min(820px, 100%);
+      margin-inline:auto;
+      padding: clamp(16px, 3vw, 32px);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--glass-border);
+      backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: var(--shadow);
+      animation: elevate .9s ease-out both;
+    }
+    @keyframes elevate{
+      from{ transform: translate3d(0,20px,0) scale(.98); opacity:0 }
+      to{ transform: translate3d(0,0,0) scale(1); opacity:1 }
+    }
+    .hero .logo-line{
+      display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; opacity:.95;
+    }
+    .hero .logo-line .name{ color:#cde7ff; font-weight:800; letter-spacing:.6px }
+    h1.title{
+      font-weight:800; font-size: clamp(28px, 6vw, 56px); line-height:1.05; margin: 0 0 10px;
+      background: linear-gradient(90deg, #fff 0%, #dbe6ff 35%, #cde7ff 60%, #ffffff 100%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    p.subtitle{
+      margin:0 auto 24px; color: var(--muted); font-size: clamp(15px, 2.2vw, 20px); line-height:1.8; max-width: 65ch;
+    }
+    .cta-row{ display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap }
+    .btn{
+      appearance:none; border:none; cursor:pointer; user-select:none;
+      color:#0b0f1a; font-weight:800; letter-spacing:.2px;
+      padding: 14px 20px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+      background-size: 220% 220%;
+      box-shadow: 0 10px 24px rgba(34,211,238,.25), inset 0 1px 0 rgba(255,255,255,.3);
+      transform: translateZ(0); transition: background-position .6s ease, transform .15s ease, box-shadow .25s ease;
+    }
+    .btn i{ margin-inline-start:10px; color:#111 }
+    .btn:hover{ background-position: 100% 0%; transform: translateY(-2px); box-shadow: 0 14px 30px rgba(34,211,238,.35), inset 0 1px 0 rgba(255,255,255,.4) }
+    .btn:active{ transform: translateY(0) }
+    .ghost{ background: transparent; color: var(--txt); border:1px solid var(--glass-border); box-shadow: none }
+    .ghost:hover{ border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.06) }
+
+    .chips{ margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap }
+    .chip{
+      padding:8px 12px; border-radius:999px; font-size:13px;
+      background: rgba(255,255,255,.06); border: 1px solid var(--glass-border); color:#eaf2ff; white-space:nowrap
+    }
+
+    /* قسم الميزات */
+    section.features{ position:relative; padding-block: clamp(36px, 6vw, 80px) }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(12px, 2.4vw, 22px);
+      align-items: stretch;
+    }
+    .card{
+      grid-column: span 12;
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--glass-border);
+      backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .25s ease, border-color .2s ease;
+      opacity:0; transform: translateY(14px);
+    }
+    .card.revealed{ opacity:1; transform: translateY(0); transition: opacity .5s ease, transform .5s ease }
+    .card:hover{ transform: translateY(-4px); border-color: rgba(255,255,255,.28) }
+    .card h3{ margin:6px 0 6px; font-size:20px }
+    .card p{ margin:0; color: var(--muted); line-height:1.7 }
+    .card .icon{
+      width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, var(--accent-2), var(--accent-1));
+      color:#021018; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(34,211,238,.35);
+    }
+
+    @media (min-width: 720px){
+      .card.span-4{ grid-column: span 4 }
+      .card.span-6{ grid-column: span 6 }
+    }
+
+    /* Footer */
+    footer.footer{
+      margin-top: 40px;
+      border-top:1px solid var(--glass-border);
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+    }
+    .footer-inner{
+      width:min(1100px, 92%); margin-inline:auto; padding: 18px 14px; color: var(--muted);
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      font-size:13px;
+    }
+    .footer-links{ display:flex; gap:12px; flex-wrap:wrap }
+    .footer-links a{ color:#d6e6ff }
+
+    /* Chat */
+    .chat-toggle{ position: fixed; left: 24px; bottom: 24px; z-index: 20 }
+    .chat{
+      position: fixed; left: 24px; bottom: 90px;
+      width: min(380px, 92vw); height: min(560px, 70vh);
+      display:flex; flex-direction:column; border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--glass-border); backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: var(--shadow); overflow:hidden;
+      transform: translateY(24px) scale(.98); opacity:0; pointer-events:none;
+      transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease; z-index: 30;
+    }
+    .chat.is-open{ transform: translateY(0) scale(1); opacity:1; pointer-events:auto }
+    .chat-header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 14px; background: linear-gradient(90deg, rgba(139,92,246,.22), transparent 40%), linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .user{ display:flex; align-items:center; gap:10px }
+    .avatar{
+      width: 36px; height:36px; border-radius: 10px; display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, var(--accent-2), var(--accent-1));
+      color:#021018; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(34,211,238,.35);
+      position:relative; isolation:isolate;
+    }
+    .avatar i{ font-size:18px }
+    .status{
+      position:absolute; inset:auto  -2px -2px auto; width:10px; height:10px; background:var(--success);
+      border:2px solid rgba(0,0,0,.4); border-radius:50%; box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse{ 0%{ box-shadow: 0 0 0 0 rgba(34,197,94,.5) } 70%{ box-shadow: 0 0 0 10px rgba(34,197,94,0) } 100%{ box-shadow: 0 0 0 0 rgba(34,197,94,0) } }
+
+    .title-wrap{ display:flex; flex-direction:column; line-height:1.1 }
+    .title-wrap .name{ font-weight:800; font-size:14px; letter-spacing:.2px }
+    .title-wrap .sub{ font-size:12px; color:var(--muted) }
+    .chat-actions button{
+      background: transparent; color:var(--txt); border:none; cursor:pointer; width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .chat-actions button:hover{ background: rgba(255,255,255,.06); transform: translateY(-1px) }
+
+    .chat-body{
+      flex:1; overflow:auto; padding: 14px; display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) transparent;
+    }
+    .chat-body::-webkit-scrollbar{ width:8px }
+    .chat-body::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.25); border-radius:999px }
+
+    .msg{
+      max-width: 85%; padding: 10px 12px; border-radius: 14px; font-size: 14px; line-height:1.6;
+      background: rgba(255,255,255,.06); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      position:relative; animation: pop .25s ease-out both; backdrop-filter: blur(8px) saturate(140%);
+    }
+    @keyframes pop{ from{ transform:translateY(6px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+    .msg.bot{ align-self:flex-start; border-top-left-radius: 6px }
+    .msg.user{ align-self:flex-end; border-top-right-radius:6px; background: linear-gradient(180deg, rgba(139,92,246,.3), rgba(34,211,238,.18)); border-color: rgba(255,255,255,.28) }
+
+    .typing{ display:inline-flex; gap:4px; align-items:center }
+    .typing .dot{ width:6px; height:6px; border-radius:50%; background: #cfe9ff; opacity:.6; animation: bounce 1.1s infinite ease-in-out }
+    .typing .dot:nth-child(2){ animation-delay: .15s } .typing .dot:nth-child(3){ animation-delay: .3s }
+    @keyframes bounce{ 0%,80%,100%{ transform: translateY(0) } 40%{ transform: translateY(-4px) } }
+
+    .suggestions{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px }
+    .suggestions button{
+      background: rgba(255,255,255,.06); border:1px solid var(--glass-border); color:#eaf2ff; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:12px;
+      transition: background .2s ease, transform .15s ease;
+    }
+    .suggestions button:hover{ background: rgba(255,255,255,.12); transform: translateY(-1px) }
+
+    .chat-input{
+      display:flex; align-items:center; gap:10px; padding: 12px; border-top:1px solid var(--glass-border);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .chat-input input{
+      flex:1; padding: 12px 14px; border-radius: 12px; border:1px solid var(--glass-border);
+      background: rgba(255,255,255,.06); color: var(--txt); outline:none; transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .chat-input input:focus{ border-color: rgba(255,255,255,.36); box-shadow: 0 0 0 4px rgba(139,92,246,.18) }
+    .chat-input button{
+      width:46px; height:46px; border:none; border-radius:12px; cursor:pointer; display:grid; place-items:center;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent-1)); color:#0b0f1a; box-shadow: 0 8px 18px rgba(34,211,238,.28);
+      transition: transform .15s ease, filter .25s ease;
+    }
+    .chat-input button:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+
+    /* حركة لطيفة */
+    @keyframes float{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-4px) } }
+
+    /* تقليل الحركة */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition:none !important }
+      .chat{ transition:none }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas الخلفية -->
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="backdrop-gradient" aria-hidden="true"></div>
+
+  <!-- شريط التنقل -->
+  <nav class="navbar" role="navigation" aria-label="شريط التنقل">
+    <div class="nav-inner">
+      <div class="brand" aria-label="VOXA">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>VOXA</span>
+      </div>
+      <div class="nav-links">
+        <a href="#hero">الرئيسية</a>
+        <a href="#features">خدماتنا</a>
+        <a href="#contact">تواصل</a>
+        <a href="#" id="nav-open-chat" aria-controls="chat" aria-expanded="false">افتح الدردشة</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- البطل -->
+  <header id="hero" class="hero container">
+    <div class="hero-content" role="banner" aria-label="مقدمة VOXA">
+      <div class="logo-line">
+        <i class="fa-solid fa-wand-magic-sparkles fa-bounce" style="--fa-animation-iteration-count:1;"></i>
+        <span class="name">VOXA</span>
+      </div>
+      <h1 class="title">واجهة فاخرة بخلفية ثلاثية ودردشة انسيابية</h1>
+      <p class="subtitle">
+        تجربة عربية أنيقة تجمع بين three.js وخيارات تفاعل سلسة. تصميم زجاجي، تأثيرات حديثة، ودردشة تنسدل بسلاسة
+        لتتواصل معنا فوراً — كله بأسلوب احترافي ولمسة شامية خفيفة.
+      </p>
+
+      <div class="cta-row">
+        <button class="btn" id="open-chat">
+          افتح الدردشة <i class="fa-solid fa-comments fa-shake"></i>
+        </button>
+        <a class="btn ghost" href="#features">
+          اطّلع على الخدمات <i class="fa-solid fa-arrow-down-long"></i>
+        </a>
+      </div>
+
+      <div class="chips" aria-hidden="true">
+        <span class="chip">سرعة استجابة</span>
+        <span class="chip">تأثيرات حديثة</span>
+        <span class="chip">تصميم زجاجي فاخر</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- قسم الميزات/الخدمات -->
+  <section id="features" class="features container" aria-label="الخدمات والميزات">
+    <div class="grid">
+      <article class="card span-4 reveal" tabindex="0">
+        <div class="icon" aria-hidden="true"><i class="fa-solid fa-pen-nib"></i></div>
+        <h3>تصميم وهوية</h3>
+        <p>شعارات وهوية بصرية بروح عصرية ولمسات دقيقة. من البريف للدليل — كله على أصوله.</p>
+      </article>
+
+      <article class="card span-4 reveal" tabindex="0">
+        <div class="icon" aria-hidden="true"><i class="fa-solid fa-code"></i></div>
+        <h3>ويب ومتاجر</h3>
+        <p>مواقع سريعة وآمنة ومتجاوبة. تجربة مستخدم مرتبة وتكاملات سهلة مع بوابات الدفع والشحن.</p>
+      </article>
+
+      <article class="card span-4 reveal" tabindex="0">
+        <div class="icon" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></div>
+        <h3>سوشيال وإعلانات</h3>
+        <p>إدارة محتوى وإعلانات ممولة بتحسين مستمر وتقارير واضحة حتى تشوف الأثر الحقيقي.</p>
+      </article>
+
+      <article class="card span-6 reveal" tabindex="0">
+        <div class="icon" aria-hidden="true"><i class="fa-solid fa-microchip"></i></div>
+        <h3>موشن وSEO</h3>
+        <p>فيديوهات موشن جذابة وباقات SEO مدروسة لتحسين الظهور وتحريك النتائج على المدى القريب والمتوسط.</p>
+      </article>
+
+      <article class="card span-6 reveal" tabindex="0">
+        <div class="icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>استضافة وصيانة</h3>
+        <p>استضافة موثوقة وصيانة شهرية مرنة. تحديثات، نسخ احتياطي، وأمان — ولا أسهل.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- زر عائم للدردشة -->
+  <div class="chat-toggle">
+    <button class="btn" id="floating-open" aria-controls="chat" aria-expanded="false">
+      <i class="fa-solid fa-robot"></i> دردش معنا
+    </button>
+  </div>
+
+  <!-- نافذة الدردشة -->
+  <section class="chat" id="chat" role="dialog" aria-modal="true" aria-label="نافذة الدردشة" aria-hidden="true">
+    <div class="chat-header">
+      <div class="user">
+        <div class="avatar"><i class="fa-solid fa-robot"></i><span class="status" title="متصل"></span></div>
+        <div class="title-wrap">
+          <span class="name">VOXA</span>
+          <span class="sub">متصل الآن • ردود سريعة</span>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button id="minimize" title="إخفاء الدردشة" aria-label="إخفاء الدردشة"><i class="fa-solid fa-chevron-down"></i></button>
+      </div>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">
+        أهلًا وسهلًا! جاهز ساعدك بكل ما يخص التصميم والتسويق. اختر اختصارًا أو اكتب سؤالك.
+        <div class="suggestions" style="margin-top:8px">
+          <button data-quick="بدي أعرف سعر تصميم شعار">سعر شعار</button>
+          <button data-quick="قدّيش بتكلف الهوية البصرية؟">سعر هوية</button>
+          <button data-quick="كم مدة تسليم الموقع؟">مدة تسليم</button>
+          <button data-quick="شو طرق الدفع المتاحة؟">طرق الدفع</button>
+        </div>
+      </div>
+      <div class="msg bot">
+        <span class="typing" id="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+      </div>
+    </div>
+
+    <form class="chat-input" id="chat-form">
+      <label class="visually-hidden" for="chat-input" style="position:absolute;clip:rect(0,0,0,0)">اكتب رسالة</label>
+      <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
+      <button type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </section>
+
+  <!-- تذييل -->
+  <footer id="contact" class="footer">
+    <div class="footer-inner">
+      <div>© <span id="year"></span> VOXA — كل الحقوق محفوظة</div>
+      <div class="footer-links">
+        <a href="#" aria-label="سياسة الخصوصية">سياسة الخصوصية</a>
+        <a href="#" aria-label="الشروط والأحكام">الشروط</a>
+        <a href="mailto:hello@voxa.example" aria-label="إرسال بريد">hello@voxa.example</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- three.js الخلفية (Progressive Enhancement) -->
+  <script type="module">
+    // فحص دعم WebGL قبل استيراد three.js
+    const hasWebGL = (()=>{
+      try{
+        const c = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+      }catch(e){ return false }
+    })();
+
+    if(hasWebGL){
+      (async ()=>{
+        const THREE = await import("https://unpkg.com/three@0.160.0/build/three.module.js");
+
+        const canvas = document.getElementById('bg');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 120);
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.setClearColor(0x000000, 0);
+
+        // مجموعة جزيئات راقية
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // تكوين نسيج ناعم للنقاط
+        function makeSpriteTexture(){
+          const size = 128;
+          const c = document.createElement('canvas');
+          c.width = c.height = size;
+          const ctx = c.getContext('2d');
+          const g = ctx.createRadialGradient(size/2, size/2, 2, size/2, size/2, size/2);
+          g.addColorStop(0, 'rgba(255,255,255,1)');
+          g.addColorStop(.18, 'rgba(255,255,255,.85)');
+          g.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0,0,size,size);
+          return new THREE.CanvasTexture(c);
+        }
+        const spriteTex = makeSpriteTexture();
+
+        const COUNT = 1800;
+        const positions = new Float32Array(COUNT * 3);
+        const colors = new Float32Array(COUNT * 3);
+        const thetas = new Float32Array(COUNT);
+        const phis = new Float32Array(COUNT);
+        const radii = new Float32Array(COUNT);
+        const speeds = new Float32Array(COUNT);
+
+        const colorA = new THREE.Color(0x8b5cf6);
+        const colorB = new THREE.Color(0x22d3ee);
+        const colorC = new THREE.Color(0xffd166);
+
+        for(let i=0;i<COUNT;i++){
+          thetas[i] = Math.random()*Math.PI*2;
+          phis[i] = Math.acos((Math.random()*2)-1);
+          radii[i] = 60 + Math.random()*120;
+          speeds[i] = 0.001 + Math.random()*0.003;
+
+          const t = Math.random();
+          const col = new THREE.Color().lerpColors(colorA, colorB, t).lerp(colorC, 0.15 * Math.random());
+          colors[i*3+0] = col.r; colors[i*3+1] = col.g; colors[i*3+2] = col.b;
+        }
+
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const mat = new THREE.PointsMaterial({
+          size: 2.2, map: spriteTex, transparent: true, depthWrite:false, vertexColors:true,
+          blending: THREE.AdditiveBlending, opacity: .95, sizeAttenuation:true
+        });
+
+        const points = new THREE.Points(geo, mat);
+        group.add(points);
+
+        // إضاءة خفية
+        const plight = new THREE.PointLight(0x66ccff, 1, 0, 2);
+        plight.position.set(0,0,60);
+        scene.add(plight);
+
+        // مؤشر الماوس / بارالاكس
+        const pointer = { x:0, y:0, tx:0, ty:0 };
+        window.addEventListener('pointermove', (e)=>{
+          const x = (e.clientX / innerWidth) * 2 - 1;
+          const y = (e.clientY / innerHeight) * 2 - 1;
+          pointer.tx = x; pointer.ty = y;
+        }, { passive:true });
+
+        // إعادة تحجيم
+        window.addEventListener('resize', ()=>{
+          camera.aspect = innerWidth/innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(innerWidth, innerHeight);
+        });
+
+        function updatePositions(time){
+          for(let i=0;i<COUNT;i++){
+            thetas[i] += speeds[i];
+            phis[i] += speeds[i]*0.25;
+
+            const r = radii[i] + Math.sin(time*0.0006 + i)*0.4;
+            const x = r * Math.sin(phis[i]) * Math.cos(thetas[i]);
+            const y = r * Math.cos(phis[i]);
+            const z = r * Math.sin(phis[i]) * Math.sin(thetas[i]);
+
+            positions[i*3+0] = x; positions[i*3+1] = y; positions[i*3+2] = z;
+          }
+          geo.attributes.position.needsUpdate = true;
+        }
+
+        const clock = new THREE.Clock();
+        function animate(){
+          requestAnimationFrame(animate);
+          const t = clock.getElapsedTime()*1000;
+
+          updatePositions(t);
+
+          pointer.x += (pointer.tx - pointer.x)*0.06;
+          pointer.y += (pointer.ty - pointer.y)*0.06;
+          group.rotation.y = pointer.x * 0.35;
+          group.rotation.x = -pointer.y * 0.22;
+
+          group.rotation.z += 0.0006;
+
+          renderer.render(scene, camera);
+        }
+        animate();
+      })();
+    } else {
+      // رسالة بديلة عند غياب WebGL
+      const msg = document.createElement('div');
+      msg.style.cssText = "position:fixed;inset:auto 10px 10px auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);padding:8px 12px;border-radius:10px;color:#fff;font:600 12px/1.6 Cairo,system-ui;z-index:9";
+      msg.textContent = "ملاحظة: متصفحك لا يدعم WebGL. ستظهر الخلفية الثابتة بدل ثلاثية الأبعاد.";
+      document.body.appendChild(msg);
+      setTimeout(()=> msg.remove(), 5000);
+    }
+  </script>
+
+  <!-- منطق الواجهة والدردشة -->
+  <script>
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+    const chat = $('#chat');
+    const chatBody = $('#chat-body');
+    const openBtn = $('#open-chat');
+    const navOpen = $('#nav-open-chat');
+    const floatingOpen = $('#floating-open');
+    const minimize = $('#minimize');
+    const form = $('#chat-form');
+    const input = $('#chat-input');
+    const yearEl = $('#year');
+
+    if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+    let lastFocused = null;
+
+    function openChat(){
+      lastFocused = document.activeElement;
+      chat.classList.add('is-open');
+      chat.setAttribute('aria-hidden','false');
+      [openBtn, navOpen, floatingOpen].forEach(b=> b?.setAttribute('aria-expanded','true'));
+      setTimeout(()=> input?.focus(), 150);
+      trapFocus(chat);
+    }
+
+    function closeChat(){
+      chat.classList.remove('is-open');
+      chat.setAttribute('aria-hidden','true');
+      [openBtn, navOpen,
