@@ -23,6 +23,7 @@
       --shadow: 0 10px 30px rgba(0,0,0,.35);
       --radius:18px;
       --ring: 0 0 0 4px rgba(139,92,246,.24);
+      --success:#22c55e;
     }
 
     *{box-sizing:border-box}
@@ -40,12 +41,12 @@
       -moz-osx-font-smoothing:grayscale;
     }
     a{color:#d7e6ff;text-decoration:none}
-    a:focus-visible,button:focus-visible{outline:none; box-shadow:var(--ring)}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:none; box-shadow:var(--ring)}
 
     /* حاوية عامة */
     .container{width:min(1100px,92%); margin-inline:auto; padding: clamp(18px,4vw,40px)}
 
-    /* شريط علوي بسيط */
+    /* شريط علوي */
     .topbar{
       position:sticky; top:0; z-index:10;
       backdrop-filter: blur(14px) saturate(140%);
@@ -157,32 +158,100 @@
       display:flex; align-items:center; gap:8px; pointer-events:none;
     }
     .toast.show{opacity:1; transform: translateY(0)}
-    .toast i{color:#22c55e}
+    .toast i{color:var(--success)}
 
-    /* Popup (Modal) */
-    .modal{
-      position:fixed; inset:0; z-index:60; display:grid; place-items:center;
-      background: rgba(0,0,0,.45); opacity:0; pointer-events:none; transition: opacity .25s ease;
+    /* Chat */
+    .chat{
+      position: fixed; left: 24px; bottom: 24px;
+      width: min(380px, 92vw); height: min(560px, 70vh);
+      display:flex; flex-direction:column; border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--border); backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: var(--shadow); overflow:hidden; z-index: 60;
+
+      transform: translateY(24px) scale(.98); opacity:0; pointer-events:none;
+      transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
     }
-    .modal.open{opacity:1; pointer-events:auto}
-    .modal-dialog{
-      width:min(520px,92vw); background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:18px;
-      transform: translateY(10px); transition: transform .25s ease;
-      backdrop-filter: blur(14px) saturate(140%);
+    .chat.is-open{ transform: translateY(0) scale(1); opacity:1; pointer-events:auto }
+
+    .chat-header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 14px; background: linear-gradient(90deg, rgba(139,92,246,.22), transparent 40%), linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
+      border-bottom: 1px solid var(--border);
     }
-    .modal.open .modal-dialog{ transform: translateY(0) }
-    .modal-header{display:flex; align-items:center; justify-content:space-between; gap:8px}
-    .modal-title{font-weight:800}
-    .close-btn{
-      background:transparent; color:var(--txt); border:1px solid var(--border); width:34px; height:34px; border-radius:10px;
-      display:grid; place-items:center; cursor:pointer;
+    .user{ display:flex; align-items:center; gap:10px }
+    .avatar{
+      width: 36px; height:36px; border-radius: 10px; display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, var(--accent), var(--secondary));
+      color:#021018; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(34,211,238,.35);
+      position:relative; isolation:isolate;
     }
-    .close-btn:hover{background:rgba(255,255,255,.06)}
+    .avatar i{ font-size:18px }
+    .status{
+      position:absolute; inset:auto  -2px -2px auto; width:10px; height:10px; background:var(--success);
+      border:2px solid rgba(0,0,0,.4); border-radius:50%; box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse{ 0%{ box-shadow: 0 0 0 0 rgba(34,197,94,.5) } 70%{ box-shadow: 0 0 0 10px rgba(34,197,94,0) } 100%{ box-shadow: 0 0 0 0 rgba(34,197,94,0) } }
+
+    .title-wrap{ display:flex; flex-direction:column; line-height:1.1 }
+    .title-wrap .name{ font-weight:800; font-size:14px; letter-spacing:.2px }
+    .title-wrap .sub{ font-size:12px; color:var(--muted) }
+
+    .chat-actions button{
+      background: transparent; color:var(--txt); border:none; cursor:pointer; width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .chat-actions button:hover{ background: rgba(255,255,255,.06); transform: translateY(-1px) }
+
+    .chat-body{
+      flex:1; overflow:auto; padding: 14px; display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) transparent;
+    }
+    .chat-body::-webkit-scrollbar{ width:8px }
+    .chat-body::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.25); border-radius:999px }
+
+    .msg{
+      max-width: 85%; padding: 10px 12px; border-radius: 14px; font-size: 14px; line-height:1.6;
+      background: rgba(255,255,255,.06); border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      position:relative; animation: pop .25s ease-out both; backdrop-filter: blur(8px) saturate(140%);
+    }
+    @keyframes pop{ from{ transform:translateY(6px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+    .msg.bot{ align-self:flex-start; border-top-left-radius: 6px }
+    .msg.user{ align-self:flex-end; border-top-right-radius:6px; background: linear-gradient(180deg, rgba(139,92,246,.3), rgba(34,211,238,.18)); border-color: rgba(255,255,255,.28) }
+
+    .typing{ display:inline-flex; gap:4px; align-items:center }
+    .typing .dot{ width:6px; height:6px; border-radius:50%; background: #cfe9ff; opacity:.6; animation: bounce 1.1s infinite ease-in-out }
+    .typing .dot:nth-child(2){ animation-delay: .15s } .typing .dot:nth-child(3){ animation-delay: .3s }
+    @keyframes bounce{ 0%,80%,100%{ transform: translateY(0) } 40%{ transform: translateY(-4px) } }
+
+    .suggestions{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px }
+    .suggestions button{
+      background: rgba(255,255,255,.06); border:1px solid var(--border); color:#eaf2ff; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:12px;
+      transition: background .2s ease, transform .15s ease;
+    }
+    .suggestions button:hover{ background: rgba(255,255,255,.12); transform: translateY(-1px) }
+
+    .chat-input{
+      display:flex; align-items:center; gap:10px; padding: 12px; border-top:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+    .chat-input input{
+      flex:1; padding: 12px 14px; border-radius: 12px; border:1px solid var(--border);
+      background: rgba(255,255,255,.06); color: var(--txt); outline:none; transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .chat-input input:focus{ border-color: rgba(255,255,255,.36); box-shadow: 0 0 0 4px rgba(139,92,246,.18) }
+    .send{
+      width:46px; height:46px; border:none; border-radius:12px; cursor:pointer; display:grid; place-items:center;
+      background: linear-gradient(135deg, var(--accent), var(--secondary)); color:#0b0f1a; box-shadow: 0 8px 18px rgba(34,211,238,.28);
+      transition: transform .15s ease, filter .25s ease;
+    }
+    .send:hover{ transform: translateY(-1px); filter: brightness(1.05) }
 
     /* تقليل الحركة */
     @media (prefers-reduced-motion: reduce){
       *{animation:none!important; transition:none!important}
+      .chat{transition:none}
     }
   </style>
 </head>
@@ -195,7 +264,7 @@
       <nav class="nav">
         <a href="#hero">الرئيسية</a>
         <a href="#services">خدماتنا</a>
-        <a href="#cta">اطلب خدمتك</a>
+        <a href="#" id="nav-open-chat" aria-controls="chat" aria-expanded="false">الدردشة</a>
       </nav>
     </div>
   </div>
@@ -210,8 +279,8 @@
         خلّينا نطلق مشروعك بأناقة وبأسلوب عصري يلفت الانتباه.
       </p>
       <div class="cta-row">
-        <button class="btn" id="primary-cta">اطلب خدمتك الآن <i class="fa-solid fa-paper-plane"></i></button>
-        <button class="btn secondary">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
+        <button class="btn" id="primary-cta">دردشة الآن <i class="fa-solid fa-comments"></i></button>
+        <button class="btn secondary" id="more-btn">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
       </div>
     </div>
   </header>
@@ -250,9 +319,9 @@
     <div class="cta">
       <div>
         <h2>جاهز نبدأ؟</h2>
-        <p>اضغط الزر وخلّي VOXA يرتّب كل شيء من أوّل خطوة.</p>
+        <p>اضغط الزر وابدأ الدردشة مع VOXA فوراً.</p>
       </div>
-      <button class="btn" id="secondary-cta">اطلب خدمتك الآن <i class="fa-solid fa-bolt"></i></button>
+      <button class="btn" id="secondary-cta">دردشة الآن <i class="fa-solid fa-bolt"></i></button>
     </div>
   </section>
 
@@ -262,47 +331,55 @@
     <span>تم الضغط بنجاح</span>
   </div>
 
-  <!-- Modal -->
-  <div id="request-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title" id="modal-title">طلبك تحت المعالجة</div>
-        <button class="close-btn" id="modal-close" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
+  <!-- نافذة الدردشة -->
+  <section class="chat" id="chat" role="dialog" aria-modal="true" aria-label="نافذة الدردشة" aria-hidden="true">
+    <div class="chat-header">
+      <div class="user">
+        <div class="avatar"><i class="fa-solid fa-robot"></i><span class="status" title="متصل"></span></div>
+        <div class="title-wrap">
+          <span class="name">VOXA</span>
+          <span class="sub">متصل الآن • ردود سريعة</span>
+        </div>
       </div>
-      <div class="modal-body" style="margin-top:8px; color:var(--muted); line-height:1.8">
-        سيتم التواصل معك قريباً عبر البريد الإلكتروني أو الواتساب.
-        <br>شكراً لثقتك بـ VOXA ✨
-      </div>
-      <div style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end">
-        <button class="btn secondary" id="modal-cancel">إغلاق</button>
-        <button class="btn" id="modal-ok">حسناً</button>
+      <div class="chat-actions">
+        <button id="minimize" title="إغلاق الدردشة" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
-  </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">
+        أهلًا وسهلًا! أنا VOXA. اسألني عن الأسعار، الخدمات، أو المدد — جاهز أخدمك.
+        <div class="suggestions" style="margin-top:8px">
+          <button data-quick="كم سعر تصميم شعار؟">سعر شعار</button>
+          <button data-quick="بدي الهوية البصرية كاملة">هوية بصرية</button>
+          <button data-quick="كم مدة تسليم الموقع؟">مدة تسليم</button>
+          <button data-quick="شو طرق الدفع المتاحة؟">طرق الدفع</button>
+        </div>
+      </div>
+      <div class="msg bot" id="typing-wrap" style="display:none">
+        <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+      </div>
+    </div>
+
+    <form class="chat-input" id="chat-form">
+      <label class="visually-hidden" for="chat-input" style="position:absolute;clip:rect(0,0,0,0)">اكتب رسالة</label>
+      <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
+      <button class="send" type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </section>
 
   <script>
-    // أدوات سريعة
+    // ملاحظة: لتفعيل الربط مع Rasa عدّل المتغير التالي:
+    // مثال محلي: "http://localhost:5005/webhooks/rest/webhook"
+    // مثال عبر خادم: "https://YOUR-SERVER/webhooks/rest/webhook"
+    const RASA_URL = "http://localhost:5005/webhooks/rest/webhook";
+    const SENDER_ID = "voxa-" + Math.random().toString(36).slice(2,9);
+
+    // أدوات
     const $ = (s, ctx=document)=>ctx.querySelector(s);
     const $$ = (s, ctx=document)=>Array.from(ctx.querySelectorAll(s));
 
-    // إظهار تموّج داخل الزر + Toast "تم الضغط بنجاح"
-    function rippleAndToast(e){
-      const btn = e.currentTarget;
-      // Ripple
-      const rect = btn.getBoundingClientRect();
-      const ripple = document.createElement('span');
-      const size = Math.max(rect.width, rect.height);
-      ripple.className = 'ripple';
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-      ripple.style.top  = (e.clientY - rect.top  - size / 2) + 'px';
-      btn.appendChild(ripple);
-      setTimeout(()=> ripple.remove(), 600);
-
-      // Toast
-      showToast('تم الضغط بنجاح');
-    }
-
+    // Toast
     function showToast(text){
       const toast = $('#toast');
       if(!toast) return;
@@ -312,37 +389,107 @@
       showToast._t = setTimeout(()=> toast.classList.remove('show'), 1300);
     }
 
-    // Modal (Popup)
-    const modal = $('#request-modal');
-    const openModal = ()=>{ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); };
-    const closeModal = ()=>{ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); };
+    // Ripple + Toast
+    function rippleAndToast(e){
+      const btn = e.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      const size = Math.max(rect.width, rect.height);
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top  = (e.clientY - rect.top  - size / 2) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(()=> ripple.remove(), 600);
+      showToast('تم الضغط بنجاح');
+    }
 
-    // أزرار
-    const primaryCTA = $('#primary-cta');
-    const secondaryCTA = $('#secondary-cta');
-    [primaryCTA, secondaryCTA].forEach(btn=>{
-      btn?.addEventListener('click', (e)=>{
-        rippleAndToast(e);
-        openModal();
+    // فتح/إغلاق الدردشة
+    const chat = $('#chat');
+    const chatBody = $('#chat-body');
+    const input = $('#chat-input');
+    const openers = ['#primary-cta','#secondary-cta','#nav-open-chat'].map(sel=>$(sel)).filter(Boolean);
+    openers.forEach(el => el.addEventListener('click', (e)=>{ rippleAndToast(e); openChat(); }));
+    $('#minimize')?.addEventListener('click', closeChat);
+
+    function openChat(){
+      chat.classList.add('is-open');
+      chat.setAttribute('aria-hidden','false');
+      input.focus();
+    }
+    function closeChat(){
+      chat.classList.remove('is-open');
+      chat.setAttribute('aria-hidden','true');
+    }
+
+    // اقتراحات سريعة
+    chatBody?.addEventListener('click', (e)=>{
+      if(e.target?.matches('button[data-quick]')){
+        input.value = e.target.getAttribute('data-quick');
+        input.focus();
+      }
+    });
+
+    // إرسال رسالة
+    $('#chat-form')?.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const text = input.value.trim();
+      if(!text) return;
+      addUserMessage(text);
+      input.value = '';
+      showTyping(true);
+      try{
+        const reply = await callRasa(text);
+        showTyping(false);
+        addBotMessage(reply || 'تمام — طلبك وصلني. كيف فيني أساعدك كمان؟');
+      }catch(err){
+        showTyping(false);
+        addBotMessage(smartReply(text)); // رد بديل محلي
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    function addUserMessage(text){
+      const bubble = document.createElement('div');
+      bubble.className = 'msg user';
+      bubble.textContent = text;
+      chatBody.appendChild(bubble);
+    }
+    function addBotMessage(html){
+      const bubble = document.createElement('div');
+      bubble.className = 'msg bot';
+      bubble.innerHTML = html;
+      chatBody.appendChild(bubble);
+    }
+    function showTyping(state){
+      const wrap = $('#typing-wrap');
+      if(wrap) wrap.style.display = state ? 'block' : 'none';
+    }
+
+    // استدعاء Rasa (REST)
+    async function callRasa(message){
+      // تأكد من تفعيل CORS على خادم Rasa عند الاختبار من ملف محلي
+      const res = await fetch(RASA_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ sender: SENDER_ID, message })
       });
-    });
+      if(!res.ok) throw new Error('Rasa error ' + res.status);
+      const data = await res.json();
+      // دمج كل الرسائل النصية المتتالية
+      const text = (data || []).map(m => m.text).filter(Boolean).join('<br>') || '';
+      return text;
+    }
 
-    // أي أزرار أخرى غير CTA تعرض توست فقط
-    $$('.btn').forEach(b=>{
-      if(b.id==='primary-cta' || b.id==='secondary-cta') return;
-      b.addEventListener('click', rippleAndToast);
-    });
-
-    // غلق المودال
-    $('#modal-close')?.addEventListener('click', closeModal);
-    $('#modal-cancel')?.addEventListener('click', closeModal);
-    $('#modal-ok')?.addEventListener('click', ()=>{ showToast('تم إرسال الطلب ✨'); closeModal(); });
-
-    // إغلاق عند النقر خارج الصندوق
-    modal?.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-
-    // إغلاق بـ ESC
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
-  </script>
-</body>
-</html>
+    // ردود بديلة ذكية مبسّطة في حال عدم توفر Rasa
+    function smartReply(t){
+      const s = t.toLowerCase();
+      const has = (...keys)=> keys.some(k => s.includes(k));
+      if(has('شعار','لوغو','logo')) return 'أسعار الشعار (تقريبي): أساسي 150–300$ | احترافي 300–600$ | بلس 600–900$. بتحب ترسل فكرة أو ميزانية؟';
+      if(has('هوية','براند','branding')) return 'الهوية البصرية غالبًا بين 600–2000$ حسب النطاق والمخرجات. نبدأ ببريف بسيط ونحدد الاتجاه.';
+      if(has('موقع','متجر','website','صفحة هبوط')) return 'المواقع: صفحة هبوط 300–800$ • موقع تعريفي 700–1800$ • متجر 1500–6000$.';
+      if(has('سوشيال','ادارة','محتوى','social')) return 'إدارة السوشيال شهريًا: 250–400$ | 400–650$ | 650–900$ حسب الخطة. الإعلانات منفصلة.';
+      if(has('موشن','فيديو')) return 'فيديو موشن 400–1500$ للدقيقة حسب التعقيد. عندك ستايل/نص؟';
+      if(has('seo','سيو')) return 'باقات SEO شهرية 300–1200$؛ النتائج عادة خلال 2–6 أشهر.';
+      if(has('مدة','تسليم','timeline')) return 'المدد: لوغو 4–10 أيام • هوية 2–4 أسابيع • موقع 1–6 أسابيع • موشن 1–3 أسابيع.';
+      if(has('دفع
