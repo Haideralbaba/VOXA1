@@ -176,3 +176,341 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+/**
+ * Switches the current chat and loads its history.
+ * @param {string} chatId The ID of the chat to switch to.
+ * @param {string} chatName The display name of the chat.
+ */
+function switchChat(chatId, chatName) {
+  if (!db) {
+    showModal('Firebase Firestore غير مهيأ.');
+    return;
+  }
+  
+  if (currentChatId) {
+    // Unsubscribe from the previous chat's messages
+    if (unsubscribeMessages) {
+      unsubscribeMessages();
+    }
+  }
+
+  currentChatId = chatId;
+  currentChatName = chatName;
+
+  document.getElementById('chat-title').textContent = currentChatName;
+  $chatHistory.innerHTML = '';
+  $chatButtonsContainer.style.display = 'none';
+  $userList.style.display = 'none';
+  $chatContainer.style.display = 'flex';
+
+  // Load new chat history
+  loadChatHistory(chatId);
+}
+
+/**
+ * Loads the list of active users from Firestore.
+ */
+async function loadUserList() {
+  if (!db) {
+    console.error('Firestore not initialized.');
+    return;
+  }
+  const usersRef = db.collection(`artifacts/${appId}/users`);
+  const usersContainer = document.getElementById('users-container');
+  usersContainer.innerHTML = ''; // Clear previous list
+
+  // Use a query to get all documents under the "users" collection for the current app.
+  const usersQuery = usersRef;
+
+  // Listen for real-time updates using onSnapshot
+  db.collection(`artifacts/${appId}/users`).onSnapshot(snapshot => {
+    const users = [];
+    snapshot.forEach(doc => {
+      // Get the user ID from the document ID
+      const userDocId = doc.id;
+      users.push(userDocId);
+    });
+
+    // Display the updated list of users
+    usersContainer.innerHTML = '';
+    users.forEach(uid => {
+      const userItem = document.createElement('div');
+      userItem.className = 'p-2 rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer transition-colors';
+      userItem.textContent = `المستخدم: ${uid}`;
+      userItem.addEventListener('click', () => {
+        // Start a private chat with this user
+        const privateChatId = [userId, uid].sort().join('_');
+        switchChat(privateChatId, `الدردشة مع ${uid}`);
+      });
+      usersContainer.appendChild(userItem);
+    });
+  }, err => {
+    console.error('Error getting users:', err);
+    showModal('خطأ في تحميل قائمة المستخدمين.');
+  });
+}
+
+/**
+ * Loads the chat history for a given chat ID.
+ * @param {string} chatId The ID of the chat.
+ * @returns {function} The unsubscribe function for the listener.
+ */
+let unsubscribeMessages = () => {};
+
+function loadChatHistory(chatId) {
+  if (!db) {
+    showModal('Firebase Firestore غير مهيأ.');
+    return;
+  }
+  
+  const messagesRef = db.collection(`artifacts/${appId}/public/data/chats/${chatId}/messages`);
+  const messagesQuery = messagesRef.orderBy('timestamp', 'asc');
+
+  unsubscribeMessages = messagesQuery.onSnapshot(snapshot => {
+    $chatHistory.innerHTML = '';
+    const messages = [];
+    snapshot.forEach(doc => {
+      messages.push(doc.data());
+    });
+
+    messages.forEach(msg => {
+      displayMessage(msg);
+    });
+
+    // Scroll to the bottom of the chat history
+    $chatHistory.scrollTop = $chatHistory.scrollHeight;
+  }, err => {
+    console.error('Error getting chat history:', err);
+    showModal('خطأ في تحميل سجل الدردشة.');
+  });
+
+  return unsubscribeMessages;
+}
+
+/**
+ * Sends a message to the current chat.
+ */
+async function sendMessage() {
+  if (!db || !currentChatId) {
+    showModal('الرجاء اختيار دردشة أولاً.');
+    return;
+  }
+
+  const messageText = $messageInput.value.trim();
+  if (messageText === '') {
+    return;
+  }
+
+  const messagesRef = db.collection(`artifacts/${appId}/public/data/chats/${currentChatId}/messages`);
+
+  const message = {
+    senderId: userId,
+    senderName: userId, // Using the full user ID as a name for simplicity
+    text: messageText,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  try {
+    await messagesRef.add(message);
+    $messageInput.value = '';
+    // Scroll to the bottom after sending
+    $chatHistory.scrollTop = $chatHistory.scrollHeight;
+  } catch (error) {
+    console.error("Error sending message:", error);
+    showModal(`خطأ في إرسال الرسالة: ${error.message}`);
+  }
+}
+
+/**
+ * Displays a single message in the chat history.
+ * @param {object} message The message object.
+ */
+function displayMessage(message) {
+  const messageElement = document.createElement('div');
+  const isMyMessage = message.senderId === userId;
+  messageElement.className = `flex flex-col mb-2 p-3 rounded-xl max-w-[70%] transition-transform duration-300 transform ${isMyMessage ? 'bg-blue-600 text-white self-end translate-x-1' : 'bg-gray-700 text-gray-100 self-start -translate-x-1'}`;
+
+  const senderNameElement = document.createElement('div');
+  senderNameElement.className = `text-xs font-semibold mb-1 ${isMyMessage ? 'text-right' : 'text-left'}`;
+  senderNameElement.textContent = isMyMessage ? 'أنت' : message.senderName;
+  messageElement.appendChild(senderNameElement);
+
+  const textElement = document.createElement('div');
+  textElement.className = 'text-sm break-words';
+  textElement.textContent = message.text;
+  messageElement.appendChild(textElement);
+
+  if (message.timestamp) {
+    const timestampElement = document.createElement('div');
+    timestampElement.className = `text-[10px] opacity-70 mt-1 ${isMyMessage ? 'text-right' : 'text-left'}`;
+    const date = message.timestamp.toDate();
+    timestampElement.textContent = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    messageElement.appendChild(timestampElement);
+  }
+
+  $chatHistory.appendChild(messageElement);
+}
+
+// -------------------------------------------------------------
+// HTML and CSS structure
+// -------------------------------------------------------------
+```html
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الدردشة</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .message-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #2d3748;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        /* Hide scrollbar for webkit browsers */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        /* New styles for a more responsive layout */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-area {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .chat-sidebar {
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+            min-width: 250px;
+            max-width: 350px;
+            padding-right: 1rem;
+        }
+        .chat-main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background-color: #2d3748;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<div class="container bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col h-[90vh] md:h-[85vh] fade-in">
+    <!-- Header -->
+    <div class="text-center pb-4 border-b border-gray-700 mb-4">
+        <h1 class="text-3xl font-bold">تطبيق الدردشة</h1>
+        <p class="text-sm text-gray-400 mt-2" id="user-id-display" style="display:none;"></p>
+        <button id="copy-user-id" class="mt-2 px-3 py-1 bg-gray-700 text-sm rounded-full hover:bg-gray-600 transition-colors">نسخ معرف المستخدم</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="chat-area flex-grow overflow-hidden">
+            <!-- Chat Buttons and User List (Sidebar) -->
+            <div id="chat-buttons-container" class="chat-sidebar space-y-4">
+                <div class="bg-gray-700 p-4 rounded-xl shadow-inner">
+                    <h2 class="text-xl font-semibold mb-2">الدردشات المتاحة</h2>
+                    <div class="flex flex-col space-y-2">
+                        <button class="open-chat-btn px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors" data-chat-type="public">الدردشة العامة</button>
+                    </div>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-xl shadow-inner flex-grow overflow-y-auto no-scrollbar">
+                    <h2 class="text-xl font-semibold mb-2">المستخدمون النشطون</h2>
+                    <div id="users-container" class="flex flex-col space-y-2">
+                        <p class="text-sm text-gray-400">جارٍ تحميل قائمة المستخدمين...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Window (Main) -->
+            <div id="chat-container" class="chat-main hidden">
+                <!-- Chat Header -->
+                <div class="flex items-center p-4 border-b border-gray-600">
+                    <button id="back-button" class="text-gray-400 hover:text-gray-100 transition-colors mr-3">
+                        <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    </button>
+                    <h2 id="chat-title" class="text-xl font-semibold"></h2>
+                </div>
+                <!-- Chat History -->
+                <div id="chat-history" class="flex-grow p-4 overflow-y-auto no-scrollbar flex flex-col">
+                    <p class="text-gray-400 text-center my-auto">ابدأ الدردشة!</p>
+                </div>
+                <!-- Message Input -->
+                <div class="flex p-4 border-t border-gray-600">
+                    <input type="text" id="message-input" placeholder="اكتب رسالة..." class="flex-grow px-4 py-2 rounded-full bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all">
+                    <button id="send-button" class="ml-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">إرسال</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Private Chat Input -->
+        <div class="mt-4 p-4 bg-gray-700 rounded-xl shadow-inner flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+            <input type="text" id="chat-with-user-id" placeholder="أدخل معرف المستخدم للدردشة الخاصة" class="w-full px-4 py-2 rounded-full bg-gray-800 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-all">
+            <button id="start-chat-btn" class="w-full md:w-auto px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors">ابدأ الدردشة</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal for messages -->
+<div id="message-modal" class="message-modal">
+    <div class="modal-content">
+        <p id="modal-message" class="text-gray-100 mb-4"></p>
+        <button id="modal-close-button" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">إغلاق</button>
+    </div>
+</div>
+
+<script src="[https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js](https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js)"></script>
+<script src="[https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js](https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js)"></script>
+<script src="[https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js](https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js)"></script>
+</body>
+</html>
