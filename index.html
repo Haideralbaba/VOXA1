@@ -676,7 +676,7 @@
     </div>
     <div class="chat-body" id="chat-body" aria-live="polite" aria-atomic="false">
       <div class="msg bot">
-        أهلًا وسهلًا! أنا VOXA. كيف يمكنني خدمتك اليوم؟
+        أهلًا وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟
       </div>
       <div class="msg bot" id="typing-wrap" style="display:none">
         <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
@@ -747,24 +747,19 @@
     }
 
     // 3. كود الدردشة (محدث وآمن)
-    const USE_PROXY = true;
-    const RASA_URL = USE_PROXY ? "/api/chat" : "http://localhost:5005/webhooks/rest/webhook";
-
     const $ = (s, ctx = document) => ctx.querySelector(s);
     const chat = $('#chat');
     const chatBody = $('#chat-body');
     const input = $('#chat-input');
-
-    // حفظ جلسة المستخدم
-    const SENDER_ID = (() => {
-      let id = localStorage.getItem('voxa-sender');
-      if (!id) {
-        id = 'voxa-' + Math.random().toString(36).slice(2, 9);
-        localStorage.setItem('voxa-sender', id);
-      }
-      return id;
-    })();
-
+    const SENDER_ID = localStorage.getItem('voxa-sender') || 'voxa-' + Math.random().toString(36).slice(2, 9);
+    localStorage.setItem('voxa-sender', SENDER_ID);
+    
+    // إعدادات Gemini API
+    const apiKey = "";
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    let chatHistory = [];
+    const systemPrompt = "You are a creative design assistant named VOXA. Your purpose is to help users with creative design tasks like creating logos, social media ads, and visual branding. Respond in a friendly, helpful, and creative tone. Keep responses concise and focused on the user's creative needs. All responses must be in Arabic.";
+    
     // أدوات مساعدة
     function escapeHTML(str) {
       return str.replace(/[&<>"']/g, m => ({
@@ -835,36 +830,38 @@
     });
     $('#minimize')?.addEventListener('click', closeChat);
 
-    // إرسال رسالة إلى Rasa
-    async function sendToRasa(message) {
+    // إرسال رسالة إلى Gemini
+    async function sendToGemini(message) {
       showTyping(true);
+      const userMessage = { role: "user", parts: [{ text: message }] };
+      chatHistory.push(userMessage);
+
+      const payload = {
+        contents: chatHistory,
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+      };
+
       try {
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), 15000);
-        const res = await fetch(RASA_URL, {
+        const res = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sender: SENDER_ID,
-            message,
-            metadata: { source: 'voxa-web', lang: 'ar', tz: Intl.DateTimeFormat().resolvedOptions().timeZone }
-          }),
-          signal: controller.signal
+          body: JSON.stringify(payload)
         });
-        clearTimeout(id);
-        if (!res.ok) throw new Error('Rasa error ' + res.status);
-        const data = await res.json();
-        (data || []).forEach(m => {
-          if (m.text) addBotText(m.text);
-          if (m.image) addBotImage(m.image, m.alt || '');
-          if (Array.isArray(m.buttons) && m.buttons.length) addBotButtons(m.buttons);
-        });
-        if (!data || data.length === 0) {
-          addBotText('تمام — طلبك وصلني. كيف فيني أساعدك كمان؟');
+        
+        const result = await res.json();
+        const candidate = result.candidates?.[0];
+        
+        if (candidate && candidate.content?.parts?.[0]?.text) {
+          const botResponse = candidate.content.parts[0].text;
+          addBotText(botResponse);
+          chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+        } else {
+          addBotText('عذراً، حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
         }
+
       } catch (err) {
         console.error(err);
-        addBotText('تعذر التواصل حالياً. تأكد من تشغيل Rasa أو جرّب لاحقاً.');
+        addBotText('تعذر الاتصال بالذكاء الاصطناعي. يرجى التحقق من اتصالك بالإنترنت.');
       } finally {
         showTyping(false);
       }
@@ -888,40 +885,6 @@
       chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    function addBotImage(url, alt = '') {
-      const safeUrl = escapeHTML(url);
-      const safeAlt = escapeHTML(alt || 'صورة من البوت');
-      const bubble = document.createElement('div');
-      bubble.className = 'msg bot';
-      bubble.innerHTML = `<img src="${safeUrl}" alt="${safeAlt}" style="max-width:100%;border-radius:10px">`;
-      chatBody.insertBefore(bubble, $('#typing-wrap'));
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function addBotButtons(buttons) {
-      const wrap = document.createElement('div');
-      wrap.className = 'msg bot';
-      const btns = document.createElement('div');
-      btns.style.display = 'flex';
-      btns.style.flexWrap = 'wrap';
-      btns.style.gap = '8px';
-      buttons.forEach(b => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn secondary';
-        btn.style.padding = '8px 12px';
-        btn.textContent = b.title || 'اختيار';
-        btn.addEventListener('click', () => {
-          addUserMessage(b.title || b.payload || '');
-          sendToRasa(b.payload || b.title || '');
-        });
-        btns.appendChild(btn);
-      });
-      wrap.appendChild(btns);
-      chatBody.insertBefore(wrap, $('#typing-wrap'));
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
     function showTyping(state) {
       const wrap = $('#typing-wrap');
       if (wrap) wrap.style.display = state ? 'flex' : 'none';
@@ -935,7 +898,7 @@
       if (!text) return;
       addUserMessage(text);
       input.value = '';
-      sendToRasa(text);
+      sendToGemini(text);
     });
 
     // مراقبة الشبكة
