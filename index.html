@@ -5,193 +5,53 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>VOXA — مساعدك الإبداعي</title>
 
-  <!-- خطوط وأيقونات -->
+  <!-- خط وأيقونات -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.css" rel="stylesheet">
 
   <style>
-    :root {
+    :root{
+      /* === نظام الألوان الجديد: أسود وذهبي === */
       --bg1:#0a0a0a;
-      --txt:#f0e6d2;
+      --bg2:#111111;
+      --txt:#f0e6d2; /* لون عاجي/ذهبي فاتح */
       --muted:#a09078;
-      --primary:#ffd700;
-      --secondary:#c5b358;
-      --accent:#e6c300;
-      --border: rgba(255, 215, 0, .15);
+      --primary:#ffd700;   /* ذهبي لامع */
+      --secondary:#c5b358; /* ذهبي عتيق */
+      --accent:#e6c300;    /* ذهبي أغمق قليلاً */
       --card: rgba(255, 215, 0, .05);
+      --border: rgba(255, 215, 0, .15);
+      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      --ring: 0 0 0 4px rgba(255, 215, 0, .2);
       --success:#22c55e;
-    }
-    body { margin:0; font-family:"Cairo",sans-serif; background:var(--bg1); color:var(--txt); }
-    #particles-js{position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1}
-
-    /* الدردشة */
-    .chat {
-      position: fixed; left: 24px; bottom: 24px;
-      width: min(380px, 92vw); height: min(560px, 70vh);
-      display:flex; flex-direction:column; border-radius: 16px;
-      background: rgba(10,10,10, 0.7);
-      border:1px solid var(--border); backdrop-filter: blur(14px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.5); overflow:hidden;
-      transform: translateY(20px) scale(.97); opacity:0; pointer-events:none;
-      transition: .35s ease;
-    }
-    .chat.is-open {opacity:1; pointer-events:auto; transform: scale(1) translateY(0);}
-    .chat-header {padding:12px; background:rgba(255,215,0,.08); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;}
-    .chat-body {flex:1; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:8px;}
-    .msg {max-width:85%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.6; backdrop-filter:blur(8px); box-shadow:0 4px 12px rgba(0,0,0,.15);}
-    .msg.user {align-self:flex-end; background: linear-gradient(180deg, rgba(255,215,0,.18), rgba(255,215,0,.08)); border:1px solid rgba(255,215,0,.25);}
-    .msg.bot {align-self:flex-start; background:var(--card); border:1px solid var(--border);}
-    .msg .markdown-body {all:unset; font-size:14px; line-height:1.6; }
-    .chat-input {display:flex; gap:8px; padding:10px; border-top:1px solid var(--border); background:rgba(0,0,0,.2);}
-    .chat-input input {flex:1; padding:10px; border-radius:10px; background:rgba(255,215,0,.05); border:1px solid var(--border); color:var(--txt);}
-    .chat-input button {width:42px; height:42px; border:none; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--secondary)); color:#111; cursor:pointer;}
-
-    /* Typing dots */
-    .typing {display:flex; gap:4px; align-items:center;}
-    .typing .dot {width:6px; height:6px; border-radius:50%; background:var(--primary); animation:bounce 1.2s infinite;}
-    .typing .dot:nth-child(2){animation-delay:.2s;}
-    .typing .dot:nth-child(3){animation-delay:.4s;}
-    @keyframes bounce {
-      0%,80%,100%{transform:scale(0.6); opacity:.4}
-      40%{transform:scale(1); opacity:1}
-    }
-    /* Toast */
-    .toast {position:fixed; bottom:18px; right:18px; padding:10px 14px; border-radius:12px;
-      background:rgba(17,17,17,.9); color:#f0e6d2; border:1px solid var(--border); box-shadow:0 4px 14px rgba(0,0,0,.4);
-      opacity:0; transform:translateY(8px); transition:.3s ease; display:flex; align-items:center; gap:6px;
-    }
-    .toast.show {opacity:1; transform:translateY(0);}
-  </style>
-</head>
-<body>
-  <div id="particles-js"></div>
-
-  <!-- زر فتح -->
-  <button id="open-chat" class="btn">💬 دردش معي</button>
-
-  <!-- نافذة الدردشة -->
-  <section class="chat" id="chat">
-    <div class="chat-header">
-      <strong>VOXA</strong>
-      <button id="close-chat"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="chat-body" id="chat-body"></div>
-    <form class="chat-input" id="chat-form">
-      <input type="text" id="chat-input" placeholder="اكتب رسالتك..." autocomplete="off"/>
-      <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
-    </form>
-  </section>
-
-  <!-- Toast -->
-  <div id="toast" class="toast"><i class="fa-solid fa-check-circle"></i><span></span></div>
-
-  <!-- مكتبات -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // إعداد Firebase (مرر التكوين الصحيح هنا 👇)
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=__GEMINI_API_KEY__";
-
-    const chatBox = document.getElementById('chat');
-    const chatBody = document.getElementById('chat-body');
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('chat-input');
-    const toast = document.getElementById('toast');
-
-    let userId = null, chatCol = null;
-
-    function showToast(msg){
-      toast.querySelector('span').textContent = msg;
-      toast.classList.add('show');
-      setTimeout(()=>toast.classList.remove('show'),1500);
+      --warning:#ffbb55;
+      --danger:#ff5555;
     }
 
-    // عنصر كتابة
-    let typingEl = null;
-    function showTyping(show){
-      if(show && !typingEl){
-        typingEl = document.createElement('div');
-        typingEl.className = 'msg bot';
-        typingEl.innerHTML = `<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
-        chatBody.appendChild(typingEl);
-      }
-      if(typingEl) typingEl.style.display = show ? 'block':'none';
-      chatBody.scrollTop = chatBody.scrollHeight;
+    *{
+      box-sizing:border-box;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) var(--bg2);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg2);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 10px;
     }
 
-    function renderMessage(msg){
-      const div = document.createElement('div');
-      div.className = 'msg ' + (msg.role==='user'?'user':'bot');
-      // دعم Markdown
-      if(msg.role==='bot'){
-        div.innerHTML = `<div class="markdown-body">${marked.parse(msg.text)}</div>`;
-      } else {
-        div.textContent = msg.text;
-      }
-      chatBody.appendChild(div);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // Firebase Auth + Chat
-    onAuthStateChanged(auth, async (user)=>{
-      if(user){ 
-        userId = user.uid;
-        chatCol = collection(db, `users/${userId}/messages`);
-        const q = query(chatCol, orderBy("timestamp"));
-        onSnapshot(q, snap=>{
-          snap.docChanges().forEach(change=>{
-            if(change.type==="added") renderMessage(change.doc.data());
-          });
-        });
-        // رسالة ترحيب
-        await addDoc(chatCol,{text:"مرحباً 👋 أنا VOXA، كيف أقدر أساعدك اليوم؟", role:'bot', timestamp:Date.now()});
-      } else {
-        await signInAnonymously(auth);
-      }
-    });
-
-    form.addEventListener('submit', async e=>{
-      e.preventDefault();
-      const text=input.value.trim(); if(!text) return;
-      await addDoc(chatCol,{text, role:'user', timestamp:Date.now()});
-      input.value='';
-      showTyping(true);
-      try {
-        const res = await fetch(API_URL,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({contents:[{parts:[{text}]}]})
-        });
-        const data = await res.json();
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "لم أتمكن من فهمك 🙏";
-        await addDoc(chatCol,{text:reply, role:'bot', timestamp:Date.now()});
-      } catch(err){
-        await addDoc(chatCol,{text:"حصل خطأ في الاتصال 😔", role:'bot', timestamp:Date.now()});
-      } finally {
-        showTyping(false);
-      }
-    });
-
-    // UI Open/Close
-    document.getElementById('open-chat').onclick=()=>{chatBox.classList.add('is-open')};
-    document.getElementById('close-chat').onclick=()=>{chatBox.classList.remove('is-open')};
-
-    // خلفية متحركة
-    tsParticles.load("particles-js", {
-        background: { color: "#0a0a0a" },
-        particles: { number:{value:60}, color:{value:"#ffd700"},
-          links:{enable:true,color:"#c5b358",opacity:.3}, move:{enable:true}}
-    });
-  </script>
-</body>
-</html>
+    html,body{height:100%; margin:0; padding:0}
+    body{
+      font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic",sans-serif;
+      color:var(--txt);
+      background-color: var(--bg1);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:gr
