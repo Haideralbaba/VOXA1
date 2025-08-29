@@ -1,557 +1,197 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VOXA — مساعدك الإبداعي</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VOXA — مساعدك الإبداعي</title>
 
-  <!-- خط وأيقونات -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- خطوط وأيقونات -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.css" rel="stylesheet">
 
-  <style>
-    :root{
-      /* === نظام الألوان الجديد: أسود وذهبي === */
-      --bg1:#0a0a0a;
-      --bg2:#111111;
-      --txt:#f0e6d2; /* لون عاجي/ذهبي فاتح */
-      --muted:#a09078;
-      --primary:#ffd700;   /* ذهبي لامع */
-      --secondary:#c5b358; /* ذهبي عتيق */
-      --accent:#e6c300;    /* ذهبي أغمق قليلاً */
-      --card: rgba(255, 215, 0, .05);
-      --border: rgba(255, 215, 0, .15);
-      --shadow: 0 10px 30px rgba(0,0,0,.5);
-      --ring: 0 0 0 4px rgba(255, 215, 0, .2);
-      --success:#22c55e;
-    }
+  <style>
+    :root {
+      --bg1:#0a0a0a;
+      --txt:#f0e6d2;
+      --muted:#a09078;
+      --primary:#ffd700;
+      --secondary:#c5b358;
+      --accent:#e6c300;
+      --border: rgba(255, 215, 0, .15);
+      --card: rgba(255, 215, 0, .05);
+      --success:#22c55e;
+    }
+    body { margin:0; font-family:"Cairo",sans-serif; background:var(--bg1); color:var(--txt); }
+    #particles-js{position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1}
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic",sans-serif;
-      color:var(--txt);
-      background-color: var(--bg1); /* لون خلفية احتياطي */
-      overflow-x:hidden;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+    /* الدردشة */
+    .chat {
+      position: fixed; left: 24px; bottom: 24px;
+      width: min(380px, 92vw); height: min(560px, 70vh);
+      display:flex; flex-direction:column; border-radius: 16px;
+      background: rgba(10,10,10, 0.7);
+      border:1px solid var(--border); backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.5); overflow:hidden;
+      transform: translateY(20px) scale(.97); opacity:0; pointer-events:none;
+      transition: .35s ease;
+    }
+    .chat.is-open {opacity:1; pointer-events:auto; transform: scale(1) translateY(0);}
+    .chat-header {padding:12px; background:rgba(255,215,0,.08); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;}
+    .chat-body {flex:1; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:8px;}
+    .msg {max-width:85%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.6; backdrop-filter:blur(8px); box-shadow:0 4px 12px rgba(0,0,0,.15);}
+    .msg.user {align-self:flex-end; background: linear-gradient(180deg, rgba(255,215,0,.18), rgba(255,215,0,.08)); border:1px solid rgba(255,215,0,.25);}
+    .msg.bot {align-self:flex-start; background:var(--card); border:1px solid var(--border);}
+    .msg .markdown-body {all:unset; font-size:14px; line-height:1.6; }
+    .chat-input {display:flex; gap:8px; padding:10px; border-top:1px solid var(--border); background:rgba(0,0,0,.2);}
+    .chat-input input {flex:1; padding:10px; border-radius:10px; background:rgba(255,215,0,.05); border:1px solid var(--border); color:var(--txt);}
+    .chat-input button {width:42px; height:42px; border:none; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--secondary)); color:#111; cursor:pointer;}
 
-    /* === خلفية الجسيمات المتحركة === */
-    #particles-js {
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: -1; /* تجعلها خلف كل المحتوى */
-    }
-
-    a{color:#ffd700;text-decoration:none}
-    a:focus-visible,button:focus-visible,input:focus-visible{outline:none; box-shadow:var(--ring)}
-
-    /* حاوية عامة */
-    .container{width:min(1100px,92%); margin-inline:auto; padding: clamp(18px,4vw,40px); position:relative; z-index: 2;}
-
-    /* === تأثيرات الانتقال عند التمرير === */
-    .reveal-section {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-    .reveal-section.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* شريط علوي */
-    .topbar{
-      position:sticky; top:0; z-index:10;
-      backdrop-filter: blur(14px) saturate(120%);
-      background: rgba(10,10,10, 0.6);
-      border-bottom:1px solid var(--border);
-    }
-    .topbar .inner{
-      width:min(1100px,92%); margin:auto;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:10px 12px;
-    }
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px}
-    .brand i{color:var(--primary); filter:drop-shadow(0 0 8px rgba(255,215,0,.4))}
-    .nav{display:flex; gap:12px; flex-wrap:wrap}
-    .nav a{padding:8px 12px; border-radius:999px; border:1px solid transparent; transition: background .2s, border-color .2s;}
-    .nav a:hover{background:var(--card); border-color:var(--border)}
-
-    /* قسم الترحيب */
-    header.hero{min-height:100vh; display:grid; place-items:center; text-align:center}
-    .hero-box{
-      width:min(820px,100%);
-      margin:auto;
-      padding: clamp(18px,3vw,30px);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,215,0,.04), transparent);
-      border:1px solid var(--border);
-      backdrop-filter: blur(8px) saturate(120%);
-      box-shadow: var(--shadow);
-      position:relative;
-    }
-    .logo{
-      width:52px; height:52px; border-radius:14px; margin:0 auto 10px; display:grid; place-items:center;
-      background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; font-weight:900;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 18px rgba(255,215,0,.25);
-    }
-    h1{margin:.2rem 0 .3rem; font-size: clamp(26px,6vw,48px); line-height:1.1; font-weight:800; color: #fff;}
-    .subtitle{color:var(--muted); font-size: clamp(15px,2.2vw,20px); line-height:1.9; margin:0 auto 18px; max-width:65ch}
-    .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px}
-
-    /* أزرار */
-    .btn{
-      position:relative; overflow:hidden;
-      appearance:none; border:none; cursor:pointer;
-      padding:14px 20px; border-radius:14px; font-weight:800; letter-spacing:.2px;
-      color:#141000; /* لون نص داكن */
-      background: linear-gradient(135deg, var(--secondary), var(--primary));
-      background-size:100% 100%;
-      transition: transform .15s ease, box-shadow .25s ease, filter .2s ease;
-      box-shadow: 0 10px 22px rgba(255, 215, 0,.2), inset 0 1px 0 rgba(255,255,255,.35);
-    }
-    .btn:hover{transform:translateY(-2px); filter: brightness(1.1);}
-    .btn:active{transform:translateY(0)}
-    .btn i{margin-inline-start:8px; color:#141000}
-    .btn.secondary{
-      color:var(--txt); background:transparent; border:1px solid var(--border); box-shadow:none;
-    }
-    .btn.secondary:hover{background:var(--card); filter: brightness(1);}
-    .ripple{
-      position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
-      background:rgba(255,215,0,.5); animation:ripple .6s ease-out forwards;
-    }
-    @keyframes ripple{to{transform:scale(8); opacity:0}}
-
-    /* قسم الخدمات */
-    section.services{padding-block: clamp(28px,6vw,70px)}
-    .grid{display:grid; gap: clamp(12px,2vw,18px)}
-    @media (min-width:700px){ .grid{ grid-template-columns: repeat(12, 1fr) } }
-    .card{
-      grid-column: span 12;
-      background: var(--card);
-      border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow);
-      transition:transform .2s ease, border-color .2s ease, background .2s ease;
-    }
-    .card:hover{transform:translateY(-4px); border-color:rgba(255,215,0,.3); background: rgba(255, 215, 0, .08);}
-    .card .icon{
-      width:44px; height:44px; border-radius:12px; display:grid; place-items:center; margin-bottom:8px;
-      background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; font-size:18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(255,215,0,.3);
-    }
-    .card h3{margin:.2rem 0 .3rem; color: #fff;}
-    .card p{margin:0; color:var(--muted); line-height:1.8}
-    @media (min-width:700px){
-      .span-3{grid-column: span 3}
-      .span-6{grid-column: span 6}
-    }
-
-    /* CTA */
-    .cta{
-      margin-block: clamp(26px,6vw,60px);
-      padding: clamp(18px,3vw,24px);
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(255,215,0,.12), rgba(255,215,0,.05));
-      border:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
-    }
-    .cta h2{margin:.2rem 0; font-size: clamp(20px,4.5vw,28px)}
-    .cta p{margin:0; color:var(--muted)}
-
-    /* Toast */
-    .toast{
-      position:fixed; bottom:18px; right:18px; z-index:50;
-      background: rgba(17,17,17,.85); color:#f0e6d2; border:1px solid var(--border);
-      padding:10px 14px; border-radius:12px; box-shadow:var(--shadow);
-      opacity:0; transform: translateY(8px); transition: opacity .25s ease, transform .25s ease;
-      display:flex; align-items:center; gap:8px; pointer-events:none;
-    }
-    .toast.show{opacity:1; transform: translateY(0)}
-    .toast i{color:var(--success)}
-
-    /* Chat */
-    .chat{
-      position: fixed; left: 24px; bottom: 24px;
-      width: min(380px, 92vw); height: min(560px, 70vh);
-      display:flex; flex-direction:column; border-radius: 18px;
-      background: rgba(10,10,10, 0.6);
-      border:1px solid var(--border); backdrop-filter: blur(14px) saturate(120%);
-      box-shadow: var(--shadow); overflow:hidden; z-index: 60;
-      transform: translateY(24px) scale(.98); opacity:0; pointer-events:none;
-      transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
-    }
-    .chat.is-open{ transform: translateY(0) scale(1); opacity:1; pointer-events:auto }
-
-    .chat-header{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 14px; background: rgba(255,215,0,.05);
-      border-bottom: 1px solid var(--border);
-    }
-    .avatar{
-      width: 36px; height:36px; border-radius: 10px; display:grid; place-items:center;
-      background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(255,215,0,.3);
-      position:relative; isolation:isolate;
-    }
-    .title-wrap .name{ font-weight:800; font-size:14px; letter-spacing:.2px; color: #fff;}
-    .title-wrap .sub{ font-size:12px; color:var(--muted) }
-
-    .chat-body{
-      flex:1; overflow:auto; padding: 14px; display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth;
-    }
-    .msg{
-      max-width: 85%; padding: 10px 12px; border-radius: 14px; font-size: 14px; line-height:1.6;
-      background: var(--card); border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      position:relative; animation: pop .25s ease-out both; backdrop-filter: blur(8px) saturate(140%);
-    }
-    @keyframes pop{ from{ transform:translateY(6px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
-    .msg.bot{ align-self:flex-start; border-top-left-radius: 6px }
-    .msg.user{ align-self:flex-end; border-top-right-radius:6px; background: linear-gradient(180deg, rgba(255,215,0,.18), rgba(255,215,0,.1)); border-color: rgba(255,215,0,.25) }
-    
-    .chat-input{
-      display:flex; align-items:center; gap:10px; padding: 12px; border-top:1px solid var(--border);
-      background: rgba(0,0,0,.1);
-    }
-    .chat-input input{
-      flex:1; padding: 12px 14px; border-radius: 12px; border:1px solid var(--border);
-      background: rgba(255,215,0,.04); color: var(--txt); outline:none; transition: border-color .2s ease, box-shadow .2s ease;
-    }
-    .chat-input input:focus{ border-color: rgba(255,215,0,.4); box-shadow:var(--ring) }
-    .send{
-      width:46px; height:46px; border:none; border-radius:12px; cursor:pointer; display:grid; place-items:center;
-      background: linear-gradient(135deg, var(--accent), var(--secondary)); color:#141000; box-shadow: 0 8px 18px rgba(255,215,0,.25);
-      transition: transform .15s ease, filter .25s ease;
-    }
-    .send:hover{ transform: translateY(-1px); filter: brightness(1.1) }
-
-    @media (prefers-reduced-motion: reduce){
-      *{animation:none!important; transition:none!important}
-      .chat{transition:none}
-      .reveal-section { opacity: 1; transform: none; }
-    }
-  </style>
+    /* Typing dots */
+    .typing {display:flex; gap:4px; align-items:center;}
+    .typing .dot {width:6px; height:6px; border-radius:50%; background:var(--primary); animation:bounce 1.2s infinite;}
+    .typing .dot:nth-child(2){animation-delay:.2s;}
+    .typing .dot:nth-child(3){animation-delay:.4s;}
+    @keyframes bounce {
+      0%,80%,100%{transform:scale(0.6); opacity:.4}
+      40%{transform:scale(1); opacity:1}
+    }
+    /* Toast */
+    .toast {position:fixed; bottom:18px; right:18px; padding:10px 14px; border-radius:12px;
+      background:rgba(17,17,17,.9); color:#f0e6d2; border:1px solid var(--border); box-shadow:0 4px 14px rgba(0,0,0,.4);
+      opacity:0; transform:translateY(8px); transition:.3s ease; display:flex; align-items:center; gap:6px;
+    }
+    .toast.show {opacity:1; transform:translateY(0);}
+  </style>
 </head>
 <body>
+  <div id="particles-js"></div>
 
-  <!-- حاوية الخلفية المتحركة -->
-  <div id="particles-js"></div>
+  <!-- زر فتح -->
+  <button id="open-chat" class="btn">💬 دردش معي</button>
 
-  <!-- شريط علوي -->
-  <div class="topbar">
-    <div class="inner">
-      <div class="brand"><i class="fa-solid fa-wand-magic-sparkles"></i> VOXA</div>
-      <nav class="nav">
-        <a href="#hero">الرئيسية</a>
-        <a href="#services">خدماتنا</a>
-        <a href="#" id="nav-open-chat" aria-controls="chat" aria-expanded="false">الدردشة</a>
-      </nav>
-    </div>
-  </div>
+  <!-- نافذة الدردشة -->
+  <section class="chat" id="chat">
+    <div class="chat-header">
+      <strong>VOXA</strong>
+      <button id="close-chat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="chat-body" id="chat-body"></div>
+    <form class="chat-input" id="chat-form">
+      <input type="text" id="chat-input" placeholder="اكتب رسالتك..." autocomplete="off"/>
+      <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </section>
 
-  <!-- قسم الترحيب -->
-  <header id="hero" class="hero container reveal-section">
-    <div class="hero-box">
-      <div class="logo" aria-hidden="true">V</div>
-      <h1>مرحباً 👋 أنا VOXA، مساعدك الإبداعي</h1>
-      <p class="subtitle">
-        جاهز لتحويل أفكارك إلى تصميمات مُبهرة — من الشعار والهوية البصرية إلى إعلانات السوشيال.
-        خلّينا نطلق مشروعك بأناقة وبأسلوب عصري يلفت الانتباه.
-      </p>
-      <div class="cta-row">
-        <button class="btn" id="primary-cta">دردشة الآن <i class="fa-solid fa-comments"></i></button>
-        <button class="btn secondary" id="more-btn">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
-      </div>
-    </div>
-  </header>
+  <!-- Toast -->
+  <div id="toast" class="toast"><i class="fa-solid fa-check-circle"></i><span></span></div>
 
-  <!-- قسم الخدمات -->
-  <section id="services" class="services container reveal-section">
-    <div class="grid">
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-pen-nib"></i></div>
-        <h3>تصميم لوجو احترافي</h3>
-        <p>شعار متقن يعكس شخصيّة علامتك ويُحافظ على بساطة قوية وسهولة تذكّر.</p>
-      </article>
+  <!-- مكتبات -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
-        <h3>إعلانات السوشيال</h3>
-        <p>تصاميم جذّابة لحملاتك مع صياغات ذكيّة تُضاعف التفاعل والنتائج.</p>
-      </article>
+    // إعداد Firebase (مرر التكوين الصحيح هنا 👇)
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-palette"></i></div>
-        <h3>هوية بصرية كاملة</h3>
-        <p>منظومة متكاملة للألوان والخطوط والدلائل لتجربة متّسقة أينما ظهرت.</p>
-      </article>
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=__GEMINI_API_KEY__";
 
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-layer-group"></i></div>
-        <h3>خدمات تصميم أخرى</h3>
-        <p>بروفايل شركة، قوالب عروض، بنرات مواقع، والمزيد — كلّه بأسلوب VOXA الأنيق.</p>
-      </article>
-    </div>
-  </section>
+    const chatBox = document.getElementById('chat');
+    const chatBody = document.getElementById('chat-body');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+    const toast = document.getElementById('toast');
 
-  <!-- دعوة للإجراء -->
-  <section id="cta-section" class="container reveal-section">
-    <div class="cta">
-      <div>
-        <h2>جاهز نبدأ؟</h2>
-        <p>اضغط الزر وابدأ الدردشة مع VOXA فوراً.</p>
-      </div>
-      <button class="btn" id="secondary-cta">دردشة الآن <i class="fa-solid fa-bolt"></i></button>
-    </div>
-  </section>
+    let userId = null, chatCol = null;
 
-  <!-- Toast -->
-  <div id="toast" class="toast" role="status" aria-live="polite">
-    <i class="fa-solid fa-check-circle"></i>
-    <span>تم التوجيه للدردشة</span>
-  </div>
+    function showToast(msg){
+      toast.querySelector('span').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),1500);
+    }
 
-  <!-- نافذة الدردشة -->
-  <section class="chat" id="chat" role="dialog" aria-modal="true" aria-label="نافذة الدردشة" aria-hidden="true">
-    <!-- محتوى نافذة الدردشة -->
-    <div class="chat-header">
-      <div class="user">
-        <div class="avatar"><i class="fa-solid fa-robot"></i></div>
-        <div class="title-wrap">
-          <span class="name">VOXA</span>
-          <span class="sub">متصل الآن • مساعدك الذكي</span>
-        </div>
-      </div>
-      <div class="chat-actions">
-        <button id="minimize" title="إغلاق الدردشة" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-    </div>
-    <div class="chat-body" id="chat-body">
-      <!-- ستضاف الرسائل هنا بواسطة جافاسكربت -->
-    </div>
-    <form class="chat-input" id="chat-form">
-      <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
-      <button class="send" type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
-    </form>
-  </section>
+    // عنصر كتابة
+    let typingEl = null;
+    function showTyping(show){
+      if(show && !typingEl){
+        typingEl = document.createElement('div');
+        typingEl.className = 'msg bot';
+        typingEl.innerHTML = `<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+        chatBody.appendChild(typingEl);
+      }
+      if(typingEl) typingEl.style.display = show ? 'block':'none';
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
 
-  <!-- مكتبات Firebase و الخلفية المتحركة -->
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    function renderMessage(msg){
+      const div = document.createElement('div');
+      div.className = 'msg ' + (msg.role==='user'?'user':'bot');
+      // دعم Markdown
+      if(msg.role==='bot'){
+        div.innerHTML = `<div class="markdown-body">${marked.parse(msg.text)}</div>`;
+      } else {
+        div.textContent = msg.text;
+      }
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
 
-    // === إعداد Firebase و Gemini API ===
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+    // Firebase Auth + Chat
+    onAuthStateChanged(auth, async (user)=>{
+      if(user){ 
+        userId = user.uid;
+        chatCol = collection(db, `users/${userId}/messages`);
+        const q = query(chatCol, orderBy("timestamp"));
+        onSnapshot(q, snap=>{
+          snap.docChanges().forEach(change=>{
+            if(change.type==="added") renderMessage(change.doc.data());
+          });
+        });
+        // رسالة ترحيب
+        await addDoc(chatCol,{text:"مرحباً 👋 أنا VOXA، كيف أقدر أساعدك اليوم؟", role:'bot', timestamp:Date.now()});
+      } else {
+        await signInAnonymously(auth);
+      }
+    });
 
-    // تهيئة Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const text=input.value.trim(); if(!text) return;
+      await addDoc(chatCol,{text, role:'user', timestamp:Date.now()});
+      input.value='';
+      showTyping(true);
+      try {
+        const res = await fetch(API_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({contents:[{parts:[{text}]}]})
+        });
+        const data = await res.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "لم أتمكن من فهمك 🙏";
+        await addDoc(chatCol,{text:reply, role:'bot', timestamp:Date.now()});
+      } catch(err){
+        await addDoc(chatCol,{text:"حصل خطأ في الاتصال 😔", role:'bot', timestamp:Date.now()});
+      } finally {
+        showTyping(false);
+      }
+    });
 
-    let userId = null; // سيتم تعيينه بعد تسجيل الدخول
-    let chatCollection = null; // مسار مجموعة المحادثات في Firestore
-    let authReady = false;
+    // UI Open/Close
+    document.getElementById('open-chat').onclick=()=>{chatBox.classList.add('is-open')};
+    document.getElementById('close-chat').onclick=()=>{chatBox.classList.remove('is-open')};
 
-    // === وظائف مساعدة عامة ===
-    const $ = (s, ctx = document) => ctx.querySelector(s);
-    const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
-
-    function showToast(text) {
-      const toast = $('#toast');
-      if (!toast) return;
-      toast.querySelector('span').textContent = text;
-      toast.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toast.classList.remove('show'), 1300);
-    }
-
-    // === وظائف الدردشة ===
-    const chat = $('#chat');
-    const chatBody = $('#chat-body');
-    const input = $('#chat-input');
-    const openers = ['#primary-cta', '#secondary-cta', '#nav-open-chat'].map(sel => $(sel)).filter(Boolean);
-
-    function openChat() {
-      chat.classList.add('is-open');
-      chat.setAttribute('aria-hidden', 'false');
-      input.focus();
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function closeChat() {
-      chat.classList.remove('is-open');
-      chat.setAttribute('aria-hidden', 'true');
-    }
-
-    function renderMessages(messages) {
-      chatBody.innerHTML = '';
-      messages.forEach(msg => {
-        const bubble = document.createElement('div');
-        bubble.className = `msg ${msg.role === 'user' ? 'user' : 'bot'}`;
-        bubble.textContent = msg.text;
-        chatBody.appendChild(bubble);
-      });
-      chatBody.scrollTop = chatBody.scrollHeight; // التمرير للأسفل دائماً
-    }
-
-    function showTyping(state) {
-      let typingElement = $('#typing-wrap');
-      if (!typingElement) {
-        typingElement = document.createElement('div');
-        typingElement.id = 'typing-wrap';
-        typingElement.className = 'msg bot';
-        typingElement.innerHTML = `<span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
-        chatBody.appendChild(typingElement);
-      }
-      typingElement.style.display = state ? 'flex' : 'none';
-      if (state) chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-
-    // === معالجة الأحداث ===
-    // معالجة تسجيل دخول المستخدم
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        userId = user.uid;
-        chatCollection = collection(db, `artifacts/${appId}/users/${userId}/chat-messages`);
-        authReady = true;
-
-        // الاستماع لرسائل الدردشة في الوقت الحقيقي
-        const q = query(chatCollection, orderBy("timestamp"));
-        onSnapshot(q, (snapshot) => {
-          const messages = snapshot.docs.map(doc => doc.data());
-          renderMessages(messages);
-        });
-      } else {
-        // محاولة تسجيل الدخول إذا كان هناك توكن
-        try {
-          if (initialAuthToken) {
-            await signInWithCustomToken(auth, initialAuthToken);
-          } else {
-            await signInAnonymously(auth);
-          }
-        } catch (error) {
-          console.error("Firebase auth error:", error);
-        }
-      }
-    });
-
-    // فتح الدردشة عند الضغط على الأزرار
-    openers.forEach(el => el.addEventListener('click', (e) => {
-      e.preventDefault();
-      showToast('جارِ الاتصال بالدردشة...');
-      if (authReady) {
-        openChat();
-      } else {
-        // محاولة فتح الدردشة مرة أخرى بعد 1.5 ثانية إذا لم يكن تسجيل الدخول جاهزًا
-        setTimeout(() => {
-          if (authReady) openChat();
-          else showToast('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.');
-        }, 1500);
-      }
-    }));
-
-    // إغلاق الدردشة
-    $('#minimize')?.addEventListener('click', closeChat);
-
-    // إرسال الرسالة عند الضغط على زر الإرسال أو Enter
-    $('#chat-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text || !authReady) return;
-
-      // إضافة رسالة المستخدم إلى Firestore
-      await addDoc(chatCollection, {
-        text: text,
-        role: 'user',
-        timestamp: Date.now()
-      });
-      input.value = '';
-      showTyping(true);
-
-      try {
-        // استدعاء Gemini API
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: text }] }]
-          })
-        });
-        const result = await response.json();
-        const botReply = result?.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أتمكن من الرد. يرجى المحاولة مرة أخرى.";
-
-        // إضافة رد البوت إلى Firestore
-        await addDoc(chatCollection, {
-          text: botReply,
-          role: 'bot',
-          timestamp: Date.now()
-        });
-      } catch (error) {
-        console.error("API error:", error);
-        await addDoc(chatCollection, {
-          text: "حدث خطأ. لم أستطع التواصل مع المساعد الذكي.",
-          role: 'bot',
-          timestamp: Date.now()
-        });
-      } finally {
-        showTyping(false);
-      }
-    });
-
-    // === إعداد الخلفية المتحركة ===
-    tsParticles.load("particles-js", {
-        background: { color: "#0a0a0a" },
-        fpsLimit: 60,
-        particles: {
-            number: { value: 60, density: { enable: true, value_area: 800 } },
-            color: { value: "#ffd700" },
-            shape: { type: "circle" },
-            opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
-            size: { value: 2, random: true, anim: { enable: false } },
-            line_linked: { enable: true, distance: 150, color: "#c5b358", opacity: 0.2, width: 1 },
-            move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
-        },
-        interactivity: {
-            detect_on: "canvas",
-            events: {
-                onhover: { enable: true, mode: "grab" },
-                onclick: { enable: true, mode: "push" },
-                resize: true
-            },
-            modes: {
-                grab: { distance: 140, line_opacity: 0.5 },
-                push: { particles_nb: 4 }
-            }
-        },
-        detectRetina: true
-    });
-
-
-    // === إعداد تأثيرات الانتقال عند التمرير ===
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        rootMargin: '0px 0px -50px 0px'
-    });
-    const sectionsToReveal = document.querySelectorAll('.reveal-section');
-    sectionsToReveal.forEach(section => observer.observe(section));
-  </script>
+    // خلفية متحركة
+    tsParticles.load("particles-js", {
+        background: { color: "#0a0a0a" },
+        particles: { number:{value:60}, color:{value:"#ffd700"},
+          links:{enable:true,color:"#c5b358",opacity:.3}, move:{enable:true}}
+    });
+  </script>
 </body>
 </html>
