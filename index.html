@@ -755,7 +755,10 @@
     localStorage.setItem('voxa-sender', SENDER_ID);
     
     // إعدادات Gemini API
-    const apiKey = "";
+    // ملاحظة هامة: يجب الحصول على مفتاح API الخاص بك من Google AI Studio ووضعه هنا.
+    // **تحذير: نشر المفتاح في ملفات JavaScript العامة ليس آمنًا.
+    // الطريقة الأفضل هي استخدام خادم وسيط (backend) لإجراء الطلبات.**
+    const apiKey = "AIzaSyDFXEYm5QVAYintxr-HI-CyIvlWgjd_eGI"; // <=== ضع مفتاح API هنا
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
     let chatHistory = [];
     const systemPrompt = "You are a creative design assistant named VOXA. Your purpose is to help users with creative design tasks like creating logos, social media ads, and visual branding. Respond in a friendly, helpful, and creative tone. Keep responses concise and focused on the user's creative needs. All responses must be in Arabic.";
