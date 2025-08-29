@@ -5,231 +5,595 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>VOXA — مساعدك الإبداعي</title>
 
-  <!-- خطوط وأيقونات -->
+  <!-- خط وأيقونات -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
   <style>
-    :root{
-      /* نظام الألوان: أسود وذهبي */
-      --bg1:#0a0a0a;
-      --bg2:#111111;
-      --txt:#f0e6d2;
-      --muted:#a09078;
-      --primary:#ffd700;
-      --secondary:#c5b358;
-      --accent:#e6c300;
+    :root {
+      /* === نظام الألوان: أسود وذهبي === */
+      --bg1: #0a0a0a;
+      --bg2: #111111;
+      --txt: #f0e6d2;
+      --muted: #a09078;
+      --primary: #ffd700;
+      --secondary: #c5b358;
+      --accent: #e6c300;
       --card: rgba(255, 215, 0, .05);
       --border: rgba(255, 215, 0, .15);
-      --shadow: 0 10px 30px rgba(0,0,0,.5);
+      --shadow: 0 10px 30px rgba(0, 0, 0, .5);
       --ring: 0 0 0 4px rgba(255, 215, 0, .2);
-      --success:#22c55e;
-      --radius:16px;
+      --success: #22c55e;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto,Arial,"Noto Sans Arabic",sans-serif;
-      color:var(--txt);
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", sans-serif;
+      color: var(--txt);
       background-color: var(--bg1);
-      overflow-x:hidden;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* خلفية الجسيمات */
+    /* === خلفية الجسيمات المتحركة === */
     #particles-js {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
       z-index: -1;
     }
 
-    a{color:#ffd700;text-decoration:none}
-    a:focus-visible,button:focus-visible,input:focus-visible{outline:none; box-shadow:var(--ring)}
+    a {
+      color: #ffd700;
+      text-decoration: none;
+    }
 
-    .container{width:min(1100px,92%); margin-inline:auto; padding: clamp(18px,4vw,40px); position:relative; z-index: 2;}
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: none;
+      box-shadow: var(--ring);
+    }
 
-    /* انتقال عند التمرير */
-    .reveal-section{ opacity:0; transform:translateY(30px); transition: opacity .8s ease-out, transform .8s ease-out; }
-    .reveal-section.visible{ opacity:1; transform:none; }
+    /* حاوية عامة */
+    .container {
+      width: min(1100px, 92%);
+      margin-inline: auto;
+      padding: clamp(18px, 4vw, 40px);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* === تأثيرات الانتقال عند التمرير === */
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .reveal-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* شريط علوي */
-    .topbar{
-      position:sticky; top:0; z-index:10;
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       backdrop-filter: blur(14px) saturate(120%);
-      background: rgba(10,10,10, 0.6);
-      border-bottom:1px solid var(--border);
+      background: rgba(10, 10, 10, 0.6);
+      border-bottom: 1px solid var(--border);
     }
-    .topbar .inner{
-      width:min(1100px,92%); margin:auto;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:10px 12px;
+
+    .topbar .inner {
+      width: min(1100px, 92%);
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
     }
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px}
-    .brand i{color:var(--primary); filter:drop-shadow(0 0 8px rgba(255,215,0,.4))}
-    .nav{display:flex; gap:12px; flex-wrap:wrap}
-    .nav a{padding:8px 12px; border-radius:999px; border:1px solid transparent; transition: background .2s, border-color .2s;}
-    .nav a:hover{background:var(--card); border-color:var(--border)}
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .4px;
+    }
+
+    .brand i {
+      color: var(--primary);
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, .4));
+    }
+
+    .nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: background .2s, border-color .2s;
+    }
+
+    .nav a:hover {
+      background: var(--card);
+      border-color: var(--border);
+    }
 
     /* قسم الترحيب */
-    header.hero{min-height:100vh; display:grid; place-items:center; text-align:center}
-    .hero-box{
-      width:min(820px,100%); margin:auto; padding: clamp(18px,3vw,30px);
+    header.hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .hero-box {
+      width: min(820px, 100%);
+      margin: auto;
+      padding: clamp(18px, 3vw, 30px);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,215,0,.04), transparent);
-      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255, 215, 0, .04), transparent);
+      border: 1px solid var(--border);
       backdrop-filter: blur(8px) saturate(120%);
       box-shadow: var(--shadow);
+      position: relative;
     }
-    .logo{
-      width:52px; height:52px; border-radius:14px; margin:0 auto 10px; display:grid; place-items:center;
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      margin: 0 auto 10px;
+      display: grid;
+      place-items: center;
       background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; font-weight:900;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 18px rgba(255,215,0,.25);
+      color: #1a1100;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 8px 18px rgba(255, 215, 0, .25);
     }
-    h1{margin:.2rem 0 .3rem; font-size: clamp(26px,6vw,48px); line-height:1.1; font-weight:800; color: #fff;}
-    .subtitle{color:var(--muted); font-size: clamp(15px,2.2vw,20px); line-height:1.9; margin:0 auto 18px; max-width:65ch}
-    .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px}
+
+    h1 {
+      margin: .2rem 0 .3rem;
+      font-size: clamp(26px, 6vw, 48px);
+      line-height: 1.1;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(15px, 2.2vw, 20px);
+      line-height: 1.9;
+      margin: 0 auto 18px;
+      max-width: 65ch;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
 
     /* أزرار */
-    .btn{
-      position:relative; overflow:hidden;
-      appearance:none; border:none; cursor:pointer;
-      padding:14px 20px; border-radius:14px; font-weight:800; letter-spacing:.2px;
-      color:#141000;
+    .btn {
+      position: relative;
+      overflow: hidden;
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      color: #141000;
       background: linear-gradient(135deg, var(--secondary), var(--primary));
-      background-size:100% 100%;
+      background-size: 100% 100%;
       transition: transform .15s ease, box-shadow .25s ease, filter .2s ease;
-      box-shadow: 0 10px 22px rgba(255, 215, 0,.2), inset 0 1px 0 rgba(255,255,255,.35);
+      box-shadow: 0 10px 22px rgba(255, 215, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .35);
     }
-    .btn:hover{transform:translateY(-2px); filter: brightness(1.08);}
-    .btn:active{transform:translateY(0)}
-    .btn i{margin-inline-start:8px; color:#141000}
-    .btn.secondary{
-      color:var(--txt); background:transparent; border:1px solid var(--border); box-shadow:none;
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
     }
-    .btn.secondary:hover{background:var(--card); filter: none;}
-    .ripple{
-      position:absolute; border-radius:50%; transform:scale(0); pointer-events:none;
-      background:rgba(255,215,0,.5); animation:ripple .6s ease-out forwards;
+
+    .btn:active {
+      transform: translateY(0);
     }
-    @keyframes ripple{to{transform:scale(8); opacity:0}}
+
+    .btn i {
+      margin-inline-start: 8px;
+      color: #141000;
+    }
+
+    .btn.secondary {
+      color: var(--txt);
+      background: transparent;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: var(--card);
+      filter: brightness(1);
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      pointer-events: none;
+      background: rgba(255, 215, 0, .5);
+      animation: ripple .6s ease-out forwards;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(8);
+        opacity: 0;
+      }
+    }
 
     /* قسم الخدمات */
-    section.services{padding-block: clamp(28px,6vw,70px)}
-    .grid{display:grid; gap: clamp(12px,2vw,18px)}
-    @media (min-width:700px){ .grid{ grid-template-columns: repeat(12, 1fr) } }
-    .card{
+    section.services {
+      padding-block: clamp(28px, 6vw, 70px);
+    }
+
+    .grid {
+      display: grid;
+      gap: clamp(12px, 2vw, 18px);
+    }
+
+    @media (min-width: 700px) {
+      .grid {
+        grid-template-columns: repeat(12, 1fr);
+      }
+    }
+
+    .card {
       grid-column: span 12;
       background: var(--card);
-      border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow);
-      transition:transform .2s ease, border-color .2s ease, background .2s ease;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
     }
-    .card:hover{transform:translateY(-4px); border-color:rgba(255,215,0,.3); background: rgba(255, 215, 0, .08);}
-    .card .icon{
-      width:44px; height:44px; border-radius:12px; display:grid; place-items:center; margin-bottom:8px;
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 215, 0, .3);
+      background: rgba(255, 215, 0, .08);
+    }
+
+    .card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 8px;
       background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; font-size:18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(255,215,0,.3);
+      color: #1a1100;
+      font-size: 18px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 6px 16px rgba(255, 215, 0, .3);
     }
-    .card h3{margin:.2rem 0 .3rem; color: #fff;}
-    .card p{margin:0; color:var(--muted); line-height:1.8}
-    @media (min-width:700px){
-      .span-3{grid-column: span 3}
-      .span-6{grid-column: span 6}
+
+    .card h3 {
+      margin: .2rem 0 .3rem;
+      color: #fff;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    @media (min-width: 700px) {
+      .span-3 {
+        grid-column: span 3;
+      }
+
+      .span-6 {
+        grid-column: span 6;
+      }
     }
 
     /* CTA */
-    .cta{
-      margin-block: clamp(26px,6vw,60px);
-      padding: clamp(18px,3vw,24px);
+    .cta {
+      margin-block: clamp(26px, 6vw, 60px);
+      padding: clamp(18px, 3vw, 24px);
       border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(255,215,0,.12), rgba(255,215,0,.05));
-      border:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+      background: linear-gradient(135deg, rgba(255, 215, 0, .12), rgba(255, 215, 0, .05));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
     }
-    .cta h2{margin:.2rem 0; font-size: clamp(20px,4.5vw,28px)}
-    .cta p{margin:0; color:var(--muted)}
+
+    .cta h2 {
+      margin: .2rem 0;
+      font-size: clamp(20px, 4.5vw, 28px);
+    }
+
+    .cta p {
+      margin: 0;
+      color: var(--muted);
+    }
 
     /* Toast */
-    .toast{
-      position:fixed; bottom:18px; right:18px; z-index:50;
-      background: rgba(17,17,17,.85); color:#f0e6d2; border:1px solid var(--border);
-      padding:10px 14px; border-radius:12px; box-shadow:var(--shadow);
-      opacity:0; transform: translateY(8px); transition: opacity .25s ease, transform .25s ease;
-      display:flex; align-items:center; gap:8px; pointer-events:none;
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 50;
+      background: rgba(17, 17, 17, .85);
+      color: #f0e6d2;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .25s ease, transform .25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
     }
-    .toast.show{opacity:1; transform: translateY(0)}
-    .toast i{color:var(--success)}
 
-    /* Chat */
-    .chat{
-      position: fixed; left: 24px; bottom: 24px;
-      width: min(380px, 92vw); height: min(560px, 70vh);
-      display:flex; flex-direction:column; border-radius: 18px;
-      background: rgba(10,10,10, 0.6);
-      border:1px solid var(--border); backdrop-filter: blur(14px) saturate(120%);
-      box-shadow: var(--shadow); overflow:hidden; z-index: 60;
-      transform: translateY(24px) scale(.98); opacity:0; pointer-events:none;
-      transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s ease;
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
-    .chat.is-open{ transform: translateY(0) scale(1); opacity:1; pointer-events:auto }
 
-    .chat-header{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 14px; background: rgba(255,215,0,.05);
-      border-bottom: 1px solid var(--border);
+    .toast i {
+      color: var(--success);
     }
-    .avatar{
-      width: 36px; height:36px; border-radius: 10px; display:grid; place-items:center;
-      background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
-      color:#1a1100; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 6px 16px rgba(255,215,0,.3);
-    }
-    .title-wrap .name{ font-weight:800; font-size:14px; letter-spacing:.2px; color: #fff;}
-    .title-wrap .sub{ font-size:12px; color:var(--muted) }
-    .chat-body{
-      flex:1; overflow:auto; padding: 14px; display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth;
-    }
-    .msg{
-      max-width: 85%; padding: 10px 12px; border-radius: 14px; font-size: 14px; line-height:1.6;
-      background: var(--card); border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      position:relative; animation: pop .25s ease-out both; backdrop-filter: blur(8px) saturate(140%);
-      word-wrap: break-word;
-    }
-    @keyframes pop{ from{ transform:translateY(6px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
-    .msg.bot{ align-self:flex-start; border-top-left-radius: 6px }
-    .msg.user{ align-self:flex-end; border-top-right-radius:6px; background: linear-gradient(180deg, rgba(255,215,0,.18), rgba(255,215,0,.1)); border-color: rgba(255,215,0,.25) }
-    .msg img{ max-width:100%; border-radius:10px }
 
     /* مؤشّر الكتابة */
-    .typing .dot{
-      width:6px; height:6px; border-radius:50%; display:inline-block; margin:0 2px;
-      background: var(--secondary); opacity:.6; animation: blink 1.2s infinite ease-in-out;
+    .typing .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      background: var(--secondary);
+      opacity: .6;
+      animation: blink 1.2s infinite ease-in-out;
     }
-    .typing .dot:nth-child(2){ animation-delay:.2s }
-    .typing .dot:nth-child(3){ animation-delay:.4s }
-    @keyframes blink{ 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-3px);opacity:1} }
 
-    @media (prefers-reduced-motion: reduce){
-      *{animation:none!important; transition:none!important}
-      .chat{transition:none}
-      .reveal-section { opacity: 1; transform: none; }
+    .typing .dot:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing .dot:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: .4;
+      }
+      40% {
+        transform: translateY(-3px);
+        opacity: 1;
+      }
+    }
+
+    /* Chat */
+    .chat {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      width: min(380px, 92vw);
+      height: min(560px, 70vh);
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      background: rgba(10, 10, 10, 0.6);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px) saturate(120%);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      z-index: 60;
+      transform: translateY(24px) scale(.98);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease;
+    }
+
+    .chat.is-open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px;
+      background: rgba(255, 215, 0, .05);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
+      color: #1a1100;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 6px 16px rgba(255, 215, 0, .3);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .title-wrap .name {
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: .2px;
+      color: #fff;
+    }
+
+    .title-wrap .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .chat-body {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scroll-behavior: smooth;
+      aria-live: polite;
+      aria-atomic: false;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+      position: relative;
+      animation: pop .25s ease-out both;
+      backdrop-filter: blur(8px) saturate(140%);
+    }
+
+    @keyframes pop {
+      from {
+        transform: translateY(6px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      border-top-left-radius: 6px;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      border-top-right-radius: 6px;
+      background: linear-gradient(180deg, rgba(255, 215, 0, .18), rgba(255, 215, 0, .1));
+      border-color: rgba(255, 215, 0, .25);
+    }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, .1);
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 215, 0, .04);
+      color: var(--txt);
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .chat-input input:focus {
+      border-color: rgba(255, 215, 0, .4);
+      box-shadow: var(--ring);
+    }
+
+    .send {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: #141000;
+      box-shadow: 0 8px 18px rgba(255, 215, 0, .25);
+      transition: transform .15s ease, filter .25s ease;
+    }
+
+    .send:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .chat {
+        transition: none;
+      }
+
+      .reveal-section {
+        opacity: 1;
+        transform: none;
+      }
     }
   </style>
 
-  <!-- fallback إذا تعطّل الجافاسكربت -->
+  <!-- *** تعديل: إضافة كود احتياطي في حال عدم عمل الجافاسكربت *** -->
   <noscript>
-    <style>.reveal-section {opacity: 1; transform: none;}</style>
+    <style>
+      .reveal-section {
+        opacity: 1;
+        transform: none;
+      }
+    </style>
   </noscript>
 </head>
 <body>
 
-  <!-- خلفية متحركة -->
-  <div id="particles-js" aria-hidden="true"></div>
+  <!-- حاوية الخلفية المتحركة -->
+  <div id="particles-js"></div>
 
-  <!-- الشريط العلوي -->
+  <!-- المحتوى -->
   <div class="topbar">
     <div class="inner">
       <div class="brand"><i class="fa-solid fa-wand-magic-sparkles"></i> VOXA</div>
@@ -241,12 +605,13 @@
     </div>
   </div>
 
-  <!-- البطل -->
   <header id="hero" class="hero container reveal-section">
     <div class="hero-box">
       <div class="logo" aria-hidden="true">V</div>
       <h1>مرحباً 👋 أنا VOXA، مساعدك الإبداعي</h1>
-      <p class="subtitle">جاهز لتحويل أفكارك إلى تصميمات مُبهرة — من الشعار والهوية البصرية إلى إعلانات السوشيال.</p>
+      <p class="subtitle">
+        جاهز لتحويل أفكارك إلى تصميمات مُبهرة — من الشعار والهوية البصرية إلى إعلانات السوشيال.
+      </p>
       <div class="cta-row">
         <button class="btn" id="primary-cta">دردشة الآن <i class="fa-solid fa-comments"></i></button>
         <button class="btn secondary" id="more-btn">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
@@ -254,7 +619,6 @@
     </div>
   </header>
 
-  <!-- الخدمات -->
   <section id="services" class="services container reveal-section">
     <div class="grid">
       <article class="card span-3">
@@ -280,7 +644,6 @@
     </div>
   </section>
 
-  <!-- دعوة للإجراء -->
   <section id="cta-section" class="container reveal-section">
     <div class="cta">
       <div>
@@ -291,7 +654,7 @@
     </div>
   </section>
 
-  <!-- Toast -->
+  <!-- Toast (لم يتغير) -->
   <div id="toast" class="toast" role="status" aria-live="polite">
     <i class="fa-solid fa-check-circle"></i>
     <span>تم الضغط بنجاح</span>
@@ -312,7 +675,9 @@
       </div>
     </div>
     <div class="chat-body" id="chat-body" aria-live="polite" aria-atomic="false">
-      <!-- يتم تحميل السجل أو الرسالة الترحيبية برمجياً -->
+      <div class="msg bot">
+        أهلًا وسهلًا! أنا VOXA. كيف يمكنني خدمتك اليوم؟
+      </div>
       <div class="msg bot" id="typing-wrap" style="display:none">
         <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
       </div>
@@ -327,55 +692,109 @@
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
 
   <script>
-    // ========== إعدادات عامة ==========
-    const USE_PROXY = false; // إذا لديك بروكسي خلفي على /api/chat غيّرها إلى true
+    // 1. إعداد تأثيرات الانتقال
+    try {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, {
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      document.querySelectorAll('.reveal-section').forEach(section => observer.observe(section));
+    } catch (e) {
+      console.error("Error setting up IntersectionObserver:", e);
+      document.querySelectorAll('.reveal-section').forEach(s => {
+        s.style.opacity = '1';
+        s.style.transform = 'none';
+      });
+    }
+
+    // 2. إعداد الخلفية المتحركة (تصحيح: links بدل line_linked)
+    try {
+      if (window.tsParticles) {
+        tsParticles.load("particles-js", {
+          background: { color: { value: "#0a0a0a" } },
+          fpsLimit: 60,
+          particles: {
+            number: { value: 60, density: { enable: true, value_area: 800 } },
+            color: { value: "#ffd700" },
+            shape: { type: "circle" },
+            opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+            size: { value: 2, random: true },
+            links: { enable: true, distance: 150, color: "#c5b358", opacity: 0.2, width: 1 },
+            move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out" }
+          },
+          interactivity: {
+            events: {
+              onhover: { enable: true, mode: "grab" },
+              onclick: { enable: true, mode: "push" },
+              resize: true
+            },
+            modes: {
+              grab: { distance: 140, line_opacity: 0.5 },
+              push: { particles_nb: 4 }
+            }
+          },
+          detectRetina: true
+        });
+      }
+    } catch (e) {
+      console.error("Failed to load tsParticles animation:", e);
+    }
+
+    // 3. كود الدردشة (محدث وآمن)
+    const USE_PROXY = true;
     const RASA_URL = USE_PROXY ? "/api/chat" : "http://localhost:5005/webhooks/rest/webhook";
 
-    const $ = (s, ctx=document)=>ctx.querySelector(s);
+    const $ = (s, ctx = document) => ctx.querySelector(s);
     const chat = $('#chat');
     const chatBody = $('#chat-body');
     const input = $('#chat-input');
-    const navChat = $('#nav-open-chat');
 
-    // معرّف جلسة ثابت
+    // حفظ جلسة المستخدم
     const SENDER_ID = (() => {
       let id = localStorage.getItem('voxa-sender');
-      if(!id){ id = 'voxa-'+Math.random().toString(36).slice(2,9); localStorage.setItem('voxa-sender', id); }
+      if (!id) {
+        id = 'voxa-' + Math.random().toString(36).slice(2, 9);
+        localStorage.setItem('voxa-sender', id);
+      }
       return id;
     })();
 
-    // سجل محادثة محلي
-    const HISTORY_KEY = 'voxa-history';
-    function loadHistory(){
-      const raw = localStorage.getItem(HISTORY_KEY);
-      const arr = raw ? JSON.parse(raw) : [];
-      if(arr.length){
-        arr.forEach(m=>{
-          if(m.role === 'user') addUserMessage(m.text, false);
-          else if(m.role === 'bot') addBotHTML(m.html, false);
-        });
-      }else{
-        addBotText('أهلًا وسهلًا! أنا VOXA. كيف يمكنني خدمتك اليوم؟', false);
-      }
-    }
-    function saveHistory(){
-      const nodes = [...chatBody.querySelectorAll('.msg')].filter(n=>n.id!=='typing-wrap');
-      const arr = nodes.map(n=>{
-        if(n.classList.contains('user')) return { role:'user', text: n.textContent };
-        return { role:'bot', html: n.innerHTML };
-      }).slice(-100); // آخر 100 رسالة
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+    // أدوات مساعدة
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[m]));
     }
 
-    // ====== تأثيرات واجهة ======
-    function showToast(text){
-      const toast = $('#toast'); if(!toast) return;
+    function linkify(str) {
+      const urlRe = /(https?:\/\/[^\s]+)/g;
+      return escapeHTML(str).replace(urlRe, u => `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
+    }
+
+    function nl2br(str) {
+      return str.replace(/\n/g, '<br>');
+    }
+
+    function showToast(text) {
+      const toast = $('#toast');
+      if (!toast) return;
       toast.querySelector('span').textContent = text;
-      toast.classList.add('show'); clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=> toast.classList.remove('show'), 1300);
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 1300);
     }
 
-    function rippleAndToast(e, text='تم التوجيه للدردشة'){
+    function rippleAndToast(e) {
       const btn = e.currentTarget;
       const rect = btn.getBoundingClientRect();
       const ripple = document.createElement('span');
@@ -383,104 +802,149 @@
       ripple.className = 'ripple';
       ripple.style.width = ripple.style.height = size + 'px';
       ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-      ripple.style.top  = (e.clientY - rect.top  - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
       btn.appendChild(ripple);
-      setTimeout(()=> ripple.remove(), 600);
-      showToast(text);
+      setTimeout(() => ripple.remove(), 600);
+      showToast('تم التوجيه للدردشة');
     }
 
-    function openChat(){
+    function openChat() {
       chat.classList.add('is-open');
-      chat.setAttribute('aria-hidden','false');
-      navChat?.setAttribute('aria-expanded','true');
+      chat.setAttribute('aria-hidden', 'false');
+      const navChat = $('#nav-open-chat');
+      if (navChat) navChat.setAttribute('aria-expanded', 'true');
       input.focus();
     }
-    function closeChat(){
+
+    function closeChat() {
       chat.classList.remove('is-open');
-      chat.setAttribute('aria-hidden','true');
-      navChat?.setAttribute('aria-expanded','false');
+      chat.setAttribute('aria-hidden', 'true');
+      const navChat = $('#nav-open-chat');
+      if (navChat) navChat.setAttribute('aria-expanded', 'false');
     }
 
-    // ====== أدوات نص آمنة ======
-    function escapeHTML(str){
-      return String(str).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
-    }
-    function linkify(str){
-      const urlRe = /(https?:\/\/[^\s]+)/g;
-      return escapeHTML(str).replace(urlRe, u=>`<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
-    }
-    function nl2br(str){ return String(str).replace(/\n/g, '<br>'); }
+    // فتح الدردشة
+    ['#primary-cta', '#secondary-cta', '#nav-open-chat'].forEach(sel => {
+      const el = $(sel);
+      if (!el) return;
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        rippleAndToast(e);
+        openChat();
+      });
+    });
+    $('#minimize')?.addEventListener('click', closeChat);
 
-    // ====== رسائل الواجهة ======
-    function addUserMessage(text, save=true){
+    // إرسال رسالة إلى Rasa
+    async function sendToRasa(message) {
+      showTyping(true);
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 15000);
+        const res = await fetch(RASA_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender: SENDER_ID,
+            message,
+            metadata: { source: 'voxa-web', lang: 'ar', tz: Intl.DateTimeFormat().resolvedOptions().timeZone }
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(id);
+        if (!res.ok) throw new Error('Rasa error ' + res.status);
+        const data = await res.json();
+        (data || []).forEach(m => {
+          if (m.text) addBotText(m.text);
+          if (m.image) addBotImage(m.image, m.alt || '');
+          if (Array.isArray(m.buttons) && m.buttons.length) addBotButtons(m.buttons);
+        });
+        if (!data || data.length === 0) {
+          addBotText('تمام — طلبك وصلني. كيف فيني أساعدك كمان؟');
+        }
+      } catch (err) {
+        console.error(err);
+        addBotText('تعذر التواصل حالياً. تأكد من تشغيل Rasa أو جرّب لاحقاً.');
+      } finally {
+        showTyping(false);
+      }
+    }
+
+    // واجهة المستخدم
+    function addUserMessage(text) {
       const bubble = document.createElement('div');
       bubble.className = 'msg user';
-      bubble.textContent = text; // آمن
+      bubble.textContent = text;
       chatBody.insertBefore(bubble, $('#typing-wrap'));
       chatBody.scrollTop = chatBody.scrollHeight;
-      if(save) saveHistory();
     }
-    function addBotHTML(html, save=true){
+
+    function addBotText(text) {
+      const safe = nl2br(linkify(text || ''));
       const bubble = document.createElement('div');
       bubble.className = 'msg bot';
-      bubble.innerHTML = html; // html قمنا نحن ببنائه/تعقيمه
+      bubble.innerHTML = safe;
       chatBody.insertBefore(bubble, $('#typing-wrap'));
       chatBody.scrollTop = chatBody.scrollHeight;
-      if(save) saveHistory();
     }
-    function addBotText(text, save=true){
-      const safe = nl2br(linkify(text || ''));
-      addBotHTML(safe, save);
-    }
-    function addBotImage(url, alt='', save=true){
+
+    function addBotImage(url, alt = '') {
       const safeUrl = escapeHTML(url);
       const safeAlt = escapeHTML(alt || 'صورة من البوت');
-      addBotHTML(`<img src="${safeUrl}" alt="${safeAlt}">`, save);
+      const bubble = document.createElement('div');
+      bubble.className = 'msg bot';
+      bubble.innerHTML = `<img src="${safeUrl}" alt="${safeAlt}" style="max-width:100%;border-radius:10px">`;
+      chatBody.insertBefore(bubble, $('#typing-wrap'));
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
-    function addBotButtons(buttons, save=true){
+
+    function addBotButtons(buttons) {
       const wrap = document.createElement('div');
       wrap.className = 'msg bot';
       const btns = document.createElement('div');
-      btns.style.display='flex'; btns.style.flexWrap='wrap'; btns.style.gap='8px';
-      buttons.forEach(b=>{
+      btns.style.display = 'flex';
+      btns.style.flexWrap = 'wrap';
+      btns.style.gap = '8px';
+      buttons.forEach(b => {
         const btn = document.createElement('button');
-        btn.type='button';
-        btn.className='btn secondary';
-        btn.style.padding='8px 12px';
+        btn.type = 'button';
+        btn.className = 'btn secondary';
+        btn.style.padding = '8px 12px';
         btn.textContent = b.title || 'اختيار';
-        btn.addEventListener('click', ()=>{
+        btn.addEventListener('click', () => {
           addUserMessage(b.title || b.payload || '');
           sendToRasa(b.payload || b.title || '');
-          // تعطيل الأزرار بعد الاستخدام (اختياري)
-          [...btns.children].forEach(x=>x.disabled = true);
         });
         btns.appendChild(btn);
       });
       wrap.appendChild(btns);
       chatBody.insertBefore(wrap, $('#typing-wrap'));
       chatBody.scrollTop = chatBody.scrollHeight;
-      if(save) saveHistory();
     }
 
-    function showTyping(state){
+    function showTyping(state) {
       const wrap = $('#typing-wrap');
-      if(wrap) wrap.style.display = state ? 'flex' : 'none';
-      if(state) chatBody.scrollTop = chatBody.scrollHeight;
+      if (wrap) wrap.style.display = state ? 'flex' : 'none';
+      if (state) chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    // ====== استدعاء Rasa ======
-    async function sendToRasa(message){
-      showTyping(true);
-      try{
-        const controller = new AbortController();
-        const id = setTimeout(()=>controller.abort(), 15000); // 15 ثانية
-        const res = await fetch(RASA_URL, {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json' },
-          body: JSON.stringify({
-            sender: SENDER_ID,
-            message,
-            metadata: {
-              source: 'voxa-web',
-              lang: 'ar',
-   
+    // نموذج الإرسال
+    $('#chat-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addUserMessage(text);
+      input.value = '';
+      sendToRasa(text);
+    });
+
+    // مراقبة الشبكة
+    window.addEventListener('offline', () => {
+      addBotText('أنت غير متصل بالإنترنت.');
+    });
+    window.addEventListener('online', () => {
+      addBotText('عاد الاتصال بالإنترنت.');
+    });
+  </script>
+</body>
+</html>
