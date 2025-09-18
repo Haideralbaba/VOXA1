@@ -398,6 +398,7 @@
         transform: translateY(0);
         opacity: .4;
       }
+
       40% {
         transform: translateY(-3px);
         opacity: 1;
@@ -754,12 +755,8 @@
     const SENDER_ID = localStorage.getItem('voxa-sender') || 'voxa-' + Math.random().toString(36).slice(2, 9);
     localStorage.setItem('voxa-sender', SENDER_ID);
     
-    // إعدادات Gemini API
-    // ملاحظة هامة: يجب الحصول على مفتاح API الخاص بك من Google AI Studio ووضعه هنا.
-    // **تحذير: نشر المفتاح في ملفات JavaScript العامة ليس آمنًا.
-    // الطريقة الأفضل هي استخدام خادم وسيط (backend) لإجراء الطلبات.**
-    const apiKey = "AIzaSyDFXEYm5QVAYintxr-HI-CyIvlWgjd_eGI"; // <=== ضع مفتاح API هنا
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    // إعدادات n8n Webhook
+    const webhookUrl = "http://localhost:5678/webhook/db9d492b-f82f-40e8-b83f-65805ca64304";
     let chatHistory = [];
     const systemPrompt = "You are a creative design assistant named VOXA. Your purpose is to help users with creative design tasks like creating logos, social media ads, and visual branding. Respond in a friendly, helpful, and creative tone. Keep responses concise and focused on the user's creative needs. All responses must be in Arabic.";
     
@@ -821,96 +818,86 @@
       if (navChat) navChat.setAttribute('aria-expanded', 'false');
     }
 
-    // فتح الدردشة
-    ['#primary-cta', '#secondary-cta', '#nav-open-chat'].forEach(sel => {
-      const el = $(sel);
-      if (!el) return;
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        rippleAndToast(e);
-        openChat();
-      });
-    });
-    $('#minimize')?.addEventListener('click', closeChat);
+    function addMessage(text, isUser = false) {
+      const msg = document.createElement('div');
+      msg.classList.add('msg', isUser ? 'user' : 'bot');
+      msg.innerHTML = nl2br(linkify(text));
+      chatBody.appendChild(msg);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    
+    // إضافة رسالة المستخدم إلى سجل الدردشة
+    function addUserMessage(text) {
+      addMessage(text, true);
+      chatHistory.push({ role: "user", parts: [{ text: text }] });
+    }
 
-    // إرسال رسالة إلى Gemini
-    async function sendToGemini(message) {
-      showTyping(true);
-      const userMessage = { role: "user", parts: [{ text: message }] };
-      chatHistory.push(userMessage);
-
-      const payload = {
-        contents: chatHistory,
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-      };
+    // إرسال البيانات إلى n8n Webhook
+    async function sendMessageToN8N(prompt) {
+      const typingWrap = $('#typing-wrap');
+      if (typingWrap) typingWrap.style.display = 'block';
+      chatBody.scrollTop = chatBody.scrollHeight;
 
       try {
-        const res = await fetch(apiUrl, {
+        const payload = {
+          prompt: prompt,
+          history: chatHistory
+        };
+
+        const response = await fetch(webhookUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(payload)
         });
-        
-        const result = await res.json();
-        const candidate = result.candidates?.[0];
-        
-        if (candidate && candidate.content?.parts?.[0]?.text) {
-          const botResponse = candidate.content.parts[0].text;
-          addBotText(botResponse);
-          chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
-        } else {
-          addBotText('عذراً، حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-      } catch (err) {
-        console.error(err);
-        addBotText('تعذر الاتصال بالذكاء الاصطناعي. يرجى التحقق من اتصالك بالإنترنت.');
+        const data = await response.json();
+        const botResponse = data.response; // يفترض أن n8n سيعيد الرد في حقل 'response'
+
+        if (botResponse) {
+          addMessage(botResponse);
+          chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+        } else {
+          addMessage("عذراً، لم أتمكن من الحصول على رد. الرجاء المحاولة مرة أخرى.");
+        }
+
+      } catch (error) {
+        console.error('Error sending message to n8n:', error);
+        addMessage("حدث خطأ أثناء الاتصال. يرجى التحقق من n8n وإعادة المحاولة.");
       } finally {
-        showTyping(false);
+        if (typingWrap) typingWrap.style.display = 'none';
+        chatBody.scrollTop = chatBody.scrollHeight;
       }
     }
 
-    // واجهة المستخدم
-    function addUserMessage(text) {
-      const bubble = document.createElement('div');
-      bubble.className = 'msg user';
-      bubble.textContent = text;
-      chatBody.insertBefore(bubble, $('#typing-wrap'));
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function addBotText(text) {
-      const safe = nl2br(linkify(text || ''));
-      const bubble = document.createElement('div');
-      bubble.className = 'msg bot';
-      bubble.innerHTML = safe;
-      chatBody.insertBefore(bubble, $('#typing-wrap'));
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function showTyping(state) {
-      const wrap = $('#typing-wrap');
-      if (wrap) wrap.style.display = state ? 'flex' : 'none';
-      if (state) chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // نموذج الإرسال
-    $('#chat-form')?.addEventListener('submit', (e) => {
+    // إدارة نموذج الدردشة
+    $('#chat-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const text = input.value.trim();
-      if (!text) return;
-      addUserMessage(text);
-      input.value = '';
-      sendToGemini(text);
+      const prompt = input.value.trim();
+      if (prompt) {
+        addUserMessage(prompt);
+        sendMessageToN8N(prompt);
+        input.value = '';
+      }
     });
 
-    // مراقبة الشبكة
-    window.addEventListener('offline', () => {
-      addBotText('أنت غير متصل بالإنترنت.');
+    // إدارة الأزرار
+    $('#primary-cta').addEventListener('click', () => { openChat(); });
+    $('#secondary-cta').addEventListener('click', () => { openChat(); });
+    $('#nav-open-chat').addEventListener('click', () => { openChat(); });
+    $('#minimize').addEventListener('click', () => { closeChat(); });
+    
+    // إدارة المؤثرات البصرية
+    document.querySelectorAll('.btn:not(.secondary)').forEach(btn => {
+      btn.addEventListener('click', rippleAndToast);
     });
-    window.addEventListener('online', () => {
-      addBotText('عاد الاتصال بالإنترنت.');
-    });
+
   </script>
+
 </body>
 </html>
