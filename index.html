@@ -24,6 +24,8 @@
       --shadow: 0 10px 30px rgba(0, 0, 0, .5);
       --ring: 0 0 0 4px rgba(255, 215, 0, .2);
       --success: #22c55e;
+      --error: #ef4444;
+      --radius: 16px;
     }
 
     * {
@@ -101,7 +103,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 20px;
       padding: 10px 12px;
     }
 
@@ -134,6 +136,37 @@
     .nav a:hover {
       background: var(--card);
       border-color: var(--border);
+    }
+    
+    /* حقل المفتاح في الشريط العلوي */
+    .api-key-input-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-grow: 1;
+        max-width: 300px;
+    }
+    
+    .api-key-input-container input {
+        width: 100%;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: rgba(255, 215, 0, .04);
+        color: var(--txt);
+        outline: none;
+        font-size: 13px;
+    }
+    
+    .api-key-input-container button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary);
+        color: var(--bg1);
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity .2s;
     }
 
     /* قسم الترحيب */
@@ -211,13 +244,19 @@
       box-shadow: 0 10px 22px rgba(255, 215, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .35);
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-2px);
       filter: brightness(1.1);
     }
 
-    .btn:active {
+    .btn:active:not(:disabled) {
       transform: translateY(0);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
     .btn i {
@@ -232,7 +271,7 @@
       box-shadow: none;
     }
 
-    .btn.secondary:hover {
+    .btn.secondary:hover:not(:disabled) {
       background: var(--card);
       filter: brightness(1);
     }
@@ -367,19 +406,30 @@
     .toast.show {
       opacity: 1;
       transform: translateY(0);
+      pointer-events: auto;
     }
 
     .toast i {
       color: var(--success);
     }
+    
+    .toast.error i {
+      color: var(--error);
+    }
 
     /* مؤشّر الكتابة */
+    .typing {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-top: 2px;
+    }
+
     .typing .dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      display: inline-block;
-      margin: 0 2px;
+      display: block;
       background: var(--secondary);
       opacity: .6;
       animation: blink 1.2s infinite ease-in-out;
@@ -443,6 +493,28 @@
       border-bottom: 1px solid var(--border);
     }
 
+    .chat-header .user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .chat-actions button {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 20px;
+        padding: 4px;
+        border-radius: 6px;
+        transition: color .2s;
+    }
+    
+    .chat-actions button:hover {
+        color: var(--txt);
+    }
+
+
     .avatar {
       width: 36px;
       height: 36px;
@@ -470,14 +542,12 @@
 
     .chat-body {
       flex: 1;
-      overflow: auto;
+      overflow-y: auto;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       scroll-behavior: smooth;
-      aria-live: polite;
-      aria-atomic: false;
     }
 
     .msg {
@@ -492,6 +562,7 @@
       position: relative;
       animation: pop .25s ease-out both;
       backdrop-filter: blur(8px) saturate(140%);
+      white-space: pre-wrap; /* للحفاظ على تنسيق النص المرتجع */
     }
 
     @keyframes pop {
@@ -557,9 +628,14 @@
       transition: transform .15s ease, filter .25s ease;
     }
 
-    .send:hover {
+    .send:hover:not(:disabled) {
       transform: translateY(-1px);
       filter: brightness(1.1);
+    }
+    
+    .send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -598,6 +674,13 @@
   <div class="topbar">
     <div class="inner">
       <div class="brand"><i class="fa-solid fa-wand-magic-sparkles"></i> VOXA</div>
+      
+      <!-- حقل إدخال مفتاح API -->
+      <div class="api-key-input-container">
+        <input type="password" id="api-key-input" placeholder="أدخل مفتاح Gemini API" autocomplete="off" aria-label="أدخل مفتاح Gemini API">
+        <button id="set-key-btn">حفظ</button>
+      </div>
+
       <nav class="nav">
         <a href="#hero">الرئيسية</a>
         <a href="#services">خدماتنا</a>
@@ -655,7 +738,7 @@
     </div>
   </section>
 
-  <!-- Toast (لم يتغير) -->
+  <!-- Toast (لإظهار الإشعارات) -->
   <div id="toast" class="toast" role="status" aria-live="polite">
     <i class="fa-solid fa-check-circle"></i>
     <span>تم الضغط بنجاح</span>
@@ -668,7 +751,7 @@
         <div class="avatar"><i class="fa-solid fa-robot"></i></div>
         <div class="title-wrap">
           <span class="name">VOXA</span>
-          <span class="sub">متصل الآن • مساعدك الذكي</span>
+          <span class="sub" id="chat-status">متصل الآن • مساعدك الذكي</span>
         </div>
       </div>
       <div class="chat-actions">
@@ -676,16 +759,16 @@
       </div>
     </div>
     <div class="chat-body" id="chat-body" aria-live="polite" aria-atomic="false">
-      <div class="msg bot">
-        أهلًا وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟
-      </div>
+      <!-- رسالة ترحيب أولية تظهر هنا -->
+      
+      <!-- مؤشر الكتابة (يظهر قبل الرسائل الجديدة) -->
       <div class="msg bot" id="typing-wrap" style="display:none">
         <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
       </div>
     </div>
     <form class="chat-input" id="chat-form">
       <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
-      <button class="send" type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
+      <button class="send" id="send-button" type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
     </form>
   </section>
 
@@ -713,8 +796,7 @@
         s.style.transform = 'none';
       });
     }
-
-    // 2. إعداد الخلفية المتحركة (تصحيح: links بدل line_linked)
+// 2. إعداد الخلفية المتحركة
     try {
       if (window.tsParticles) {
         tsParticles.load("particles-js", {
@@ -747,157 +829,263 @@
       console.error("Failed to load tsParticles animation:", e);
     }
 
-    // 3. كود الدردشة (محدث وآمن)
+    // 3. كود الدردشة: استخدام Gemini API مع آلية إدخال المفتاح
     const $ = (s, ctx = document) => ctx.querySelector(s);
     const chat = $('#chat');
     const chatBody = $('#chat-body');
     const input = $('#chat-input');
-    const SENDER_ID = localStorage.getItem('voxa-sender') || 'voxa-' + Math.random().toString(36).slice(2, 9);
-    localStorage.setItem('voxa-sender', SENDER_ID);
+    const form = $('#chat-form');
+    const sendButton = $('#send-button');
+    const primaryCta = $('#primary-cta');
+    const secondaryCta = $('#secondary-cta');
+    const navOpenChat = $('#nav-open-chat');
+    const minimizeButton = $('#minimize');
+    const typingWrap = $('#typing-wrap');
+    const moreBtn = $('#more-btn');
+    const chatStatus = $('#chat-status');
     
-    // إعدادات n8n Webhook
-    const webhookUrl = "http://localhost:5678/webhook-test/db9d492b-f82f-40e8-b83f-65805ca64304";
+    const apiKeyInput = $('#api-key-input');
+    const setKeyButton = $('#set-key-btn');
+
+    // --- إعدادات Gemini API ---
+    // القيمة الافتراضية فارغة، وسيتم تحميلها من localStorage أو إدخال المستخدم
+    let apiKey = localStorage.getItem('geminiApiKey') || "AIzaSyA7ekVS3x2dTrqJPup1FzqYaWDJ_6Tve5E";
+    const model = "gemini-2.5-flash-preview-09-2025";
+    
+    // تعريف الشخصية (System Instruction)
+    const systemPrompt = {
+        parts: [{ 
+            text: "You are VOXA, a highly creative and professional design assistant. Your primary goal is to help users brainstorm ideas for logos, social media advertisements, visual identity, and branding concepts. Your tone should be supportive, enthusiastic, and insightful. Respond ONLY in modern standard Arabic. Do not mention API configuration, or internal settings." 
+        }]
+    };
+
     let chatHistory = [];
-    const systemPrompt = "You are a creative design assistant named VOXA. Your purpose is to help users with creative design tasks like creating logos, social media ads, and visual branding. Respond in a friendly, helpful, and creative tone. Keep responses concise and focused on the user's creative needs. All responses must be in Arabic.";
+    let isChatProcessing = false;
+
+    // --- وظائف التحكم بالواجهة ---
     
-    // أدوات مساعدة
-    function escapeHTML(str) {
-      return str.replace(/[&<>"']/g, m => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[m]));
+    function updateApiKeyStatus(key) {
+        if (key && key.length > 10) {
+            apiKey = key;
+            localStorage.setItem('geminiApiKey', key);
+            apiKeyInput.value = key.substring(0, 4) + '... ' + key.slice(-4); // إخفاء المفتاح جزئياً
+            apiKeyInput.setAttribute('disabled', 'true');
+            setKeyButton.textContent = 'تم الحفظ';
+            setKeyButton.classList.add('success');
+            setKeyButton.style.background = 'var(--success)';
+            chatStatus.textContent = 'متصل • مساعدك الذكي';
+            showToast("تم حفظ مفتاح API بنجاح! يمكنك بدء الدردشة.", false);
+        } else {
+            apiKey = "";
+            localStorage.removeItem('geminiApiKey');
+            apiKeyInput.value = '';
+            apiKeyInput.removeAttribute('disabled');
+            setKeyButton.textContent = 'حفظ';
+            setKeyButton.classList.remove('success');
+            setKeyButton.style.background = 'var(--primary)';
+            chatStatus.textContent = 'غير متصل • يتطلب مفتاح API';
+            if (chat.classList.contains('is-open')) {
+                 showToast("الرجاء إدخال مفتاح Gemini API لبدء الدردشة.", true);
+            }
+        }
     }
 
-    function linkify(str) {
-      const urlRe = /(https?:\/\/[^\s]+)/g;
-      return escapeHTML(str).replace(urlRe, u => `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
-    }
+    // إعداد المفتاح عند النقر على زر "حفظ"
+    setKeyButton.addEventListener('click', () => {
+        const key = apiKeyInput.value.trim();
+        updateApiKeyStatus(key);
+    });
 
-    function nl2br(str) {
-      return str.replace(/\n/g, '<br>');
-    }
-
-    function showToast(text) {
-      const toast = $('#toast');
-      if (!toast) return;
-      toast.querySelector('span').textContent = text;
-      toast.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toast.classList.remove('show'), 1300);
-    }
-
-    function rippleAndToast(e) {
-      const btn = e.currentTarget;
-      const rect = btn.getBoundingClientRect();
-      const ripple = document.createElement('span');
-      const size = Math.max(rect.width, rect.height);
-      ripple.className = 'ripple';
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-      btn.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-      showToast('تم التوجيه للدردشة');
-    }
-
-    function openChat() {
-      chat.classList.add('is-open');
-      chat.setAttribute('aria-hidden', 'false');
-      const navChat = $('#nav-open-chat');
-      if (navChat) navChat.setAttribute('aria-expanded', 'true');
-      input.focus();
-    }
-
-    function closeChat() {
-      chat.classList.remove('is-open');
-      chat.setAttribute('aria-hidden', 'true');
-      const navChat = $('#nav-open-chat');
-      if (navChat) navChat.setAttribute('aria-expanded', 'false');
-    }
-
-    function addMessage(text, isUser = false) {
-      const msg = document.createElement('div');
-      msg.classList.add('msg', isUser ? 'user' : 'bot');
-      msg.innerHTML = nl2br(linkify(text));
-      chatBody.appendChild(msg);
-      chatBody.scrollTop = chatBody.scrollHeight;
+    // إعداد المفتاح عند تحميل الصفحة (إذا كان مخزناً)
+    if (apiKey) {
+        updateApiKeyStatus(apiKey);
+    } else {
+        updateApiKeyStatus("");
     }
     
-    // إضافة رسالة المستخدم إلى سجل الدردشة
-    function addUserMessage(text) {
-      addMessage(text, true);
-      chatHistory.push({ role: "user", parts: [{ text: text }] });
+    // إضافة رسالة ترحيب خاصة للتنبيه بخصوص المفتاح
+    function initialWelcomeMessage() {
+        renderMessage("أهلاً وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟", 'bot');
+        
+        if (!apiKey) {
+             renderMessage("⚠️ **تنبيه:** أنا جاهز، لكن يجب عليك إدخال مفتاح Gemini API في الحقل العلوي أو عند بدء الدردشة لتلقي ردود حقيقية.", 'bot');
+        }
+        
+        // مسح سجل المحادثات السابقة عند التحديث لضمان البداية الصحيحة
+        chatHistory = [{ role: "model", parts: [{ text: "أهلاً وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟" }] }];
     }
 
-    // إرسال البيانات إلى n8n Webhook
-    async function sendMessageToN8N(prompt) {
-      const typingWrap = $('#typing-wrap');
-      if (typingWrap) typingWrap.style.display = 'block';
-      chatBody.scrollTop = chatBody.scrollHeight;
+    function toggleChat(open) {
+        if (open === true) {
+            chat.classList.add('is-open');
+            chat.setAttribute('aria-hidden', 'false');
+            navOpenChat.setAttribute('aria-expanded', 'true');
+            input.focus();
+            scrollToBottom();
+            if (!apiKey) {
+                showToast("الرجاء إدخال مفتاح Gemini API في الأعلى.", true);
+            }
+        } else {
+            chat.classList.remove('is-open');
+            chat.setAttribute('aria-hidden', 'true');
+            navOpenChat.setAttribute('aria-expanded', 'false');
+        }
+    }
 
-      try {
+    // ربط الأزرار بفتح نافذة الدردشة
+    primaryCta.addEventListener('click', () => toggleChat(true));
+    secondaryCta.addEventListener('click', () => toggleChat(true));
+    navOpenChat.addEventListener('click', () => toggleChat(true));
+    minimizeButton.addEventListener('click', () => toggleChat(false));
+    
+    // ربط زر "تعرّف أكثر"
+    moreBtn.addEventListener('click', () => {
+        // يمكنك توجيه هذا الزر لأسفل الصفحة لـ #services أو أي قسم آخر
+        document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+    });
+
+
+    function scrollToBottom() {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showToast(message, isError = false) {
+        const toast = $('#toast');
+        const icon = $('#toast i');
+        $('#toast span').textContent = message;
+        
+        toast.classList.remove('show', 'error');
+        if (isError) {
+            toast.classList.add('error');
+            icon.className = 'fa-solid fa-exclamation-circle';
+        } else {
+            icon.className = 'fa-solid fa-check-circle';
+        }
+        
+        // إعادة إظهار الـ Toast بعد تأخير بسيط لإعادة تشغيل الحركة
+        setTimeout(() => toast.classList.add('show'), 50);
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // --- وظائف الدردشة وإدارة البيانات ---
+
+    function renderMessage(content, role) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `msg ${role}`;
+        msgDiv.textContent = content; // استخدام textContent لتجنب حقن HTML
+        chatBody.insertBefore(msgDiv, typingWrap);
+        scrollToBottom();
+    }
+    
+    function showTyping(show) {
+        if (show) {
+            typingWrap.style.display = 'block';
+            scrollToBottom();
+            isChatProcessing = true;
+            input.disabled = true;
+            sendButton.disabled = true;
+        } else {
+            typingWrap.style.display = 'none';
+            isChatProcessing = false;
+            input.disabled = false;
+            sendButton.disabled = false;
+            input.focus();
+        }
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userMessage = input.value.trim();
+        if (!userMessage || isChatProcessing) return;
+
+        // 1. عرض رسالة المستخدم وإضافة للسجل
+        renderMessage(userMessage, 'user');
+        chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+        input.value = '';
+
+        // 2. إذا كان المفتاح غير موجود، لا تذهب لـ API
+        if (!apiKey) {
+            showTyping(false);
+            renderMessage("عذرًا، لا يمكنني إرسال رسالتك الآن. يرجى إدخال مفتاح Gemini API في حقل 'أدخل مفتاح Gemini API' في الشريط العلوي.", 'bot');
+            showToast("يتطلب مفتاح API لبدء الدردشة.", true);
+            return;
+        }
+
+        // 3. إظهار مؤشر الكتابة
+        showTyping(true);
+
+        // 4. استدعاء API
+        await sendMessage();
+    });
+    
+    async function sendMessage() {
+        const apiUrlWithKey = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
         const payload = {
-          prompt: prompt,
-          history: chatHistory
+            contents: chatHistory,
+            systemInstruction: systemPrompt,
         };
 
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+        let attempt = 0;
+        const maxRetries = 3;
+        
+        while (attempt < maxRetries) {
+            try {
+                const response = await fetch(apiUrlWithKey, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok) {
+                    // إذا كان الخطأ 400 أو 401، فمن المحتمل أن المفتاح غير صالح
+                    if (response.status === 400 || response.status === 401) {
+                         throw new Error("Invalid API Key or Bad Request.");
+                    }
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (text) {
+                    // 5. عرض رسالة البوت وتحديث السجل
+                    chatHistory.push({ role: "model", parts: [{ text: text }] });
+                    renderMessage(text, 'bot');
+                } else {
+                    renderMessage("عذرًا، لم أتمكن من الحصول على إجابة واضحة. قد يكون المحتوى غير مناسب أو حدث خطأ داخلي. (Gemini response empty)", 'bot');
+                }
+
+                // 6. إخفاء مؤشر الكتابة
+                showTyping(false);
+                return;
+
+            } catch (error) {
+                console.error(`Gemini API Attempt ${attempt + 1} failed:`, error);
+                
+                if (error.message.includes("Invalid API Key")) {
+                    showTyping(false);
+                    renderMessage("❌ **خطأ:** يبدو أن مفتاح Gemini API غير صحيح. يرجى التأكد من إدخال المفتاح الصحيح في الحقل العلوي.", 'bot');
+                    updateApiKeyStatus(""); // مسح المفتاح غير الصالح
+                    return; // إنهاء المحاولات
+                }
+                
+                attempt++;
+                if (attempt < maxRetries) {
+                    const delay = Math.pow(2, attempt) * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
         }
-
-        const data = await response.json();
-        const botResponse = data.response; // يفترض أن n8n سيعيد الرد في حقل 'response'
-
-        if (botResponse) {
-          addMessage(botResponse);
-          chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
-        } else {
-          addMessage("عذراً، لم أتمكن من الحصول على رد. الرجاء المحاولة مرة أخرى.");
-        }
-
-      } catch (error) {
-        console.error('Error sending message to n8n:', error);
-        addMessage("حدث خطأ أثناء الاتصال. يرجى التحقق من n8n وإعادة المحاولة.");
-      } finally {
-        if (typingWrap) typingWrap.style.display = 'none';
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }
+        
+        // 7. إظهار رسالة خطأ بعد فشل جميع المحاولات
+        showTyping(false);
+        renderMessage("عذرًا، واجهت مشكلة في الاتصال بالشبكة بعد عدة محاولات. يرجى التحقق من الاتصال بالإنترنت.", 'bot');
+        showToast("فشل الاتصال: يرجى التحقق من مفتاح API والاتصال.", true);
     }
-
-    // إدارة نموذج الدردشة
-    $('#chat-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const prompt = input.value.trim();
-      if (prompt) {
-        addUserMessage(prompt);
-        sendMessageToN8N(prompt);
-        input.value = '';
-      }
-    });
-
-    // إدارة الأزرار
-    $('#primary-cta').addEventListener('click', () => { openChat(); });
-    $('#secondary-cta').addEventListener('click', () => { openChat(); });
-    $('#nav-open-chat').addEventListener('click', () => { openChat(); });
-    $('#minimize').addEventListener('click', () => { closeChat(); });
     
-    // إدارة المؤثرات البصرية
-    document.querySelectorAll('.btn:not(.secondary)').forEach(btn => {
-      btn.addEventListener('click', rippleAndToast);
-    });
-
+    // إضافة رسالة الترحيب الأولى عند تحميل الشات
+    initialWelcomeMessage();
   </script>
-
 </body>
 </html>
