@@ -2,16 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VOXA — مساعدك الإبداعي</title>
 
-  <!-- خط وأيقونات -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- خطوط وأيقونات -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
 
   <style>
+    /* ===== متغيرات الألوان ===== */
     :root {
-      /* === نظام الألوان: أسود وذهبي === */
       --bg1: #0a0a0a;
       --bg2: #111111;
       --txt: #f0e6d2;
@@ -19,465 +19,364 @@
       --primary: #ffd700;
       --secondary: #c5b358;
       --accent: #e6c300;
-      --card: rgba(255, 215, 0, .05);
-      --border: rgba(255, 215, 0, .15);
-      --shadow: 0 10px 30px rgba(0, 0, 0, .5);
-      --ring: 0 0 0 4px rgba(255, 215, 0, .2);
+      --card: rgba(255, 215, 0, 0.05);
+      --border: rgba(255, 215, 0, 0.15);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      --ring: 0 0 0 4px rgba(255, 215, 0, 0.25);
       --success: #22c55e;
       --error: #ef4444;
       --radius: 16px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html, body {
-      height: 100%;
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      margin: 0;
-      font-family: "Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Arabic", sans-serif;
+      font-family: "Cairo", system-ui, -apple-system, sans-serif;
       color: var(--txt);
-      background-color: var(--bg1);
+      background: var(--bg1);
+      min-height: 100vh;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* === خلفية الجسيمات المتحركة === */
+    /* ===== خلفية الجسيمات ===== */
     #particles-js {
       position: fixed;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -1;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    a {
-      color: #ffd700;
-      text-decoration: none;
-    }
-
-    a:focus-visible, button:focus-visible, input:focus-visible {
-      outline: none;
-      box-shadow: var(--ring);
-    }
-
-    /* حاوية عامة */
+    /* ===== حاويات عامة ===== */
     .container {
       width: min(1100px, 92%);
-      margin-inline: auto;
-      padding: clamp(18px, 4vw, 40px);
+      margin: 0 auto;
+      padding: clamp(1rem, 4vw, 2.5rem);
       position: relative;
       z-index: 2;
     }
 
-    /* === تأثيرات الانتقال عند التمرير === */
-    .reveal-section {
+    /* ===== تأثيرات الظهور عند التمرير ===== */
+    .reveal {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
-
-    .reveal-section.visible {
+    .reveal.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    /* شريط علوي */
+    /* ===== الشريط العلوي ===== */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 10;
-      backdrop-filter: blur(14px) saturate(120%);
-      background: rgba(10, 10, 10, 0.6);
+      z-index: 100;
+      backdrop-filter: blur(16px) saturate(180%);
+      background: rgba(10, 10, 10, 0.7);
       border-bottom: 1px solid var(--border);
     }
-
     .topbar .inner {
-      width: min(1100px, 92%);
-      margin: auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      padding: 10px 12px;
+      gap: 1rem;
+      padding: 0.6rem 1rem;
+      flex-wrap: wrap;
     }
-
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.5rem;
       font-weight: 800;
-      letter-spacing: .4px;
+      font-size: 1.2rem;
     }
-
     .brand i {
       color: var(--primary);
-      filter: drop-shadow(0 0 8px rgba(255, 215, 0, .4));
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+    }
+
+    .api-area {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1 1 280px;
+      max-width: 400px;
+    }
+    .api-area input {
+      flex: 1;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255, 215, 0, 0.04);
+      color: var(--txt);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .api-area input:focus {
+      border-color: var(--primary);
+      box-shadow: var(--ring);
+    }
+    .api-area input:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .api-area button {
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #1a1100;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .api-area button:hover {
+      transform: scale(1.03);
+      filter: brightness(1.1);
+    }
+    .api-area button.success {
+      background: var(--success);
     }
 
     .nav {
       display: flex;
-      gap: 12px;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
-
     .nav a {
-      padding: 8px 12px;
+      padding: 0.4rem 0.8rem;
       border-radius: 999px;
       border: 1px solid transparent;
-      transition: background .2s, border-color .2s;
+      transition: all var(--transition);
+      color: var(--txt);
+      text-decoration: none;
+      font-weight: 400;
     }
-
     .nav a:hover {
       background: var(--card);
       border-color: var(--border);
     }
-    
-    /* حقل المفتاح في الشريط العلوي */
-    .api-key-input-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-grow: 1;
-        max-width: 300px;
-    }
-    
-    .api-key-input-container input {
-        width: 100%;
-        padding: 6px 10px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: rgba(255, 215, 0, .04);
-        color: var(--txt);
-        outline: none;
-        font-size: 13px;
-    }
-    
-    .api-key-input-container button {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 8px;
-        background: var(--primary);
-        color: var(--bg1);
-        font-weight: 700;
-        cursor: pointer;
-        transition: opacity .2s;
-    }
 
-    /* قسم الترحيب */
-    header.hero {
-      min-height: 100vh;
+    /* ===== قسم الترحيب ===== */
+    .hero {
+      min-height: 80vh;
       display: grid;
       place-items: center;
       text-align: center;
     }
-
     .hero-box {
-      width: min(820px, 100%);
-      margin: auto;
-      padding: clamp(18px, 3vw, 30px);
+      max-width: 800px;
+      padding: clamp(1.5rem, 4vw, 3rem);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255, 215, 0, .04), transparent);
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.04), transparent);
       border: 1px solid var(--border);
-      backdrop-filter: blur(8px) saturate(120%);
+      backdrop-filter: blur(8px);
       box-shadow: var(--shadow);
       position: relative;
     }
-
-    .logo {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      margin: 0 auto 10px;
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1rem;
+      border-radius: 16px;
       display: grid;
       place-items: center;
+      font-size: 2rem;
+      font-weight: 900;
       background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
       color: #1a1100;
-      font-weight: 900;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 8px 18px rgba(255, 215, 0, .25);
+      box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
     }
-
     h1 {
-      margin: .2rem 0 .3rem;
-      font-size: clamp(26px, 6vw, 48px);
-      line-height: 1.1;
+      font-size: clamp(2rem, 6vw, 3.5rem);
       font-weight: 800;
+      line-height: 1.2;
       color: #fff;
+      margin-bottom: 0.5rem;
     }
-
     .subtitle {
       color: var(--muted);
-      font-size: clamp(15px, 2.2vw, 20px);
-      line-height: 1.9;
-      margin: 0 auto 18px;
-      max-width: 65ch;
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      line-height: 1.8;
+      max-width: 60ch;
+      margin: 0 auto 1.5rem;
     }
-
     .cta-row {
       display: flex;
-      gap: 12px;
+      gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 10px;
     }
 
-    /* أزرار */
+    /* ===== الأزرار ===== */
     .btn {
       position: relative;
       overflow: hidden;
-      appearance: none;
+      padding: 0.8rem 1.8rem;
       border: none;
+      border-radius: 12px;
+      font-weight: 700;
       cursor: pointer;
-      padding: 14px 20px;
-      border-radius: 14px;
-      font-weight: 800;
-      letter-spacing: .2px;
-      color: #141000;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       background: linear-gradient(135deg, var(--secondary), var(--primary));
-      background-size: 100% 100%;
-      transition: transform .15s ease, box-shadow .25s ease, filter .2s ease;
-      box-shadow: 0 10px 22px rgba(255, 215, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .35);
+      color: #141000;
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.25);
     }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
+    .btn:hover {
+      transform: translateY(-3px);
       filter: brightness(1.1);
+      box-shadow: 0 12px 28px rgba(255, 215, 0, 0.35);
     }
-
-    .btn:active:not(:disabled) {
+    .btn:active {
       transform: translateY(0);
     }
-    
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      filter: grayscale(0.5);
-    }
-
-    .btn i {
-      margin-inline-start: 8px;
-      color: #141000;
-    }
-
     .btn.secondary {
-      color: var(--txt);
       background: transparent;
+      color: var(--txt);
       border: 1px solid var(--border);
       box-shadow: none;
     }
-
-    .btn.secondary:hover:not(:disabled) {
+    .btn.secondary:hover {
       background: var(--card);
       filter: brightness(1);
     }
-
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      transform: scale(0);
+    .btn:disabled {
+      opacity: 0.5;
       pointer-events: none;
-      background: rgba(255, 215, 0, .5);
-      animation: ripple .6s ease-out forwards;
     }
 
-    @keyframes ripple {
-      to {
-        transform: scale(8);
-        opacity: 0;
-      }
-    }
-
-    /* قسم الخدمات */
-    section.services {
-      padding-block: clamp(28px, 6vw, 70px);
-    }
-
-    .grid {
+    /* ===== بطاقات الخدمات ===== */
+    .services-grid {
       display: grid;
-      gap: clamp(12px, 2vw, 18px);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
     }
-
-    @media (min-width: 700px) {
-      .grid {
-        grid-template-columns: repeat(12, 1fr);
-      }
-    }
-
-    .card {
-      grid-column: span 12;
+    .service-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: var(--shadow);
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem;
+      transition: all var(--transition);
+      text-align: center;
+      backdrop-filter: blur(4px);
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 215, 0, .3);
-      background: rgba(255, 215, 0, .08);
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 215, 0, 0.4);
+      background: rgba(255, 215, 0, 0.08);
     }
-
-    .card .icon {
-      width: 44px;
-      height: 44px;
+    .service-card .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 0.8rem;
       border-radius: 12px;
       display: grid;
       place-items: center;
-      margin-bottom: 8px;
       background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
       color: #1a1100;
-      font-size: 18px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 6px 16px rgba(255, 215, 0, .3);
+      font-size: 1.4rem;
+      box-shadow: 0 6px 16px rgba(255, 215, 0, 0.25);
     }
-
-    .card h3 {
-      margin: .2rem 0 .3rem;
+    .service-card h3 {
       color: #fff;
+      margin-bottom: 0.3rem;
     }
-
-    .card p {
-      margin: 0;
+    .service-card p {
       color: var(--muted);
-      line-height: 1.8;
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
 
-    @media (min-width: 700px) {
-      .span-3 {
-        grid-column: span 3;
-      }
-
-      .span-6 {
-        grid-column: span 6;
-      }
-    }
-
-    /* CTA */
-    .cta {
-      margin-block: clamp(26px, 6vw, 60px);
-      padding: clamp(18px, 3vw, 24px);
+    /* ===== قسم CTA ===== */
+    .cta-section {
+      margin: 2.5rem 0;
+      padding: 1.5rem 2rem;
       border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(255, 215, 0, .12), rgba(255, 215, 0, .05));
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.02));
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
       flex-wrap: wrap;
+      gap: 1rem;
     }
-
-    .cta h2 {
-      margin: .2rem 0;
-      font-size: clamp(20px, 4.5vw, 28px);
+    .cta-section h2 {
+      font-size: clamp(1.3rem, 3vw, 2rem);
     }
-
-    .cta p {
-      margin: 0;
+    .cta-section p {
       color: var(--muted);
     }
 
-    /* Toast */
+    /* ===== Toast الإشعارات ===== */
     .toast {
       position: fixed;
-      bottom: 18px;
-      right: 18px;
-      z-index: 50;
-      background: rgba(17, 17, 17, .85);
-      color: #f0e6d2;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      background: rgba(17, 17, 17, 0.9);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      padding: 10px 14px;
+      padding: 0.8rem 1.2rem;
       border-radius: 12px;
       box-shadow: var(--shadow);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .25s ease, transform .25s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 0.7rem;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s ease;
       pointer-events: none;
     }
-
     .toast.show {
-      opacity: 1;
       transform: translateY(0);
+      opacity: 1;
       pointer-events: auto;
     }
-
     .toast i {
       color: var(--success);
+      font-size: 1.2rem;
     }
-    
     .toast.error i {
       color: var(--error);
     }
 
-    /* مؤشّر الكتابة */
-    .typing {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding-top: 2px;
-    }
-
-    .typing .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: block;
-      background: var(--secondary);
-      opacity: .6;
-      animation: blink 1.2s infinite ease-in-out;
-    }
-
-    .typing .dot:nth-child(2) {
-      animation-delay: .2s;
-    }
-
-    .typing .dot:nth-child(3) {
-      animation-delay: .4s;
-    }
-
-    @keyframes blink {
-      0%, 80%, 100% {
-        transform: translateY(0);
-        opacity: .4;
-      }
-
-      40% {
-        transform: translateY(-3px);
-        opacity: 1;
-      }
-    }
-
-    /* Chat */
-    .chat {
+    /* ===== نافذة الدردشة ===== */
+    .chat-window {
       position: fixed;
-      left: 24px;
-      bottom: 24px;
-      width: min(380px, 92vw);
-      height: min(560px, 70vh);
+      left: 1.5rem;
+      bottom: 1.5rem;
+      width: min(400px, 92vw);
+      height: min(580px, 70vh);
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
-      border-radius: 18px;
-      background: rgba(10, 10, 10, 0.6);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(14px) saturate(120%);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      z-index: 60;
-      transform: translateY(24px) scale(.98);
+      z-index: 150;
+      transform: translateY(30px) scale(0.96);
       opacity: 0;
       pointer-events: none;
-      transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .45s ease;
+      transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
     }
-
-    .chat.is-open {
+    .chat-window.open {
       transform: translateY(0) scale(1);
       opacity: 1;
       pointer-events: auto;
@@ -487,35 +386,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 14px;
-      background: rgba(255, 215, 0, .05);
+      padding: 0.8rem 1rem;
       border-bottom: 1px solid var(--border);
+      background: rgba(255, 215, 0, 0.04);
+      border-radius: 20px 20px 0 0;
     }
-
     .chat-header .user {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
     }
-
-    .chat-actions button {
-        background: none;
-        border: none;
-        color: var(--muted);
-        cursor: pointer;
-        font-size: 20px;
-        padding: 4px;
-        border-radius: 6px;
-        transition: color .2s;
-    }
-    
-    .chat-actions button:hover {
-        color: var(--txt);
-    }
-
-
-    .avatar {
+    .chat-header .avatar {
       width: 36px;
       height: 36px;
       border-radius: 10px;
@@ -523,569 +404,529 @@
       place-items: center;
       background: radial-gradient(circle at 30% 30%, var(--primary), var(--secondary));
       color: #1a1100;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 6px 16px rgba(255, 215, 0, .3);
-      position: relative;
-      isolation: isolate;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
     }
-
-    .title-wrap .name {
+    .chat-header .name {
       font-weight: 800;
-      font-size: 14px;
-      letter-spacing: .2px;
       color: #fff;
     }
-
-    .title-wrap .sub {
-      font-size: 12px;
+    .chat-header .status {
+      font-size: 0.75rem;
       color: var(--muted);
+    }
+    .chat-header .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+    .chat-header .close-btn:hover {
+      color: #fff;
     }
 
     .chat-body {
       flex: 1;
       overflow-y: auto;
-      padding: 14px;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 0.7rem;
       scroll-behavior: smooth;
     }
-
-    .msg {
+    .chat-body .msg {
       max-width: 85%;
-      padding: 10px 12px;
+      padding: 0.6rem 1rem;
       border-radius: 14px;
-      font-size: 14px;
+      font-size: 0.95rem;
       line-height: 1.6;
       background: var(--card);
       border: 1px solid var(--border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
-      position: relative;
-      animation: pop .25s ease-out both;
-      backdrop-filter: blur(8px) saturate(140%);
-      white-space: pre-wrap; /* للحفاظ على تنسيق النص المرتجع */
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      animation: msgPop 0.25s ease;
+      white-space: pre-wrap;
     }
-
-    @keyframes pop {
-      from {
-        transform: translateY(6px);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .msg.bot {
+    .chat-body .msg.bot {
       align-self: flex-start;
-      border-top-left-radius: 6px;
+      border-top-left-radius: 4px;
     }
-
-    .msg.user {
+    .chat-body .msg.user {
       align-self: flex-end;
-      border-top-right-radius: 6px;
-      background: linear-gradient(180deg, rgba(255, 215, 0, .18), rgba(255, 215, 0, .1));
-      border-color: rgba(255, 215, 0, .25);
+      background: rgba(255, 215, 0, 0.12);
+      border-color: rgba(255, 215, 0, 0.3);
+      border-top-right-radius: 4px;
+    }
+    @keyframes msgPop {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .chat-input {
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: 0.5rem 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      border-top-left-radius: 4px;
+    }
+    .typing-indicator .dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--secondary);
+      margin: 0 2px;
+      animation: dotBlink 1.4s infinite both;
+    }
+    .typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBlink {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .chat-input-area {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
       border-top: 1px solid var(--border);
-      background: rgba(0, 0, 0, .1);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 0 0 20px 20px;
     }
-
-    .chat-input input {
+    .chat-input-area input {
       flex: 1;
-      padding: 12px 14px;
+      padding: 0.6rem 1rem;
       border-radius: 12px;
       border: 1px solid var(--border);
-      background: rgba(255, 215, 0, .04);
+      background: rgba(255, 215, 0, 0.04);
       color: var(--txt);
       outline: none;
-      transition: border-color .2s ease, box-shadow .2s ease;
+      transition: border-color var(--transition);
     }
-
-    .chat-input input:focus {
-      border-color: rgba(255, 215, 0, .4);
-      box-shadow: var(--ring);
+    .chat-input-area input:focus {
+      border-color: var(--primary);
     }
-
-    .send {
-      width: 46px;
-      height: 46px;
+    .chat-input-area .send-btn {
+      width: 44px;
+      height: 44px;
       border: none;
       border-radius: 12px;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       color: #141000;
-      box-shadow: 0 8px 18px rgba(255, 215, 0, .25);
-      transition: transform .15s ease, filter .25s ease;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
     }
-
-    .send:hover:not(:disabled) {
-      transform: translateY(-1px);
+    .chat-input-area .send-btn:hover:not(:disabled) {
+      transform: scale(1.05);
       filter: brightness(1.1);
     }
-    
-    .send:disabled {
+    .chat-input-area .send-btn:disabled {
       opacity: 0.5;
-      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ===== استجابة ===== */
+    @media (max-width: 700px) {
+      .topbar .inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+      .api-area {
+        max-width: 100%;
+        order: 3;
+      }
+      .nav {
+        justify-content: center;
+      }
+      .chat-window {
+        left: 4%;
+        right: 4%;
+        width: 92%;
+        bottom: 1rem;
+        height: 70vh;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       * {
-        animation: none !important;
-        transition: none !important;
-      }
-
-      .chat {
-        transition: none;
-      }
-
-      .reveal-section {
-        opacity: 1;
-        transform: none;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
-
-  <!-- *** تعديل: إضافة كود احتياطي في حال عدم عمل الجافاسكربت *** -->
-  <noscript>
-    <style>
-      .reveal-section {
-        opacity: 1;
-        transform: none;
-      }
-    </style>
-  </noscript>
 </head>
 <body>
 
-  <!-- حاوية الخلفية المتحركة -->
+  <!-- خلفية الجسيمات -->
   <div id="particles-js"></div>
 
-  <!-- المحتوى -->
-  <div class="topbar">
+  <!-- الشريط العلوي -->
+  <header class="topbar">
     <div class="inner">
-      <div class="brand"><i class="fa-solid fa-wand-magic-sparkles"></i> VOXA</div>
-      
-      <!-- حقل إدخال مفتاح API -->
-      <div class="api-key-input-container">
-        <input type="password" id="api-key-input" placeholder="أدخل مفتاح Gemini API" autocomplete="off" aria-label="أدخل مفتاح Gemini API">
-        <button id="set-key-btn">حفظ</button>
+      <div class="brand">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>VOXA</span>
+      </div>
+
+      <!-- حقل إدخال المفتاح -->
+      <div class="api-area">
+        <input type="password" id="apiKeyInput" placeholder="🔑 أدخل مفتاح Gemini API" autocomplete="off" />
+        <button id="saveKeyBtn">حفظ</button>
       </div>
 
       <nav class="nav">
         <a href="#hero">الرئيسية</a>
         <a href="#services">خدماتنا</a>
-        <a href="#" id="nav-open-chat" aria-controls="chat" aria-expanded="false">الدردشة</a>
+        <a href="#" id="openChatBtn">الدردشة</a>
       </nav>
-    </div>
-  </div>
-
-  <header id="hero" class="hero container reveal-section">
-    <div class="hero-box">
-      <div class="logo" aria-hidden="true">V</div>
-      <h1>مرحباً 👋 أنا VOXA، مساعدك الإبداعي</h1>
-      <p class="subtitle">
-        جاهز لتحويل أفكارك إلى تصميمات مُبهرة — من الشعار والهوية البصرية إلى إعلانات السوشيال.
-      </p>
-      <div class="cta-row">
-        <button class="btn" id="primary-cta">دردشة الآن <i class="fa-solid fa-comments"></i></button>
-        <button class="btn secondary" id="more-btn">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
-      </div>
     </div>
   </header>
 
-  <section id="services" class="services container reveal-section">
-    <div class="grid">
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-pen-nib"></i></div>
-        <h3>تصميم لوجو احترافي</h3>
-        <p>شعار متقن يعكس شخصيّة علامتك ويُحافظ على بساطة قوية وسهولة تذكّر.</p>
-      </article>
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
-        <h3>إعلانات السوشيال</h3>
-        <p>تصاميم جذّابة لحملاتك مع صياغات ذكيّة تُضاعف التفاعل والنتائج.</p>
-      </article>
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-palette"></i></div>
-        <h3>هوية بصرية كاملة</h3>
-        <p>منظومة متكاملة للألوان والخطوط والدلائل لتجربة متّسقة أينما ظهرت.</p>
-      </article>
-      <article class="card span-3">
-        <div class="icon"><i class="fa-solid fa-layer-group"></i></div>
-        <h3>خدمات تصميم أخرى</h3>
-        <p>بروفايل شركة، قوالب عروض، بنرات مواقع، والمزيد — كلّه بأسلوب VOXA الأنيق.</p>
-      </article>
+  <!-- قسم الترحيب -->
+  <section id="hero" class="hero container reveal">
+    <div class="hero-box">
+      <div class="logo-icon">V</div>
+      <h1>مرحباً 👋 أنا VOXA، مساعدك الإبداعي</h1>
+      <p class="subtitle">
+        جاهز لتحويل أفكارك إلى تصاميم مُبهرة — من الشعار والهوية البصرية إلى إعلانات السوشيال ميديا.
+      </p>
+      <div class="cta-row">
+        <button class="btn" id="heroChatBtn">دردشة الآن <i class="fa-solid fa-comments"></i></button>
+        <button class="btn secondary" id="learnMoreBtn">تعرّف أكثر <i class="fa-solid fa-circle-info"></i></button>
+      </div>
     </div>
   </section>
 
-  <section id="cta-section" class="container reveal-section">
-    <div class="cta">
+  <!-- خدمات -->
+  <section id="services" class="container reveal">
+    <h2 style="text-align:center; font-size:2rem; margin-bottom:1rem;">خدماتي الإبداعية</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="icon"><i class="fa-solid fa-pen-nib"></i></div>
+        <h3>تصميم لوجو</h3>
+        <p>شعار احترافي يعكس شخصية علامتك التجارية.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <h3>إعلانات السوشيال</h3>
+        <p>تصاميم جذّابة تزيد التفاعل وتحقق نتائج.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon"><i class="fa-solid fa-palette"></i></div>
+        <h3>هوية بصرية</h3>
+        <p>منظومة متكاملة من الألوان والخطوط والدلائل.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon"><i class="fa-solid fa-layer-group"></i></div>
+        <h3>خدمات أخرى</h3>
+        <p>بروفايل شركة، قوالب عروض، بنرات، والمزيد.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container reveal">
+    <div class="cta-section">
       <div>
         <h2>جاهز نبدأ؟</h2>
         <p>اضغط الزر وابدأ الدردشة مع VOXA فوراً.</p>
       </div>
-      <button class="btn" id="secondary-cta">دردشة الآن <i class="fa-solid fa-bolt"></i></button>
+      <button class="btn" id="ctaChatBtn">دردشة الآن <i class="fa-solid fa-bolt"></i></button>
     </div>
   </section>
 
-  <!-- Toast (لإظهار الإشعارات) -->
-  <div id="toast" class="toast" role="status" aria-live="polite">
+  <!-- Toast -->
+  <div id="toast" class="toast" role="alert">
     <i class="fa-solid fa-check-circle"></i>
-    <span>تم الضغط بنجاح</span>
+    <span id="toastMsg">تم بنجاح</span>
   </div>
 
   <!-- نافذة الدردشة -->
-  <section class="chat" id="chat" role="dialog" aria-modal="true" aria-label="نافذة الدردشة" aria-hidden="true">
+  <section class="chat-window" id="chatWindow" role="dialog" aria-modal="true">
     <div class="chat-header">
       <div class="user">
         <div class="avatar"><i class="fa-solid fa-robot"></i></div>
-        <div class="title-wrap">
-          <span class="name">VOXA</span>
-          <span class="sub" id="chat-status">متصل الآن • مساعدك الذكي</span>
+        <div>
+          <div class="name">VOXA</div>
+          <div class="status" id="chatStatus">⏳ جاري التحميل...</div>
         </div>
       </div>
-      <div class="chat-actions">
-        <button id="minimize" title="إغلاق الدردشة" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
+      <button class="close-btn" id="closeChatBtn" aria-label="إغلاق الدردشة"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+      <!-- الرسائل تظهر هنا -->
+      <div class="typing-indicator" id="typingIndicator">
+        <span class="dots"><span></span><span></span><span></span></span>
       </div>
     </div>
-    <div class="chat-body" id="chat-body" aria-live="polite" aria-atomic="false">
-      <!-- رسالة ترحيب أولية تظهر هنا -->
-      
-      <!-- مؤشر الكتابة (يظهر قبل الرسائل الجديدة) -->
-      <div class="msg bot" id="typing-wrap" style="display:none">
-        <span class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-      </div>
-    </div>
-    <form class="chat-input" id="chat-form">
-      <input id="chat-input" type="text" placeholder="اكتب رسالتك هنا..." autocomplete="off" aria-label="اكتب رسالة">
-      <button class="send" id="send-button" type="submit" title="إرسال" aria-label="إرسال"><i class="fa-solid fa-paper-plane"></i></button>
+
+    <form class="chat-input-area" id="chatForm">
+      <input type="text" id="chatInput" placeholder="اكتب رسالتك..." autocomplete="off" />
+      <button class="send-btn" id="sendBtn" type="submit"><i class="fa-solid fa-paper-plane"></i></button>
     </form>
   </section>
 
-  <!-- مكتبة الخلفية المتحركة -->
+  <!-- مكتبة tsparticles -->
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
 
   <script>
-    // 1. إعداد تأثيرات الانتقال
-    try {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, {
-        rootMargin: '0px 0px -50px 0px'
+    (function() {
+      'use strict';
+
+      // ===== مراجع العناصر =====
+      const $ = (sel, ctx = document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+      const chatWindow = $('#chatWindow');
+      const chatBody = $('#chatBody');
+      const chatInput = $('#chatInput');
+      const chatForm = $('#chatForm');
+      const sendBtn = $('#sendBtn');
+      const typingIndicator = $('#typingIndicator');
+      const chatStatus = $('#chatStatus');
+      const toast = $('#toast');
+      const toastMsg = $('#toastMsg');
+
+      const apiKeyInput = $('#apiKeyInput');
+      const saveKeyBtn = $('#saveKeyBtn');
+
+  // ===== إدارة المفتاح =====
+      let apiKey = localStorage.getItem('geminiApiKey') || '';
+
+      function updateApiKeyUI(key) {
+        if (key && key.length > 10) {
+          apiKey = key;
+          localStorage.setItem('geminiApiKey', key);
+          apiKeyInput.value = key.slice(0, 4) + '••••' + key.slice(-4);
+          apiKeyInput.disabled = true;
+          saveKeyBtn.textContent = '✅ تم الحفظ';
+          saveKeyBtn.classList.add('success');
+          chatStatus.textContent = '🟢 متصل • مساعدك الذكي';
+        } else {
+          apiKey = '';
+          localStorage.removeItem('geminiApiKey');
+          apiKeyInput.value = '';
+          apiKeyInput.disabled = false;
+          saveKeyBtn.textContent = 'حفظ';
+          saveKeyBtn.classList.remove('success');
+          chatStatus.textContent = '🔴 غير متصل • يتطلب مفتاح';
+        }
+      }
+
+      // استعادة المفتاح المخزن
+      if (apiKey) updateApiKeyUI(apiKey);
+      else updateApiKeyUI('');
+
+      saveKeyBtn.addEventListener('click', () => {
+        const key = apiKeyInput.value.trim();
+        updateApiKeyUI(key);
+        showToast(key ? '✅ تم حفظ المفتاح بنجاح' : '⚠️ تم مسح المفتاح', false);
       });
 
-      document.querySelectorAll('.reveal-section').forEach(section => observer.observe(section));
-    } catch (e) {
-      console.error("Error setting up IntersectionObserver:", e);
-      document.querySelectorAll('.reveal-section').forEach(s => {
-        s.style.opacity = '1';
-        s.style.transform = 'none';
+      // ===== Toast =====
+      function showToast(msg, isError = false) {
+        toastMsg.textContent = msg;
+        toast.classList.remove('error');
+        if (isError) toast.classList.add('error');
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+      }
+
+      // ===== الدردشة =====
+      const MODEL = 'gemini-2.5-flash-preview-09-2025';
+      const SYSTEM_INSTRUCTION = {
+        parts: [{ text: 'أنت VOXA، مساعد إبداعي محترف في التصميم. ردودك تكون بالعربية الفصحى فقط، بأسلوب مشوق ومفيد. لا تذكر أي شيء عن التقنية أو الإعدادات.' }]
+      };
+
+      let chatHistory = [];
+      let isProcessing = false;
+
+      // إضافة رسالة إلى الواجهة
+      function appendMessage(text, role) {
+        const div = document.createElement('div');
+        div.className = `msg ${role}`;
+        div.textContent = text;
+        chatBody.insertBefore(div, typingIndicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      // إظهار/إخفاء مؤشر الكتابة
+      function setTyping(show) {
+        typingIndicator.style.display = show ? 'block' : 'none';
+        chatInput.disabled = show;
+        sendBtn.disabled = show;
+        if (show) chatBody.scrollTop = chatBody.scrollHeight;
+        else chatInput.focus();
+      }
+
+      // إرسال الرسالة
+      async function sendMessage(userText) {
+        if (isProcessing) return;
+        if (!userText.trim()) return;
+
+        // إضافة رسالة المستخدم
+        appendMessage(userText, 'user');
+        chatHistory.push({ role: 'user', parts: [{ text: userText }] });
+        chatInput.value = '';
+
+        // التحقق من المفتاح
+        if (!apiKey) {
+          appendMessage('⚠️ عذراً، يرجى إدخال مفتاح Gemini API في الحقل العلوي.', 'bot');
+          showToast('❌ المفتاح مطلوب', true);
+          return;
+        }
+
+        setTyping(true);
+        isProcessing = true;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+        const payload = {
+          contents: chatHistory,
+          systemInstruction: SYSTEM_INSTRUCTION
+        };
+
+        let attempts = 0;
+        const maxAttempts = 3;
+
+        while (attempts < maxAttempts) {
+          try {
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+              if (res.status === 400 || res.status === 401) {
+                throw new Error('INVALID_KEY');
+              }
+              throw new Error(`HTTP ${res.status}`);
+            }
+
+            const data = await res.json();
+            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (reply) {
+              chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+              appendMessage(reply, 'bot');
+            } else {
+              appendMessage('🤔 لم أحصل على رد واضح. حاول مرة أخرى.', 'bot');
+            }
+            setTyping(false);
+            isProcessing = false;
+            return;
+
+          } catch (err) {
+            attempts++;
+            if (err.message === 'INVALID_KEY') {
+              setTyping(false);
+              isProcessing = false;
+              appendMessage('❌ مفتاح API غير صحيح. يرجى تحديثه.', 'bot');
+              updateApiKeyUI(''); // مسح المفتاح الخاطئ
+              showToast('❌ مفتاح غير صالح', true);
+              return;
+            }
+            if (attempts < maxAttempts) {
+              await new Promise(r => setTimeout(r, 1000 * attempts));
+            }
+          }
+        }
+
+        // فشل بعد المحاولات
+        setTyping(false);
+        isProcessing = false;
+        appendMessage('⚠️ تعذر الاتصال بالخدمة بعد عدة محاولات. تحقق من اتصالك.', 'bot');
+        showToast('❌ فشل الاتصال', true);
+      }
+
+      // ===== فتح/غلق الدردشة =====
+      function toggleChat(open) {
+        if (open) {
+          chatWindow.classList.add('open');
+          chatInput.focus();
+        } else {
+          chatWindow.classList.remove('open');
+        }
+      }
+
+      // ===== أحداث =====
+      // أزرار فتح الدردشة
+      $$('#heroChatBtn, #ctaChatBtn, #openChatBtn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleChat(true);
+        });
       });
-    }
-// 2. إعداد الخلفية المتحركة
-    try {
+
+      $('#closeChatBtn').addEventListener('click', () => toggleChat(false));
+
+      // زر "تعرّف أكثر" يمرر للخدمات
+      $('#learnMoreBtn').addEventListener('click', () => {
+        document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // إرسال النموذج
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (msg) sendMessage(msg);
+      });
+
+      // ===== تفعيل تأثيرات الظهور =====
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.15 });
+      $$('.reveal').forEach(el => observer.observe(el));
+
+      // ===== خلفية الجسيمات =====
       if (window.tsParticles) {
-        tsParticles.load("particles-js", {
-          background: { color: { value: "#0a0a0a" } },
-          fpsLimit: 60,
+        tsParticles.load('particles-js', {
+          background: { color: '#0a0a0a' },
           particles: {
-            number: { value: 60, density: { enable: true, value_area: 800 } },
-            color: { value: "#ffd700" },
-            shape: { type: "circle" },
-            opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+            number: { value: 70, density: { enable: true, area: 800 } },
+            color: { value: '#ffd700' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.4, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.1 } },
             size: { value: 2, random: true },
-            links: { enable: true, distance: 150, color: "#c5b358", opacity: 0.2, width: 1 },
-            move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out" }
+            links: { enable: true, distance: 140, color: '#c5b358', opacity: 0.15, width: 1 },
+            move: { enable: true, speed: 1.2, direction: 'none', random: false, straight: false }
           },
           interactivity: {
-            events: {
-              onhover: { enable: true, mode: "grab" },
-              onclick: { enable: true, mode: "push" },
-              resize: true
-            },
-            modes: {
-              grab: { distance: 140, line_opacity: 0.5 },
-              push: { particles_nb: 4 }
-            }
+            events: { onHover: { enable: true, mode: 'grab' }, onClick: { enable: true, mode: 'push' } },
+            modes: { grab: { distance: 160, lineOpacity: 0.4 }, push: { quantity: 3 } }
           },
           detectRetina: true
         });
       }
-    } catch (e) {
-      console.error("Failed to load tsParticles animation:", e);
-    }
 
-    // 3. كود الدردشة: استخدام Gemini API مع آلية إدخال المفتاح
-    const $ = (s, ctx = document) => ctx.querySelector(s);
-    const chat = $('#chat');
-    const chatBody = $('#chat-body');
-    const input = $('#chat-input');
-    const form = $('#chat-form');
-    const sendButton = $('#send-button');
-    const primaryCta = $('#primary-cta');
-    const secondaryCta = $('#secondary-cta');
-    const navOpenChat = $('#nav-open-chat');
-    const minimizeButton = $('#minimize');
-    const typingWrap = $('#typing-wrap');
-    const moreBtn = $('#more-btn');
-    const chatStatus = $('#chat-status');
-    
-    const apiKeyInput = $('#api-key-input');
-    const setKeyButton = $('#set-key-btn');
-
-    // --- إعدادات Gemini API ---
-    // القيمة الافتراضية فارغة، وسيتم تحميلها من localStorage أو إدخال المستخدم
-    let apiKey = localStorage.getItem('geminiApiKey') || "AIzaSyB8CaKJqAh25Kw4Be6-PXUxU5DhWzEXC8o";
-    const model = "gemini-2.5-flash-preview-09-2025";
-    
-    // تعريف الشخصية (System Instruction)
-    const systemPrompt = {
-        parts: [{ 
-            text: "You are VOXA, a highly creative and professional design assistant. Your primary goal is to help users brainstorm ideas for logos, social media advertisements, visual identity, and branding concepts. Your tone should be supportive, enthusiastic, and insightful. Respond ONLY in modern standard Arabic. Do not mention API configuration, or internal settings." 
-        }]
-    };
-
-    let chatHistory = [];
-    let isChatProcessing = false;
-
-    // --- وظائف التحكم بالواجهة ---
-    
-    function updateApiKeyStatus(key) {
-        if (key && key.length > 10) {
-            apiKey = key;
-            localStorage.setItem('geminiApiKey', key);
-            apiKeyInput.value = key.substring(0, 4) + '... ' + key.slice(-4); // إخفاء المفتاح جزئياً
-            apiKeyInput.setAttribute('disabled', 'true');
-            setKeyButton.textContent = 'تم الحفظ';
-            setKeyButton.classList.add('success');
-            setKeyButton.style.background = 'var(--success)';
-            chatStatus.textContent = 'متصل • مساعدك الذكي';
-            showToast("تم حفظ مفتاح API بنجاح! يمكنك بدء الدردشة.", false);
-        } else {
-            apiKey = "";
-            localStorage.removeItem('geminiApiKey');
-            apiKeyInput.value = '';
-            apiKeyInput.removeAttribute('disabled');
-            setKeyButton.textContent = 'حفظ';
-            setKeyButton.classList.remove('success');
-            setKeyButton.style.background = 'var(--primary)';
-            chatStatus.textContent = 'غير متصل • يتطلب مفتاح API';
-            if (chat.classList.contains('is-open')) {
-                 showToast("الرجاء إدخال مفتاح Gemini API لبدء الدردشة.", true);
-            }
+      // ===== رسالة ترحيب أولية =====
+      function initChat() {
+        const welcome = 'أهلاً وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو هوية بصرية؟';
+        chatHistory = [{ role: 'model', parts: [{ text: welcome }] }];
+        // نضيف الرسالة مع تحقق من عدم تكرارها
+        if (!chatBody.querySelector('.msg')) {
+          appendMessage(welcome, 'bot');
+          if (!apiKey) {
+            appendMessage('⚠️ **تنبيه:** أنا جاهز، لكن يجب إدخال مفتاح API في الأعلى لبدء المحادثة.', 'bot');
+          }
         }
-    }
+      }
+      initChat();
 
-    // إعداد المفتاح عند النقر على زر "حفظ"
-    setKeyButton.addEventListener('click', () => {
-        const key = apiKeyInput.value.trim();
-        updateApiKeyStatus(key);
-    });
+      // ===== حفظ المحادثة في localStorage (اختياري) =====
+      // يمكنك إضافة وظيفة لحفظ واستعادة chatHistory هنا إذا أردت.
 
-    // إعداد المفتاح عند تحميل الصفحة (إذا كان مخزناً)
-    if (apiKey) {
-        updateApiKeyStatus(apiKey);
-    } else {
-        updateApiKeyStatus("");
-    }
-    
-    // إضافة رسالة ترحيب خاصة للتنبيه بخصوص المفتاح
-    function initialWelcomeMessage() {
-        renderMessage("أهلاً وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟", 'bot');
-        
-        if (!apiKey) {
-             renderMessage("⚠️ **تنبيه:** أنا جاهز، لكن يجب عليك إدخال مفتاح Gemini API في الحقل العلوي أو عند بدء الدردشة لتلقي ردود حقيقية.", 'bot');
-        }
-        
-        // مسح سجل المحادثات السابقة عند التحديث لضمان البداية الصحيحة
-        chatHistory = [{ role: "model", parts: [{ text: "أهلاً وسهلًا! أنا VOXA، مساعدك الإبداعي. كيف يمكنني مساعدتك اليوم في تصميم شعار أو إعلان أو أي شيء آخر؟" }] }];
-    }
-
-    function toggleChat(open) {
-        if (open === true) {
-            chat.classList.add('is-open');
-            chat.setAttribute('aria-hidden', 'false');
-            navOpenChat.setAttribute('aria-expanded', 'true');
-            input.focus();
-            scrollToBottom();
-            if (!apiKey) {
-                showToast("الرجاء إدخال مفتاح Gemini API في الأعلى.", true);
-            }
-        } else {
-            chat.classList.remove('is-open');
-            chat.setAttribute('aria-hidden', 'true');
-            navOpenChat.setAttribute('aria-expanded', 'false');
-        }
-    }
-
-    // ربط الأزرار بفتح نافذة الدردشة
-    primaryCta.addEventListener('click', () => toggleChat(true));
-    secondaryCta.addEventListener('click', () => toggleChat(true));
-    navOpenChat.addEventListener('click', () => toggleChat(true));
-    minimizeButton.addEventListener('click', () => toggleChat(false));
-    
-    // ربط زر "تعرّف أكثر"
-    moreBtn.addEventListener('click', () => {
-        // يمكنك توجيه هذا الزر لأسفل الصفحة لـ #services أو أي قسم آخر
-        document.getElementById('services').scrollIntoView({ behavior: 'smooth' });
-    });
-
-
-    function scrollToBottom() {
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function showToast(message, isError = false) {
-        const toast = $('#toast');
-        const icon = $('#toast i');
-        $('#toast span').textContent = message;
-        
-        toast.classList.remove('show', 'error');
-        if (isError) {
-            toast.classList.add('error');
-            icon.className = 'fa-solid fa-exclamation-circle';
-        } else {
-            icon.className = 'fa-solid fa-check-circle';
-        }
-        
-        // إعادة إظهار الـ Toast بعد تأخير بسيط لإعادة تشغيل الحركة
-        setTimeout(() => toast.classList.add('show'), 50);
-        setTimeout(() => toast.classList.remove('show'), 4000);
-    }
-
-    // --- وظائف الدردشة وإدارة البيانات ---
-
-    function renderMessage(content, role) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `msg ${role}`;
-        msgDiv.textContent = content; // استخدام textContent لتجنب حقن HTML
-        chatBody.insertBefore(msgDiv, typingWrap);
-        scrollToBottom();
-    }
-    
-    function showTyping(show) {
-        if (show) {
-            typingWrap.style.display = 'block';
-            scrollToBottom();
-            isChatProcessing = true;
-            input.disabled = true;
-            sendButton.disabled = true;
-        } else {
-            typingWrap.style.display = 'none';
-            isChatProcessing = false;
-            input.disabled = false;
-            sendButton.disabled = false;
-            input.focus();
-        }
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userMessage = input.value.trim();
-        if (!userMessage || isChatProcessing) return;
-
-        // 1. عرض رسالة المستخدم وإضافة للسجل
-        renderMessage(userMessage, 'user');
-        chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
-        input.value = '';
-
-        // 2. إذا كان المفتاح غير موجود، لا تذهب لـ API
-        if (!apiKey) {
-            showTyping(false);
-            renderMessage("عذرًا، لا يمكنني إرسال رسالتك الآن. يرجى إدخال مفتاح Gemini API في حقل 'أدخل مفتاح Gemini API' في الشريط العلوي.", 'bot');
-            showToast("يتطلب مفتاح API لبدء الدردشة.", true);
-            return;
-        }
-
-        // 3. إظهار مؤشر الكتابة
-        showTyping(true);
-
-        // 4. استدعاء API
-        await sendMessage();
-    });
-    
-    async function sendMessage() {
-        const apiUrlWithKey = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-        const payload = {
-            contents: chatHistory,
-            systemInstruction: systemPrompt,
-        };
-
-        let attempt = 0;
-        const maxRetries = 3;
-        
-        while (attempt < maxRetries) {
-            try {
-                const response = await fetch(apiUrlWithKey, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    // إذا كان الخطأ 400 أو 401، فمن المحتمل أن المفتاح غير صالح
-                    if (response.status === 400 || response.status === 401) {
-                         throw new Error("Invalid API Key or Bad Request.");
-                    }
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (text) {
-                    // 5. عرض رسالة البوت وتحديث السجل
-                    chatHistory.push({ role: "model", parts: [{ text: text }] });
-                    renderMessage(text, 'bot');
-                } else {
-                    renderMessage("عذرًا، لم أتمكن من الحصول على إجابة واضحة. قد يكون المحتوى غير مناسب أو حدث خطأ داخلي. (Gemini response empty)", 'bot');
-                }
-
-                // 6. إخفاء مؤشر الكتابة
-                showTyping(false);
-                return;
-
-            } catch (error) {
-                console.error(`Gemini API Attempt ${attempt + 1} failed:`, error);
-                
-                if (error.message.includes("Invalid API Key")) {
-                    showTyping(false);
-                    renderMessage("❌ **خطأ:** يبدو أن مفتاح Gemini API غير صحيح. يرجى التأكد من إدخال المفتاح الصحيح في الحقل العلوي.", 'bot');
-                    updateApiKeyStatus(""); // مسح المفتاح غير الصالح
-                    return; // إنهاء المحاولات
-                }
-                
-                attempt++;
-                if (attempt < maxRetries) {
-                    const delay = Math.pow(2, attempt) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
-            }
-        }
-        
-        // 7. إظهار رسالة خطأ بعد فشل جميع المحاولات
-        showTyping(false);
-        renderMessage("عذرًا، واجهت مشكلة في الاتصال بالشبكة بعد عدة محاولات. يرجى التحقق من الاتصال بالإنترنت.", 'bot');
-        showToast("فشل الاتصال: يرجى التحقق من مفتاح API والاتصال.", true);
-    }
-    
-    // إضافة رسالة الترحيب الأولى عند تحميل الشات
-    initialWelcomeMessage();
+    })();
   </script>
 </body>
 </html>
