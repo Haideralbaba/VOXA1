@@ -1,597 +1,978 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#081826">
-<title>OrderFlow Display V6</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#030504"/>
+<title>VOXA — Creative Intelligence Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{
-  --bg1:#071826; --bg2:#241027; --accent:#49b7ff; --accent2:#d66cff;
-  --text:#f7f9fc; --muted:#9ca7b5; --panel:rgba(10,15,22,.76);
-  --line:rgba(255,255,255,.10); --shadow:rgba(0,0,0,.28);
-  --state-a:#f2b84b; --state-b:#35d39a;
-  --radius:24px; --scale:1;
+  --bg:#020302;--bg2:#060907;--panel:rgba(9,13,11,.74);--panel2:rgba(255,255,255,.035);
+  --text:#f7faf9;--muted:#88938e;--dim:#5d6863;--line:rgba(255,255,255,.075);
+  --g1:#063e2f;--g2:#087a58;--g3:#39ddb0;--g4:#a6ffe3;
+  --r1:#2b070a;--r2:#74191b;--gold:#d3ad69;
+  --shadow:0 35px 110px rgba(0,0,0,.72);--softglow:0 0 80px rgba(8,122,88,.14);
+  --ease:cubic-bezier(.16,1,.3,1);
 }
-*{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;overflow:hidden}
-body{
-  color:var(--text);
-  font-family:"Noto Sans Arabic","Segoe UI",Arial,sans-serif;
-  background:var(--bg1);
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
-}
-body::before,body::after{
-  content:"";position:fixed;inset:-18%;z-index:-3;pointer-events:none;
-  will-change:transform,opacity;
-}
-body::before{
-  background:
-    radial-gradient(55% 55% at 18% 20%,var(--bg1) 0%,transparent 72%),
-    radial-gradient(58% 58% at 82% 78%,var(--bg2) 0%,transparent 72%);
-  filter:blur(24px);animation:ambientA 26s ease-in-out infinite alternate;
-}
-body::after{
-  background:
-    radial-gradient(42% 48% at 78% 18%,var(--bg2) 0%,transparent 72%),
-    radial-gradient(48% 52% at 22% 82%,var(--bg1) 0%,transparent 72%);
-  opacity:.44;filter:blur(44px);mix-blend-mode:screen;
-  animation:ambientB 34s ease-in-out infinite alternate;
-}
-@keyframes ambientA{
-  0%{transform:translate3d(-3%,-2%,0) scale(1.02)}
-  50%{transform:translate3d(2%,3%,0) scale(1.09) rotate(1.5deg)}
-  100%{transform:translate3d(4%,-1%,0) scale(1.04) rotate(-1.5deg)}
-}
-@keyframes ambientB{
-  0%{transform:translate3d(4%,1%,0) scale(1.05)}
-  50%{transform:translate3d(-3%,-3%,0) scale(1.12)}
-  100%{transform:translate3d(1%,4%,0) scale(1.07)}
-}
-body::marker{display:none}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Cairo,system-ui,sans-serif;background:radial-gradient(900px 500px at 52% -12%,rgba(8,122,88,.16),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(116,25,27,.08),transparent 62%),var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}button,input,textarea,select{font:inherit}button{border:0}a{color:inherit;text-decoration:none}::selection{background:rgba(57,221,176,.22)}
+#scene{position:fixed;inset:0;z-index:-20;overflow:hidden;pointer-events:none}.aurora{position:absolute;border-radius:50%;filter:blur(50px);opacity:.3}.aurora.a{width:50vw;height:50vw;right:-16vw;top:-20vw;background:radial-gradient(circle,#0a5e47 0%,transparent 67%);animation:driftA 18s ease-in-out infinite}.aurora.b{width:42vw;height:42vw;left:-18vw;bottom:-15vw;background:radial-gradient(circle,#3a0709 0%,transparent 68%);animation:driftB 22s ease-in-out infinite}.aurora.c{width:28vw;height:28vw;left:33vw;top:45vh;background:radial-gradient(circle,rgba(57,221,176,.11),transparent 70%);animation:driftC 15s ease-in-out infinite}.gridveil{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:58px 58px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 92%)}.noise{position:absolute;inset:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}.cursor{position:fixed;width:420px;height:420px;right:8%;top:12%;left:auto;bottom:auto;border-radius:50%;pointer-events:none;z-index:-5;background:radial-gradient(circle,rgba(57,221,176,.07),transparent 67%);}
+@keyframes driftA{50%{transform:translate(-5vw,4vh) scale(1.12)}}@keyframes driftB{50%{transform:translate(6vw,-4vh) scale(1.09)}}@keyframes driftC{50%{transform:translate(3vw,-3vh) scale(1.1)}}
+.topbar{position:fixed;top:0;left:0;right:0;height:76px;z-index:500;display:flex;align-items:center;background:rgba(2,3,2,.5);backdrop-filter:blur(22px) saturate(140%);border-bottom:1px solid rgba(255,255,255,.05);transition:.35s var(--ease)}.topbar.scrolled{background:rgba(2,3,2,.82);box-shadow:0 16px 60px rgba(0,0,0,.28)}.nav{width:min(1240px,92%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:11px}.mark{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#0a6b4f,#043d2e);box-shadow:0 0 26px rgba(8,122,88,.28);position:relative}.mark:after{content:"";position:absolute;inset:-4px;border:1px solid rgba(57,221,176,.14);border-radius:16px}.brand-main{font-size:17px;font-weight:900;letter-spacing:2px}.brand-sub{display:block;color:#6f8980;font-size:7px;letter-spacing:2.3px;margin-top:-2px}.nav-center{display:flex;gap:8px;padding:5px;border:1px solid rgba(255,255,255,.05);border-radius:13px;background:rgba(255,255,255,.018)}.nav-link{padding:8px 13px;border-radius:9px;color:#77827d;font-size:11px;font-weight:700;transition:.25s}.nav-link:hover,.nav-link.active{color:#e4fff6;background:rgba(57,221,176,.07)}.nav-right{display:flex;align-items:center;gap:8px}.live{display:flex;align-items:center;gap:7px;color:#70807a;font-size:10px}.dot{width:7px;height:7px;border-radius:50%;background:#555;transition:.3s}.dot.on{background:#39ddb0;box-shadow:0 0 15px rgba(57,221,176,.85)}.top-icon{width:35px;height:35px;border-radius:10px;background:rgba(255,255,255,.04);color:#8a948f;cursor:pointer;transition:.25s}.top-icon:hover{color:#fff;background:rgba(255,255,255,.08);transform:translateY(-1px)}
+.hero{width:min(1240px,92%);min-height:100vh;margin:auto;padding:145px 0 72px;display:grid;grid-template-columns:1.18fr .82fr;gap:54px;align-items:center}.kicker{display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border-radius:999px;border:1px solid rgba(57,221,176,.16);background:rgba(8,122,88,.055);color:#92dfc6;font-size:10px;font-weight:800;letter-spacing:1.2px;animation:fadeUp .8s var(--ease) both}.kicker i{color:#39ddb0}.hero h1{font-size:clamp(45px,7vw,89px);line-height:1.02;letter-spacing:-3.4px;font-weight:900;margin:24px 0 22px;max-width:820px;animation:fadeUp 1s .08s var(--ease) both}.hero h1 .accent{color:#39ddb0;text-shadow:0 0 45px rgba(57,221,176,.13)}.hero-copy{max-width:700px;color:#8d9993;font-size:15px;line-height:2;animation:fadeUp 1s .16s var(--ease) both}.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px;animation:fadeUp 1s .23s var(--ease) both}.btn{height:50px;padding:0 19px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;color:#fff;font-size:12px;font-weight:800;transition:.35s var(--ease)}.primary{background:linear-gradient(135deg,#09815e,#064331);box-shadow:0 17px 42px rgba(8,122,88,.23)}.primary:hover{box-shadow:0 22px 56px rgba(8,122,88,.38)}.ghost{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}.ghost:hover{background:rgba(255,255,255,.065)}.hero-meta{display:flex;gap:30px;margin-top:40px;animation:fadeUp 1s .30s var(--ease) both}.meta strong{font-size:19px;display:block}.meta span{display:block;color:#5e6a65;font-size:9px;margin-top:-2px}.meta-line{width:1px;height:32px;background:rgba(255,255,255,.07)}
+.hero-orbit{position:relative;min-height:480px;display:grid;place-items:center}.core{width:280px;height:280px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,rgba(57,221,176,.9),rgba(6,78,59,.8) 24%,rgba(3,9,6,.96) 61%);box-shadow:0 0 130px rgba(8,122,88,.15),inset 0 0 60px rgba(255,255,255,.05);position:relative;}.core:before,.core:after{content:"";position:absolute;border-radius:50%;inset:-25px;border:1px solid rgba(57,221,176,.12);animation:spin 15s linear infinite}.core:after{inset:-60px;border-style:dashed;opacity:.5;animation-direction:reverse;animation-duration:24s}.core-logo{width:90px;height:90px;border-radius:28px;display:grid;place-items:center;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 0 30px rgba(255,255,255,.04);font-size:31px;color:#eafff8}.orbit-card{position:absolute;width:180px;padding:12px;border-radius:15px;background:rgba(10,13,11,.68);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(13px);box-shadow:0 20px 60px rgba(0,0,0,.4)}.orbit-card b{display:block;font-size:11px}.orbit-card span{display:block;color:#66726c;font-size:9px;margin-top:2px}.o1{top:6%;right:0;}.o2{bottom:9%;left:4%;}.o3{top:44%;left:-2%;}.mini-bar{height:5px;border-radius:10px;background:rgba(255,255,255,.05);margin-top:9px;overflow:hidden}.mini-bar i{display:block;width:70%;height:100%;border-radius:10px;background:linear-gradient(90deg,#064e3b,#39ddb0)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes coreFloat{50%{transform:translateY(-12px) scale(1.02)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes float1{50%{transform:translate(8px,-12px)}}@keyframes float2{50%{transform:translate(-8px,10px)}}@keyframes float3{50%{transform:translate(-6px,-8px)}}
+.section{width:min(1240px,92%);margin:auto;padding:110px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:38px}.eyebrow{color:#39ddb0;font-size:9px;font-weight:800;letter-spacing:2.7px}.section-head h2{font-size:clamp(27px,4vw,48px);letter-spacing:-1.6px;margin-top:9px}.section-head p{max-width:440px;color:#69746f;font-size:11px;line-height:1.9}.modes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.mode{position:relative;text-align:right;min-height:168px;padding:20px;border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.065);overflow:hidden;cursor:pointer;transition:.45s var(--ease)}.mode:before{content:"";position:absolute;width:170px;height:170px;right:-70px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(57,221,176,.14),transparent 68%);transition:.45s}.mode:hover,.mode.active{border-color:rgba(57,221,176,.2);background:rgba(7,34,25,.18)}.mode:hover:before,.mode.active:before{opacity:.95}.mode-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#80e7c9;background:rgba(8,122,88,.11);margin-bottom:18px}.mode h3{font-size:13px}.mode p{font-size:9px;color:#65716c;line-height:1.7;margin-top:5px}.mode small{position:absolute;top:14px;left:14px;color:#4d5b55;font-size:8px}
+.workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}.step{padding:22px;border-radius:18px;background:rgba(255,255,255,.023);border:1px solid rgba(255,255,255,.05)}.step-num{color:#39ddb0;font-size:10px;font-weight:900}.step h4{margin-top:10px;font-size:12px}.step p{margin-top:6px;color:#5d6963;font-size:9px;line-height:1.8}
+.cta-band{width:min(1240px,92%);margin:0 auto 110px;padding:30px;border-radius:25px;background:linear-gradient(135deg,rgba(7,58,43,.35),rgba(56,7,9,.12));border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;gap:20px}.cta-band h3{font-size:22px}.cta-band p{color:#6b7771;font-size:10px;margin-top:5px}
+/* studio */
+.overlay{position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.6);backdrop-filter:blur(16px);display:grid;place-items:center;padding:14px;opacity:0;pointer-events:none;transition:opacity .35s ease}.overlay.open{opacity:1;pointer-events:auto}.studio{width:min(1320px,100%);height:min(820px,96vh);display:grid;grid-template-columns:240px 1fr 270px;background:linear-gradient(145deg,rgba(8,13,10,.98),rgba(3,5,4,.99));border:1px solid rgba(255,255,255,.1);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;transform:translateY(35px) scale(.97);transition:.5s var(--ease)}.overlay.open .studio{transform:none}
+.side{background:rgba(255,255,255,.016);border-left:1px solid rgba(255,255,255,.045);display:flex;flex-direction:column}.side.right{border-left:0;border-right:1px solid rgba(255,255,255,.045)}.side-head{padding:18px;border-bottom:1px solid rgba(255,255,255,.05)}.side-title{font-size:11px;font-weight:800}.side-sub{font-size:8px;color:#58645e;margin-top:2px}.session-list{padding:10px;overflow:auto;flex:1}.session{padding:11px 12px;border-radius:11px;cursor:pointer;border:1px solid transparent;margin-bottom:5px}.session:hover,.session.active{background:rgba(57,221,176,.045);border-color:rgba(57,221,176,.09)}.session b{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.session span{font-size:8px;color:#5b6761}.side-bottom{padding:10px;border-top:1px solid rgba(255,255,255,.05);display:grid;gap:6px}.side-btn{height:38px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);color:#8a9590;font-size:10px;cursor:pointer}.side-btn:hover{color:#fff;background:rgba(255,255,255,.065)}
+.chat{min-width:0;display:flex;flex-direction:column}.chat-top{height:70px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.055);background:rgba(255,255,255,.016)}.assistant{display:flex;gap:11px;align-items:center}.avatar{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0a7152,#043b2c);color:white;box-shadow:0 0 24px rgba(8,122,88,.25);position:relative}.avatar:after{content:"";position:absolute;inset:-4px;border-radius:17px;border:1px solid rgba(57,221,176,.13);animation:pulse 2.5s infinite}.assistant b{display:block;font-size:12px}.assistant span{font-size:8px;color:#5b6861}.chat-actions{display:flex;gap:7px}.chat-body{flex:1;overflow:auto;padding:24px}.chat-body::-webkit-scrollbar{width:5px}.chat-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:20px}.welcome2{text-align:center;max-width:620px;margin:26px auto 40px}.welcome-orb{width:64px;height:64px;border-radius:21px;margin:0 auto 15px;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#39ddb0,#07533d 63%,#02130c);box-shadow:0 18px 50px rgba(8,122,88,.22)}.welcome2 h3{font-size:20px}.welcome2 p{color:#657069;font-size:10px;line-height:1.9;margin-top:8px}.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px}.quick button{text-align:right;padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);color:#7c8882;font-size:9px;cursor:pointer;transition:.25s}.quick button:hover{background:rgba(8,122,88,.06);border-color:rgba(57,221,176,.15);color:#d9fff3}.msg{display:flex;margin-bottom:16px;animation:none}.msg.user{justify-content:flex-start}.msg.ai{justify-content:flex-end}.bubble{max-width:80%;padding:12px 14px;border-radius:16px;font-size:11px;line-height:1.95;white-space:pre-wrap;word-break:break-word}.msg.user .bubble{background:linear-gradient(135deg,#07513d,#087a58);border-bottom-right-radius:5px;box-shadow:0 10px 30px rgba(8,122,88,.12)}.msg.ai .bubble{background:rgba(255,255,255,.038);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:5px;color:#d8e1dc}.bubble h4{font-size:12px;margin:10px 0 5px;color:#fff}.bubble strong{color:#fff}.copy{margin-top:8px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.04);color:#68746e;font-size:8px;cursor:pointer}.typing{display:flex;gap:4px;width:max-content;padding:11px 13px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05)}.typing i{width:5px;height:5px;border-radius:50%;background:#708078;animation:blink 1.2s infinite}.typing i:nth-child(2){animation-delay:.16s}.typing i:nth-child(3){animation-delay:.32s}@keyframes blink{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-4px);opacity:1}}@keyframes pulse{50%{transform:scale(1.05);opacity:.65}}
+.composer{padding:12px 15px 15px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.16)}.composer-box{display:flex;align-items:end;gap:8px;padding:6px;border-radius:16px;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.065);transition:.25s}.composer-box:focus-within{border-color:rgba(57,221,176,.22);box-shadow:0 0 35px rgba(8,122,88,.07)}textarea{flex:1;resize:none;min-height:48px;max-height:150px;padding:11px 12px;background:transparent;color:white;border:0;outline:0;font-size:11px;line-height:1.7}.composer-tools{display:flex;align-items:center;gap:5px}.tool{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.035);color:#79847f;cursor:pointer}.tool:hover{background:rgba(255,255,255,.07);color:#fff}.send{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0a825f,#06402f);color:#fff;cursor:pointer;box-shadow:0 10px 25px rgba(8,122,88,.18);transition:.25s}.send:hover{box-shadow:0 0 28px rgba(57,221,176,.16)}.send:disabled{opacity:.45;cursor:not-allowed}.hint{text-align:center;color:#4e5a54;font-size:8px;margin-top:6px}
+.right-body{padding:16px;overflow:auto}.info-card{padding:14px;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);margin-bottom:10px}.info-card h4{font-size:10px}.info-card p,.kv span{font-size:8px;color:#617069;line-height:1.8}.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}.kv:last-child{border-bottom:0}.kv b{font-size:9px;color:#aeb8b3}.meter{height:5px;background:rgba(255,255,255,.05);border-radius:10px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:linear-gradient(90deg,#064e3b,#39ddb0);border-radius:10px;width:76%}.mode-select{width:100%;padding:10px;border-radius:10px;background:#07100b;border:1px solid rgba(255,255,255,.06);color:#b6c0bb;font-size:9px;outline:0}.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:9px 13px;border-radius:10px;background:rgba(7,12,9,.95);border:1px solid rgba(57,221,176,.15);box-shadow:0 15px 40px rgba(0,0,0,.35);color:#c8d5d0;font-size:9px;z-index:5000;transition:.3s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1100px){.hero{grid-template-columns:1fr}.hero-orbit{min-height:390px}.modes{grid-template-columns:repeat(3,1fr)}.studio{grid-template-columns:210px 1fr}.side.right{display:none}}@media(max-width:760px){.nav-center{display:none}.hero{padding-top:125px}.hero h1{letter-spacing:-2.2px}.hero-orbit{display:none}.section{padding:75px 0}.section-head{display:block}.section-head p{margin-top:10px}.modes{grid-template-columns:1fr 1fr}.workflow{grid-template-columns:1fr 1fr}.studio{grid-template-columns:1fr;height:calc(100vh - 10px);border-radius:20px}.side{display:none}.quick{grid-template-columns:1fr}.bubble{max-width:88%}.chat-body{padding:16px}.topbar{height:68px}.live{display:none}}@media(max-width:480px){.hero-actions,.hero-meta{flex-direction:column;align-items:flex-start}.modes,.workflow{grid-template-columns:1fr}.cta-band{display:block}.cta-band .btn{margin-top:16px}.hero h1{font-size:46px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-button,input,select{font:inherit}
-button{cursor:pointer}
-#app{
-  width:100%;height:100%;padding:clamp(12px,1.7vw,28px);
-  display:flex;flex-direction:column;gap:clamp(10px,1.3vw,18px);
+/* =========================================================
+   VOXA 2100 — FUTURE VISUAL SYSTEM
+========================================================= */
+:root{
+  --bg:#010203;
+  --bg2:#030708;
+  --panel:rgba(5,10,10,.62);
+  --panel2:rgba(255,255,255,.035);
+  --text:#f7fffc;
+  --muted:#7e918c;
+  --dim:#465b56;
+  --line:rgba(170,255,232,.10);
+  --g1:#003b31;
+  --g2:#00a77b;
+  --g3:#48ffd0;
+  --g4:#c4fff0;
+  --r1:#260308;
+  --r2:#8d1724;
+  --gold:#e9c77b;
+  --violet:#7568ff;
+  --cyan:#62f4ff;
+  --shadow:0 40px 140px rgba(0,0,0,.82);
+  --ease:cubic-bezier(.16,1,.3,1);
 }
-.top{
-  min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+
+body{
+  font-family:"Alexandria",system-ui,sans-serif;
+  background:
+    radial-gradient(1000px 650px at 50% -18%,rgba(0,167,123,.18),transparent 62%),
+    radial-gradient(900px 700px at 110% 80%,rgba(141,23,36,.12),transparent 58%),
+    radial-gradient(700px 500px at -10% 30%,rgba(117,104,255,.07),transparent 60%),
+    #010203;
 }
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.logo{
-  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;
-  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.035));
-  border:1px solid var(--line);font-weight:950;letter-spacing:-1px;
+
+.brand-main,.nav-link,.kicker,.section-head,.eyebrow,.meta,.mode small,
+.step-num,.btn,.live,.top-icon,.future-hud,.manifesto-line{
+  font-family:"Space Grotesk","Alexandria",sans-serif;
 }
-.brandText{min-width:0}
-h1{margin:0;font-size:clamp(20px,2vw,32px);line-height:1.05}
-.sub{margin-top:5px;color:var(--muted);font-size:clamp(10px,.9vw,13px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.actions{display:flex;align-items:center;gap:9px}
-.clock{font-variant-numeric:tabular-nums;color:var(--muted);font-size:clamp(11px,.9vw,14px)}
-.btn{
-  min-height:44px;padding:0 14px;border-radius:13px;border:1px solid var(--line);
-  background:rgba(255,255,255,.065);color:var(--text);backdrop-filter:blur(12px);
-  transition:.22s ease;
+
+#scene{
+  position:fixed;
+  inset:0;
+  z-index:-20;
+  overflow:hidden;
+  pointer-events:none;
+  perspective:1000px;
 }
-.btn:hover{background:rgba(255,255,255,.12)}
-.btn.primary{background:#f4f6f8;color:#090b0e;border-color:transparent;font-weight:900}
-.btn.icon{min-width:44px;padding:0;display:grid;place-items:center}
-#fsBtn{transition:opacity .22s ease,transform .22s ease}
-.main{
-  flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(10px,1.3vw,20px);
+
+#starfield{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:.9;
+}
+
+.gridveil{
+  opacity:.32!important;
+  transform:perspective(700px) rotateX(68deg) scale(1.8);
+  transform-origin:50% 100%;
+  background-size:72px 72px!important;
+  background-image:
+    linear-gradient(rgba(72,255,208,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(72,255,208,.055) 1px,transparent 1px)!important;
+  animation:gridMove 16s linear infinite;
+  mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 72%);
+}
+
+@keyframes gridMove{
+  from{background-position:0 0,0 0}
+  to{background-position:0 720px,720px 0}
+}
+
+.scanlines{
+  position:absolute;
+  inset:0;
+  opacity:.07;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255,255,255,.06) 4px,
+    transparent 5px
+  );
+  animation:scan 8s linear infinite;
+}
+@keyframes scan{
+  from{transform:translateY(-12px)}
+  to{transform:translateY(12px)}
+}
+
+.horizon{
+  position:absolute;
+  left:50%;
+  bottom:-25%;
+  width:150vw;
+  height:65vh;
+  transform:translateX(-50%);
+  background:
+    radial-gradient(ellipse at center,
+      rgba(0,167,123,.14) 0%,
+      rgba(0,167,123,.05) 28%,
+      transparent 68%);
+  filter:blur(4px);
+  animation:horizonPulse 7s ease-in-out infinite;
+}
+@keyframes horizonPulse{
+  0%,100%{opacity:.5;transform:translateX(-50%) scaleX(.92)}
+  50%{opacity:1;transform:translateX(-50%) scaleX(1.04)}
+}
+
+.laser{
+  position:absolute;
+  width:45vw;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(72,255,208,.8),transparent);
+  box-shadow:0 0 18px rgba(72,255,208,.55);
+  opacity:.3;
+  transform-origin:left center;
+}
+.laser-1{
+  top:29%;
+  left:-8%;
+  transform:rotate(-12deg);
+  animation:laser1 9s ease-in-out infinite;
+}
+.laser-2{
+  right:-10%;
+  top:61%;
+  transform:rotate(16deg);
+  background:linear-gradient(90deg,transparent,rgba(141,23,36,.8),transparent);
+  box-shadow:0 0 18px rgba(141,23,36,.45);
+  animation:laser2 12s ease-in-out infinite;
+}
+@keyframes laser1{
+  0%,100%{transform:translateX(-10%) rotate(-12deg);opacity:.12}
+  50%{transform:translateX(35%) rotate(-8deg);opacity:.5}
+}
+@keyframes laser2{
+  0%,100%{transform:translateX(10%) rotate(16deg);opacity:.08}
+  50%{transform:translateX(-28%) rotate(11deg);opacity:.38}
+}
+
+.aurora.a{
+  background:
+    radial-gradient(circle,#00a77b 0%,#003b31 30%,transparent 70%)!important;
+  filter:blur(75px)!important;
+  opacity:.32!important;
+  animation:futureA 14s ease-in-out infinite!important;
+}
+.aurora.b{
+  background:
+    radial-gradient(circle,#8d1724 0%,#260308 35%,transparent 70%)!important;
+  filter:blur(85px)!important;
+  opacity:.20!important;
+  animation:futureB 19s ease-in-out infinite!important;
+}
+.aurora.c{
+  background:
+    radial-gradient(circle,#7568ff 0%,transparent 68%)!important;
+  opacity:.08!important;
+  filter:blur(100px)!important;
+  animation:futureC 24s ease-in-out infinite!important;
+}
+@keyframes futureA{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-7vw,6vh,0) scale(1.18)}
+}
+@keyframes futureB{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(7vw,-5vh,0) scale(1.12)}
+}
+@keyframes futureC{
+  0%,100%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(9vw,8vh,0)}
+}
+
+.topbar{
+  background:rgba(1,3,4,.58)!important;
+  border-bottom:1px solid rgba(72,255,208,.09)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.02),0 20px 70px rgba(0,0,0,.22);
+}
+.topbar.scrolled{
+  background:rgba(1,3,4,.88)!important;
+  box-shadow:0 20px 90px rgba(0,0,0,.55),0 1px 0 rgba(72,255,208,.08);
+}
+.mark{
+  position:relative;
+  background:linear-gradient(135deg,#001f19,#00a77b)!important;
+  box-shadow:0 0 28px rgba(0,167,123,.35),inset 0 0 22px rgba(255,255,255,.08)!important;
+}
+.mark:after{
+  content:"";
+  position:absolute;
+  inset:-5px;
+  border:1px solid rgba(72,255,208,.16);
+  border-radius:inherit;
+  animation:markPulse 2.8s ease-in-out infinite;
+}
+@keyframes markPulse{
+  0%,100%{transform:scale(1);opacity:.25}
+  50%{transform:scale(1.15);opacity:.75}
+}
+
+.hero{
+  min-height:100vh!important;
+  position:relative;
+}
+.hero:before{
+  content:"";
+  position:absolute;
+  width:760px;
+  height:760px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-54%);
+  border:1px solid rgba(72,255,208,.035);
+  border-radius:50%;
+  box-shadow:
+    0 0 0 70px rgba(72,255,208,.012),
+    0 0 0 140px rgba(72,255,208,.009),
+    inset 0 0 100px rgba(0,167,123,.035);
+  animation:heroRing 18s linear infinite;
+  pointer-events:none;
+}
+@keyframes heroRing{
+  to{transform:translate(-50%,-54%) rotate(360deg)}
+}
+
+.kicker{
+  position:relative;
+  border-color:rgba(72,255,208,.18)!important;
+  background:linear-gradient(90deg,rgba(0,167,123,.10),rgba(255,255,255,.025),rgba(141,23,36,.06))!important;
+  box-shadow:inset 0 0 20px rgba(72,255,208,.025),0 0 30px rgba(0,167,123,.05);
+  letter-spacing:2px!important;
+}
+.kicker-year{
+  color:var(--gold);
+  margin-right:8px;
+  padding-right:8px;
+  border-right:1px solid rgba(233,199,123,.25);
+}
+
+.future-hud{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:22px;
+  margin:-14px auto 24px;
+  color:#4f6861;
+  font-size:8px;
+  letter-spacing:1.7px;
+  opacity:.8;
+}
+.future-hud span{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.future-hud i{
+  color:var(--g3);
+  font-size:5px;
+  animation:blinkDot 1.6s infinite;
+}
+.future-hud b{
+  color:#9db4ad;
+  font-weight:600;
+}
+@keyframes blinkDot{50%{opacity:.2}}
+
+.hero h1{
+  font-size:clamp(56px,8.8vw,112px)!important;
+  line-height:.98!important;
+  letter-spacing:-4.5px!important;
+  font-weight:900!important;
+  text-shadow:0 0 80px rgba(0,167,123,.08);
+}
+.hero h1 .accent{
+  background:linear-gradient(110deg,#fff 0%,#48ffd0 38%,#00a77b 68%,#e9c77b 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  position:relative;
+}
+.hero h1 .accent:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-7px;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#48ffd0,transparent);
+  filter:blur(.4px);
+  opacity:.55;
+  animation:underlineFlow 3.2s ease-in-out infinite;
+}
+@keyframes underlineFlow{
+  0%,100%{transform:scaleX(.55);opacity:.25}
+  50%{transform:scaleX(1);opacity:.75}
+}
+
+.hero-copy{
+  max-width:760px!important;
+  color:#91a39d!important;
+  font-size:15px!important;
+}
+
+.manifesto-line{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  color:#536963;
+  font-size:8px;
+  letter-spacing:3px;
+  margin:0 0 20px;
+}
+.manifesto-line span{
+  transition:.4s ease;
+}
+.manifesto-line span:hover{color:#48ffd0;text-shadow:0 0 15px rgba(72,255,208,.35)}
+.manifesto-line i{
+  display:block;
+  width:28px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#48ffd0,transparent);
+  opacity:.45;
+}
+
+.btn.primary{
+  background:linear-gradient(135deg,#00a77b 0%,#005f4b 52%,#003b31 100%)!important;
+  border:1px solid rgba(72,255,208,.22);
+  box-shadow:
+    0 15px 40px rgba(0,167,123,.20),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+.btn.primary:hover{
+  box-shadow:
+    0 22px 65px rgba(0,167,123,.38),
+    0 0 0 1px rgba(72,255,208,.16);
+}
+.btn.ghost{
+  background:rgba(255,255,255,.025)!important;
+  border-color:rgba(255,255,255,.10)!important;
+  box-shadow:inset 0 0 20px rgba(255,255,255,.015);
+}
+
+.hero-orbit{
+  filter:drop-shadow(0 0 30px rgba(0,167,123,.08));
+}
+.core{
+  background:
+    radial-gradient(circle at 35% 25%,#48ffd0,#006c54 30%,#001c17 67%,#010203 100%)!important;
+  box-shadow:
+    0 0 0 1px rgba(72,255,208,.18),
+    0 0 55px rgba(0,167,123,.28),
+    0 0 130px rgba(0,167,123,.10),
+    inset 0 0 50px rgba(72,255,208,.12)!important;
+}
+.core:before{
+  border-color:rgba(72,255,208,.18)!important;
+  animation:coreSpin 10s linear infinite!important;
+}
+.core:after{
+  border-color:rgba(233,199,123,.10)!important;
+  animation:coreSpin 15s linear infinite reverse!important;
+}
+@keyframes coreSpin{to{transform:rotate(360deg)}}
+
+.orbit-card{
+  background:linear-gradient(145deg,rgba(8,18,15,.82),rgba(2,5,4,.70))!important;
+  border-color:rgba(72,255,208,.12)!important;
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(18px)!important;
+}
+.orbit-card b{color:#48ffd0!important}
+.orbit-card span{color:#70847d!important}
+.mini-bar{background:rgba(255,255,255,.05)!important}
+.mini-bar i{background:linear-gradient(90deg,#005f4b,#48ffd0)!important;box-shadow:0 0 10px rgba(72,255,208,.35)}
+
+.section{
+  position:relative;
+}
+.section:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:8%;
+  right:8%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(72,255,208,.10),rgba(233,199,123,.08),transparent);
+}
+
+.mode,.service-card,.step{
+  background:
+    linear-gradient(145deg,rgba(8,15,13,.66),rgba(2,5,4,.48))!important;
+  border-color:rgba(255,255,255,.075)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 25px 80px rgba(0,0,0,.18);
+  backdrop-filter:blur(14px);
+}
+.mode:hover,.service-card:hover,.step:hover{
+  border-color:rgba(72,255,208,.20)!important;
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.35),
+    0 0 45px rgba(0,167,123,.055);
+}
+.mode.active{
+  background:
+    linear-gradient(145deg,rgba(0,83,65,.28),rgba(4,11,9,.64))!important;
+  border-color:rgba(72,255,208,.26)!important;
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.42),
+    0 0 55px rgba(0,167,123,.08),
+    inset 0 1px 0 rgba(72,255,208,.08);
+}
+.mode-icon{
+  background:rgba(0,167,123,.10)!important;
+  border-color:rgba(72,255,208,.12)!important;
+  color:#48ffd0!important;
+  box-shadow:inset 0 0 20px rgba(72,255,208,.04);
+}
+.eyebrow{color:#48ffd0!important}
+.section-head h2{
+  font-weight:900!important;
+  letter-spacing:-2px!important;
+}
+.step-num{color:#48ffd0!important}
+
+.cta-band{
+  background:
+    radial-gradient(circle at 15% 50%,rgba(0,167,123,.14),transparent 42%),
+    radial-gradient(circle at 85% 50%,rgba(141,23,36,.10),transparent 42%),
+    linear-gradient(145deg,rgba(7,14,12,.82),rgba(2,5,4,.78))!important;
+  border-color:rgba(72,255,208,.12)!important;
+  box-shadow:
+    0 35px 100px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.04);
   overflow:hidden;
 }
-.section{
-  min-width:0;min-height:0;background:var(--panel);border:1px solid var(--line);
-  border-radius:var(--radius);backdrop-filter:blur(18px);
-  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 80px var(--shadow);
-}
-.sectionHead{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:clamp(13px,1.35vw,20px);border-bottom:1px solid var(--line);
-}
-.title{display:flex;align-items:center;gap:10px;font-weight:950;font-size:clamp(16px,1.4vw,22px)}
-.dot{width:10px;height:10px;border-radius:50%}
-.dot.amber{background:var(--state-a);box-shadow:0 0 15px var(--state-a)}
-.dot.green{background:var(--state-b);box-shadow:0 0 15px var(--state-b)}
-.count{
-  min-width:42px;height:32px;padding:0 9px;border-radius:10px;display:grid;place-items:center;
-  background:rgba(255,255,255,.065);color:var(--muted);font-weight:900;font-variant-numeric:tabular-nums;
-}
-.orders{
-  --cols:4;
-  --card-w:96px;
-  --card-h:92px;
-  flex:1;min-height:0;padding:10px;overflow:hidden;position:relative;
-  display:grid;
-  grid-template-columns:repeat(var(--cols),minmax(0,1fr));
-  grid-auto-rows:var(--card-h);
-  gap:8px;
-  align-content:start;
-}
-.order{
-  min-width:0;min-height:0;border-radius:18px;border:1px solid var(--line);
-  background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.028));
-  padding:8px;display:flex;flex-direction:column;justify-content:space-between;
-  height:var(--card-h);
-  position:relative;overflow:hidden;contain:layout paint;
-  transition:transform .25s ease,background .25s ease,border-color .25s ease,box-shadow .25s ease;
-}
-.order::after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.0;
-  background:radial-gradient(circle at 20% 20%,var(--state-b),transparent 55%);
-  transition:opacity .3s ease;
-}
-.order.ready{border-color:rgba(53,211,154,.30)}
-.order.ready.featured{
-  transform:translateY(-2px);
-  border-color:rgba(53,211,154,.58);
-  box-shadow:0 0 0 1px rgba(53,211,154,.08),0 12px 34px rgba(53,211,154,.14);
-}
-.order.ready.featured::after{opacity:.045}
-.num{
-  font-size:30px;line-height:1;font-weight:950;
-  font-variant-numeric:tabular-nums;direction:ltr;text-align:right;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.035em;
-}
-.label{
-  font-size:11px;color:var(--muted);text-align:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.stateLine{
-  display:flex;justify-content:space-between;gap:6px;align-items:center;min-width:0;
-}
-.age{font-size:clamp(7px,calc(var(--card-h) * .09),11px);color:#7b8794;font-variant-numeric:tabular-nums;direction:ltr}
-.state{font-size:clamp(7px,calc(var(--card-h) * .09),11px);font-weight:900;letter-spacing:.04em;color:#74818f}
-
-.orders.paged::after{
-  content:attr(data-page);
+.cta-band:after{
+  content:"2100";
   position:absolute;
-  left:50%;bottom:7px;transform:translateX(-50%);
-  padding:3px 8px;border-radius:999px;
-  background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.08);
-  color:#9ca7b5;font-size:9px;z-index:3;pointer-events:none;
+  left:-20px;
+  bottom:-70px;
+  font:900 180px/1 "Space Grotesk";
+  color:rgba(72,255,208,.018);
+  pointer-events:none;
 }
-.empty{grid-column:1/-1;display:grid;place-items:center;color:var(--muted);font-size:clamp(14px,1.3vw,19px)}
-.hero{
-  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);
-  width:min(680px,88vw);padding:28px 32px;border-radius:26px;
-  background:rgba(8,12,17,.90);border:1px solid rgba(255,255,255,.14);
-  backdrop-filter:blur(22px);box-shadow:0 30px 100px rgba(0,0,0,.45);
-  opacity:0;pointer-events:none;transition:.28s ease;z-index:70;text-align:center;
+
+.cursor{
+  width:18px!important;
+  height:18px!important;
+  border:1px solid rgba(72,255,208,.65)!important;
+  box-shadow:0 0 20px rgba(72,255,208,.22),inset 0 0 8px rgba(72,255,208,.08);
+  mix-blend-mode:screen;
 }
-.hero.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.hero .small{color:var(--muted);font-size:clamp(12px,1vw,15px)}
-.hero .big{font-weight:950;font-size:clamp(42px,7vw,92px);line-height:.95;margin:10px 0}
-.hero .readyText{font-size:clamp(16px,1.6vw,24px);font-weight:900}
-.statusBar{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  color:var(--muted);font-size:11px;padding:0 4px;
+.cursor:after{
+  content:"";
+  position:absolute;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#48ffd0;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px #48ffd0;
 }
-.statusPill{
-  display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;
-  background:rgba(255,255,255,.045);border:1px solid var(--line)
+
+.overlay{
+  background:rgba(0,2,3,.72)!important;
+  backdrop-filter:blur(22px)!important;
 }
-.statusDot{width:7px;height:7px;border-radius:50%;background:#35d39a;box-shadow:0 0 10px #35d39a}
-.footRight{display:flex;align-items:center;gap:10px}
-#offlineBanner{
-  position:fixed;top:14px;left:50%;transform:translateX(-50%);
-  background:#2d1518;color:#ffd9de;border:1px solid rgba(255,102,117,.32);
-  padding:8px 12px;border-radius:999px;font-size:11px;z-index:90;
-  opacity:0;pointer-events:none;transition:.25s ease;
+
+.studio{
+  background:
+    linear-gradient(145deg,rgba(7,14,12,.97),rgba(1,3,3,.98))!important;
+  border-color:rgba(72,255,208,.12)!important;
+  box-shadow:0 50px 150px rgba(0,0,0,.9),0 0 100px rgba(0,167,123,.07)!important;
 }
-#offlineBanner.show{opacity:1}
-#controls{
-  position:fixed;right:16px;bottom:16px;display:flex;gap:8px;z-index:80;
-  opacity:0;pointer-events:none;transform:translateY(5px);transition:.22s ease;
+
+@media(max-width:700px){
+  .future-hud{gap:10px;font-size:6px;letter-spacing:1px}
+  .future-hud span:nth-child(2){display:none}
+  .hero h1{font-size:clamp(48px,14vw,76px)!important;letter-spacing:-3px!important}
+  .hero:before{width:420px;height:420px}
+  .manifesto-line{gap:7px;font-size:6px}
 }
-#controls.show{opacity:1;pointer-events:auto;transform:translateY(0)}
-#controlsPanel{
-  display:none;position:fixed;inset:0;z-index:85;background:rgba(4,7,10,.74);
-  backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:18px;
+
+</style>
+
+<style id="voxa-stability-fix">
+/* Cards are intentionally stationary. Only the background and ambient light move. */
+.mode,.service-card,.step,.orbit-card{transform:none!important;}
+.mode:hover,.service-card:hover,.step:hover,.orbit-card:hover{transform:none!important;}
+.mode,.service-card,.step,.orbit-card{will-change:auto;}
+</style>
+<style id="voxa-stable-ui">
+/* =========================================================
+   VOXA STABLE UI — NO UI DRIFT / NO UI FLICKER
+   Background motion is allowed. Interface geometry is locked.
+========================================================= */
+.mode,
+.service-card,
+.step,
+.orbit-card,
+.btn,
+.top-icon,
+.topbar,
+.nav-link,
+.quick button,
+.tool,
+.send,
+.core,
+.hero h1,
+.hero-copy,
+.hero-actions,
+.hero-meta,
+.kicker,
+.manifesto-line,
+.future-hud,
+.chat-top,
+.composer-box,
+.bubble,
+.msg,
+.welcome2,
+.welcome-orb,
+.avatar {
+  animation: none !important;
+  transform: none !important;
+  translate: none !important;
+  rotate: none !important;
+  scale: none !important;
 }
-#controlsPanel.open{display:flex}
-.panel{
-  width:min(760px,94vw);max-height:88vh;overflow:auto;border-radius:24px;
-  background:#0e1319;border:1px solid var(--line);padding:22px;box-shadow:0 30px 100px rgba(0,0,0,.55);
+
+.mode,
+.service-card,
+.step,
+.orbit-card,
+.btn,
+.top-icon,
+.nav-link,
+.quick button,
+.tool,
+.send {
+  transition:
+    background-color .22s ease,
+    border-color .22s ease,
+    color .22s ease,
+    box-shadow .22s ease,
+    opacity .22s ease !important;
 }
-.panel h2{margin:0 0 16px;font-size:22px}
-.settingsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field label{color:var(--muted);font-size:12px}
-.field select,.field input{
-  min-height:42px;border-radius:11px;border:1px solid var(--line);
-  background:#151b22;color:var(--text);padding:0 10px;outline:none;
+
+.mode:hover,
+.service-card:hover,
+.step:hover,
+.orbit-card:hover,
+.btn:hover,
+.top-icon:hover,
+.nav-link:hover,
+.quick button:hover,
+.tool:hover,
+.send:hover,
+.mode.active {
+  transform: none !important;
 }
-.panelActions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.notice{font-size:11px;color:#7e8b98;line-height:1.8;margin-top:12px}
-#assistOverlay{
-  position:fixed;inset:0;background:rgba(3,6,9,.78);z-index:75;
-  display:none;align-items:center;justify-content:center;
+
+.hero:before {
+  animation: none !important;
+  transform: translate(-50%, -54%) !important;
 }
-#assistOverlay.show{display:flex}
-.assistCard{width:min(760px,92vw);padding:26px;border-radius:24px;background:#0d131a;border:1px solid var(--line);text-align:center}
-.assistCard h3{margin:0 0 8px;font-size:24px}.assistCard p{color:var(--muted);margin:0 0 18px;line-height:1.8}
-@media (max-width:1280px){.orders{--cols:4}}
-@media (min-width:1450px){.orders{--cols:6}}
-@media (max-width:520px){
-  #app{padding:8px;gap:8px}.top{min-height:50px}.logo{width:36px;height:36px;border-radius:11px}
-  h1{font-size:20px}.sub{font-size:9px}.clock{display:none}.btn .txt{display:none}
-  .main{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px}
-  .section{border-radius:18px}.sectionHead{padding:9px}.title{font-size:14px;gap:7px}.dot{width:8px;height:8px}.count{min-width:34px;height:28px;padding:0 7px}
-  .orders{--cols:4;--card-h:82px;padding:6px;gap:5px}
-  .order{padding:6px;border-radius:11px}
-  .num{font-size:30px}
-  .label{font-size:9px}
-  .age,.state{font-size:8px}
-  .statusBar{font-size:9px}.statusPill{padding:5px 8px}
+
+.core:before,
+.core:after {
+  animation: none !important;
 }
-@media (prefers-reduced-motion:reduce){
-  body::before,body::after{animation:none}
-  *{scroll-behavior:auto!important;transition:none!important}
+
+.mark:after,
+.avatar:after {
+  animation: none !important;
 }
+
+.aurora,
+.laser,
+.horizon,
+.gridveil,
+.scanlines,
+.noise,
+.cursor,
+#starfield {
+  pointer-events: none !important;
+}
+
+body {
+  animation: none !important;
+}
+
+/* Hard lock: UI elements never fade, drift, float, or pulse. */
+.topbar,
+.mark,
+.nav-link,
+.top-icon,
+.live,
+.btn,
+.hero,
+.hero > div,
+.kicker,
+.hero h1,
+.hero-copy,
+.manifesto-line,
+.future-hud,
+.hero-actions,
+.hero-meta,
+.hero-orbit,
+.core,
+.core-logo,
+.orbit-card,
+.section,
+.section-head,
+.mode,
+.mode:before,
+.mode-icon,
+.mode h3,
+.mode p,
+.step,
+.cta-band,
+.studio,
+.settings-panel,
+.chat-top,
+.assistant,
+.avatar,
+.welcome2,
+.welcome-orb,
+.quick,
+.quick button,
+.msg,
+.bubble,
+.info-card,
+.tool,
+.send {
+  animation: none !important;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 </style>
 </head>
 <body>
+<div id="scene">
+  <canvas id="starfield"></canvas>
+  <div class="aurora a"></div>
+  <div class="aurora b"></div>
+  <div class="aurora c"></div>
+  <div class="laser laser-1"></div>
+  <div class="laser laser-2"></div>
+  <div class="horizon"></div>
+  <div class="gridveil"></div>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+</div>
+<div class="cursor" id="cursor"></div>
 
-<div id="offlineBanner">الاتصال غير متاح — العرض المحلي مستمر</div>
-
-<div id="app">
-  <header class="top">
-    <div class="brand">
-      <div class="logo" id="brandLogo">OF</div>
-      <div class="brandText">
-        <h1 id="brandName">الطلبات</h1>
-        <div class="sub" id="brandSub">متابعة مباشرة — جميع الطلبات أمامك في شاشة واحدة</div>
-      </div>
+<header class="topbar" id="topbar">
+  <div class="nav">
+    <a class="brand" href="#">
+      <div class="mark"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <div><div class="brand-main">VOXA</div><span class="brand-sub">CREATIVE INTELLIGENCE</span></div>
+    </a>
+    <nav class="nav-center">
+      <a class="nav-link active" href="#home">الرئيسية</a>
+      <a class="nav-link" href="#modes">Modes</a>
+      <a class="nav-link" href="#workflow">Workflow</a>
+    </nav>
+    <div class="nav-right">
+      <div class="live"><span class="dot" id="navDot"></span><span id="navStatus">غير متصل</span></div>
+      <button class="top-icon" id="openSettings" title="الإعدادات"><i class="fa-solid fa-sliders"></i></button>
+      <button class="top-icon" id="openStudioTop" title="فتح الاستوديو"><i class="fa-solid fa-expand"></i></button>
     </div>
-    <div class="actions">
-      <div class="clock" id="clock">--:--:--</div>
-      <button class="btn primary" id="fsBtn">⛶ <span class="txt">ملء الشاشة</span></button>
-    </div>
-  </header>
+  </div>
+</header>
 
-  <main class="main">
-    <section class="section">
-      <div class="sectionHead">
-        <div class="title"><i class="dot amber"></i> قيد التجهيز</div>
-        <div class="count" id="prepCount">0</div>
-      </div>
-      <div class="orders" id="preparing"></div>
-    </section>
-    <section class="section">
-      <div class="sectionHead">
-        <div class="title"><i class="dot green"></i> جاهز للاستلام</div>
-        <div class="count" id="readyCount">0</div>
-      </div>
-      <div class="orders" id="ready"></div>
-    </section>
-  </main>
-
-  <div class="statusBar">
-    <div class="statusPill"><span class="statusDot"></span><span id="connectionText">النظام متصل</span></div>
-    <div class="footRight">
-      <span id="avgText">متوسط التحضير 08:42</span>
-      <span id="modeText">الوضع: عادي</span>
+<main id="home">
+<section class="hero">
+  <div>
+    <div class="kicker"><i class="fa-solid fa-sparkles"></i> VOXA / CREATIVE INTELLIGENCE <span class="kicker-year">SYSTEM 2100</span></div>
+    <div class="future-hud">
+      <span><i class="fa-solid fa-circle"></i> NEURAL LINK ACTIVE</span>
+      <span>LATENCY <b>0.04s</b></span>
+      <span>CREATIVE CORE <b>∞</b></span>
     </div>
+    <h1>المستقبل لا ينتظر<br><span class="accent">أن تتخيله.</span><br>اصنعه.</h1>
+    <p class="hero-copy">VOXA هو شريكك الإبداعي: يفكك المشكلة، يحدد الاتجاه، يقوي الـ Hook، ويحوّل الفكرة الخام إلى Concept قابل للتنفيذ — من الهوية والحملة إلى الصورة والـ Prompt.</p>
+    <div class="manifesto-line">
+      <span>IDEA</span><i></i><span>INTENT</span><i></i><span>IMPACT</span>
+    </div>
+    <div class="hero-actions">
+      <button class="btn primary" id="openStudio"><i class="fa-solid fa-arrow-right"></i> افتح VOXA Studio</button>
+      <a class="btn ghost" href="#modes"><i class="fa-solid fa-layer-group"></i> استكشف العقول</a>
+    </div>
+    <div class="hero-meta">
+      <div class="meta"><strong>05</strong><span>Creative Modes</span></div><div class="meta-line"></div>
+      <div class="meta"><strong>01</strong><span>Unified Brain</span></div><div class="meta-line"></div>
+      <div class="meta"><strong>24/7</strong><span>Always Ready</span></div>
+    </div>
+  </div>
+  <div class="hero-orbit">
+    <div class="core"><div class="core-logo"><i class="fa-solid fa-wand-magic-sparkles"></i></div></div>
+    <div class="orbit-card o1"><b>CONCEPT</b><span>فكرة تمتلك سبباً لوجودها</span><div class="mini-bar"><i></i></div></div>
+    <div class="orbit-card o2"><b>DIRECTION</b><span>لغة بصرية متماسكة</span><div class="mini-bar"><i style="width:86%"></i></div></div>
+    <div class="orbit-card o3"><b>EXECUTION</b><span>خطوة قابلة للتنفيذ</span><div class="mini-bar"><i style="width:92%"></i></div></div>
+  </div>
+</section>
+
+<section class="section" id="modes">
+  <div class="section-head"><div><div class="eyebrow">VOXA MODES</div><h2>اختر العقل الذي تحتاجه.</h2></div><p>كل Mode يغيّر طريقة تفكير VOXA وصياغة الإجابة، بينما تبقى الهوية الأساسية ثابتة: وضوح، جرأة، وتنفيذ.</p></div>
+  <div class="modes">
+    <button class="mode active" data-mode="Creative Director"><small>01</small><div class="mode-icon"><i class="fa-solid fa-compass-drafting"></i></div><h3>Creative Director</h3><p>يبني الفكرة، الـHook، والاتجاه الإبداعي الكامل.</p></button>
+    <button class="mode" data-mode="Art Director"><small>02</small><div class="mode-icon"><i class="fa-solid fa-bezier-curve"></i></div><h3>Art Director</h3><p>يركز على الصورة، الضوء، المواد، التكوين والهوية البصرية.</p></button>
+    <button class="mode" data-mode="Prompt Engineer"><small>03</small><div class="mode-icon"><i class="fa-solid fa-terminal"></i></div><h3>Prompt Engineer</h3><p>يحوّل الفكرة إلى Prompts دقيقة للصور والفيديو والتصميم.</p></button>
+    <button class="mode" data-mode="Brand Strategist"><small>04</small><div class="mode-icon"><i class="fa-solid fa-chess-knight"></i></div><h3>Brand Strategist</h3><p>يبني positioning، personality، tone، والـvisual language.</p></button>
+    <button class="mode" data-mode="Creative Critic"><small>05</small><div class="mode-icon"><i class="fa-solid fa-crosshairs"></i></div><h3>Creative Critic</h3><p>يقول ما لا تريد سماعه عندما تكون الفكرة ضعيفة ويقترح بديلها.</p></button>
+  </div>
+</section>
+
+<section class="section" id="workflow">
+  <div class="section-head"><div><div class="eyebrow">THE VOXA METHOD</div><h2>من الفوضى إلى فكرة لها اتجاه.</h2></div><p>VOXA لا يقفز مباشرة إلى الزخرفة. المنهج يبدأ من المشكلة وينتهي بالتنفيذ.</p></div>
+  <div class="workflow">
+    <article class="step"><div class="step-num">01 / DECODE</div><h4>فهم المشكلة</h4><p>ما الهدف الحقيقي؟ لمن؟ وما الذي يجب أن يتغير بعد رؤية العمل؟</p></article>
+    <article class="step"><div class="step-num">02 / DEFINE</div><h4>تحديد الفكرة</h4><p>اختيار Concept واضح له Hook وسبب بصري واستراتيجي.</p></article>
+    <article class="step"><div class="step-num">03 / DIRECT</div><h4>بناء الاتجاه</h4><p>تحويل المفهوم إلى composition، lighting، palette، typography وtone.</p></article>
+    <article class="step"><div class="step-num">04 / EXECUTE</div><h4>تجهيز التنفيذ</h4><p>Prompt أو creative brief أو copy أو خطوات تنفيذ جاهزة.</p></article>
+  </div>
+</section>
+
+<div class="cta-band">
+  <div><h3>جاهز نبني شيئاً لا يشبه الباقي؟</h3><p>أدخل الفكرة كما هي. VOXA يتولى ترتيب الفوضى.</p></div>
+  <button class="btn primary" id="openStudio2"><i class="fa-solid fa-wand-magic-sparkles"></i> تحدث مع VOXA</button>
+</div>
+</main>
+
+<!-- SETTINGS -->
+<div class="overlay" id="settingsOverlay">
+  <div class="settings-panel" style="width:min(460px,100%);padding:25px;border-radius:24px;background:linear-gradient(145deg,rgba(10,15,12,.98),rgba(3,5,4,.99));border:1px solid rgba(255,255,255,.09);box-shadow:0 35px 100px rgba(0,0,0,.8)" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div class="eyebrow">VOXA CONNECTION</div><h3 style="margin-top:7px;font-size:20px">إعدادات Gemini</h3></div><button class="top-icon" id="closeSettings"><i class="fa-solid fa-xmark"></i></button></div>
+    <p style="color:#69746f;font-size:10px;line-height:1.9;margin:14px 0">النسخة التجريبية تحفظ المفتاح محلياً داخل المتصفح. للإطلاق الحقيقي، انقل الطلب إلى Backend ولا تضع مفتاح Gemini داخل JavaScript المنشور. Google توصي بنقل المفتاح إلى Backend عند إطلاق النسخة الإنتاجية.</p>
+    <input id="apiKey" type="password" placeholder="Gemini API Key" autocomplete="off" style="width:100%;padding:13px;border-radius:12px;background:rgba(255,255,255,.035);color:#fff;border:1px solid rgba(255,255,255,.07);outline:0;font-size:11px">
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn primary" style="flex:1" id="saveKey">حفظ الاتصال</button><button class="btn ghost" id="removeKey">حذف المفتاح</button></div>
   </div>
 </div>
 
-<div class="hero" id="hero">
-  <div class="small">الآن أصبح جاهزًا</div>
-  <div class="big" id="heroNum">#52</div>
-  <div class="readyText">توجه إلى نقطة الاستلام</div>
-</div>
+<!-- STUDIO -->
+<div class="overlay" id="studioOverlay">
+  <div class="studio" onclick="event.stopPropagation()">
+    <aside class="side">
+      <div class="side-head"><div class="side-title">PROJECTS</div><div class="side-sub">جلسات VOXA على هذا الجهاز</div></div>
+      <div class="session-list" id="sessionList"></div>
+      <div class="side-bottom"><button class="side-btn" id="newSession"><i class="fa-solid fa-plus"></i> مشروع جديد</button><button class="side-btn" id="exportChat"><i class="fa-solid fa-download"></i> تصدير الجلسة</button><button class="side-btn" id="closeStudio"><i class="fa-solid fa-xmark"></i> إغلاق الاستوديو</button></div>
+    </aside>
 
-<div id="controls">
-  <button class="btn" id="controlsOpen">الإعدادات</button>
-  <button class="btn" id="themeBtn">تغيير الخلفية</button>
-  <button class="btn" id="exitFsBtn">خروج من ملء الشاشة</button>
-</div>
+    <section class="chat">
+      <header class="chat-top">
+        <div class="assistant"><div class="avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><b>VOXA</b><span id="modeLabel">Creative Director · Gemini 3.6 Flash</span></div></div>
+        <div class="chat-actions"><button class="top-icon" id="clearCurrent" title="مسح المحادثة"><i class="fa-solid fa-broom"></i></button><button class="top-icon" id="closeStudio2" title="إغلاق"><i class="fa-solid fa-xmark"></i></button></div>
+      </header>
+      <div class="chat-body" id="chatBody">
+        <div class="welcome2" id="welcome2"><div class="welcome-orb"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>مرحباً. أنا VOXA.</h3><p>لا تحتاج أن تصيغ الفكرة بشكل مثالي. أعطني ما لديك، وسأحوّل الغموض إلى اتجاه واضح.</p><div class="quick"><button>حوّل هذه الفكرة إلى حملة إعلانية لها Hook قوي.</button><button>ابنِ لي Concept بصري فاخر لمنتج جديد.</button><button>اكتب Prompt سينمائي احترافي لهذه الفكرة.</button><button>كن ناقداً إبداعياً وقل لي أين ضعف الفكرة.</button></div></div>
+      </div>
+      <div class="composer"><form class="composer-box" id="chatForm"><textarea id="chatInput" rows="1" placeholder="احكِ لي الفكرة كما هي..."></textarea><div class="composer-tools"><button type="button" class="tool" id="focusMode" title="تغيير الـMode"><i class="fa-solid fa-sliders"></i></button><button type="submit" class="send" id="sendBtn" title="إرسال"><i class="fa-solid fa-arrow-up"></i></button></div></form><div class="hint">Enter للإرسال · Shift + Enter لسطر جديد · VOXA لا يجاملك على حساب الفكرة</div></div>
+    </section>
 
-<div id="controlsPanel">
-  <div class="panel">
-    <h2>إعدادات الشاشة</h2>
-    <div class="settingsGrid">
-      <div class="field"><label>اسم المكان</label><input id="nameInput" value="الطلبات"></div>
-      <div class="field"><label>النص الثانوي</label><input id="subInput" value="متابعة مباشرة — جميع الطلبات أمامك في شاشة واحدة"></div>
-      <div class="field"><label>اللغة</label><select id="langSelect"><option value="ar">العربية</option><option value="en">English</option></select></div>
-      <div class="field"><label>الوضع</label><select id="modeSelect"><option value="normal">عادي</option><option value="busy">مزدحم</option><option value="peak">ذروة</option></select></div>
-      <div class="field"><label>الصوت</label><select id="soundSelect"><option value="on">تشغيل</option><option value="off">صامت</option></select></div>
-      <div class="field"><label>Theme</label><select id="themeSelect"><option value="brand">Brand</option><option value="blueviolet">Blue / Violet</option><option value="emerald">Emerald / Navy</option><option value="bronze">Bronze / Black</option></select></div>
-    </div>
-    <div class="notice">
-      النظام مصمم ليعمل كشاشة Kiosk. إعدادات الربط مع الـPOS والـAPI وـWatchdog ستُضاف في طبقة التكامل الخلفية.
-      هذا الإصدار يحتوي بيانات تجريبية، ويدعم العمل المحلي عند انقطاع الاتصال.
-    </div>
-    <div class="panelActions">
-      <button class="btn" id="closePanel">إغلاق</button>
-      <button class="btn primary" id="saveSettings">حفظ</button>
-    </div>
+    <aside class="side right">
+      <div class="side-head"><div class="side-title">CREATIVE PANEL</div><div class="side-sub">حالة العقل الحالي</div></div>
+      <div class="right-body">
+        <div class="info-card"><h4>Current Mode</h4><select class="mode-select" id="modeSelect" style="margin-top:9px"><option>Creative Director</option><option>Art Director</option><option>Prompt Engineer</option><option>Brand Strategist</option><option>Creative Critic</option></select></div>
+        <div class="info-card"><h4>VOXA Principles</h4><div class="kv"><b>Idea</b><span>قبل الزخرفة</span></div><div class="kv"><b>Hook</b><span>يوقف التمرير</span></div><div class="kv"><b>Emotion</b><span>سبب للتذكر</span></div><div class="kv"><b>Execution</b><span>قابل للتطبيق</span></div></div>
+        <div class="info-card"><h4>Session Signal</h4><p id="sessionSignal">لم نبدأ بعد. أدخل أول فكرة لتتبع اتجاه المشروع.</p><div class="meter"><i id="signalMeter"></i></div></div>
+        <div class="info-card"><h4>Model</h4><p id="modelInfo">Gemini 3.6 Flash · REST generateContent</p></div>
+      </div>
+    </aside>
   </div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-const DEMO = {
-  preparing: [
-    {n:12,age:2.1},{n:18,age:3.7},{n:27,age:4.5},{n:31,age:5.2},{n:42,age:6.1},
-    {n:50,age:7.0},{n:51,age:7.8},{n:63,age:8.8},{n:74,age:10.4},{n:86,age:11.1},
-    {n:91,age:12.4},{n:105,age:13.2}
-  ],
-  ready: [
-    {n:9,age:7.0},{n:14,age:2.0},{n:22,age:4.2},{n:36,age:5.5},{n:48,age:6.3},
-    {n:57,age:8.1},{n:68,age:9.2},{n:79,age:10.0},{n:84,age:11.5},{n:97,age:12.2},
-    {n:110,age:13.3},{n:116,age:14.1}
-  ]
+/* =====================================================
+   VOXA STUDIO — FRONTEND DEMO
+   Gemini 3.6 Flash is the current stable model listed by Google.
+===================================================== */
+const CONFIG={
+  model:"gemini-3.6-flash",
+  key:"AQ.Ab8RN6IA-WXQJVaruLKpD1moXUkDWcgMb7ufHyHaJnxgKsKioQ",
+  storageKey:"voxa-studio-v1"
 };
 
-let state = JSON.parse(localStorage.getItem('orderflow-state') || 'null') || {
-  data: DEMO,
-  palette: 0,
-  mode:'normal',
-  sound:'on',
-  language:'ar',
-  theme:'brand'
+const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
+let apiKey=localStorage.getItem("voxa_gemini_key")||CONFIG.key;
+let activeMode=localStorage.getItem("voxa_mode")||"Creative Director";
+let sessions=[];let currentSessionId=null;let busy=false;
+
+const modeProfiles={
+ "Creative Director":"وازن بين الفكرة والاستراتيجية والتنفيذ. ابحث عن Hook، Concept، audience، emotion، ثم حوّلها إلى اتجاه إبداعي واضح.",
+ "Art Director":"فكر بصرياً: composition، lighting، materials، camera، lens، depth، palette، typography، environment، motion، finishing.",
+ "Prompt Engineer":"حوّل الفكرة إلى Prompt شديد الدقة وقابل للاستخدام. اجعل الوصف منظماً وغنياً بصرياً، مع negative constraints عندما تكون مفيدة.",
+ "Brand Strategist":"ابدأ من positioning، audience، differentiation، personality، tone of voice، visual language، color system، typography، touchpoints.",
+ "Creative Critic":"كن صريحاً. حدّد ما هو مبتذل أو ضعيف أو غير واضح، ولماذا، ثم اقترح نسخة أقوى قابلة للتنفيذ."
 };
-
-const palettes = [
-  ['#071826','#241027'],
-  ['#0b1b18','#25140d'],
-  ['#11101d','#0b2930'],
-  ['#1b0f16','#0e1f2e'],
-  ['#0c1728','#211512'],
-  ['#121414','#241226'],
-  ['#0c1f21','#1e1025'],
-  ['#16120c','#0b2030']
-];
-
-const themes = {
-  brand: ['#071826','#241027','#49b7ff','#d66cff'],
-  blueviolet:['#071826','#2a1038','#59b7ff','#d477ff'],
-  emerald:['#061a18','#0c2833','#49e0b0','#51a8ff'],
-  bronze:['#17120d','#0e0e10','#e0a86a','#f2cf8c']
-};
-
-const $ = id => document.getElementById(id);
-
-function save(){ localStorage.setItem('orderflow-state', JSON.stringify(state)); }
-
-function fmtAge(minutes){
-  const total = Math.round(minutes*60);
-  const m = Math.floor(total/60), s = total%60;
-  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function getGridConfig(el){
-  // Cards keep a fixed physical size. Only the number of columns changes.
-  // This prevents a small number of orders from stretching to fill the whole panel.
-  const w = el.clientWidth;
-  const h = el.clientHeight;
-  const gap = 8, pad = 20;
-  const minW = window.innerWidth <= 520 ? 68 : (window.innerWidth <= 900 ? 86 : 104);
-  const cardH = window.innerWidth <= 520 ? 82 : 92;
-  const usableW = Math.max(1,w-pad);
-  const cols = Math.max(1, Math.floor((usableW + gap) / (minW + gap)));
-  const rows = Math.max(1, Math.floor((Math.max(1,h-pad)+gap) / (cardH+gap)));
-  return {cols, rows, cardH};
-}
-
-function fitOrdersGrid(){
-  document.querySelectorAll('.orders').forEach(el=>{
-    const cfg=getGridConfig(el);
-    el.style.setProperty('--cols',cfg.cols);
-    el.style.setProperty('--card-h',cfg.cardH+'px');
-    el.dataset.capacity=String(cfg.cols*cfg.rows);
-  });
-  renderVisiblePages();
-}
-window.addEventListener('resize',()=>requestAnimationFrame(fitOrdersGrid));
-
-let pageState={preparing:0,ready:0};
-const PAGE_MS=6500;
-
-function capacityFor(id){
-  const el=$(id); return Math.max(1,Number(el?.dataset.capacity||8));
-}
-function visibleSlice(list,id){
-  const cap=capacityFor(id);
-  if(list.length<=cap) return {items:list,page:0,pages:1,cap};
-  const pages=Math.ceil(list.length/cap);
-  const page=pageState[id==='preparing'?'preparing':'ready']%pages;
-  return {items:list.slice(page*cap,(page+1)*cap),page,pages,cap};
-}
-function render(){
-  $('prepCount').textContent=state.data.preparing.length;
-  $('readyCount').textContent=state.data.ready.length;
-  renderVisiblePages();
-  updateModeUI();
-}
-function renderVisiblePages(){
-  const p=visibleSlice(state.data.preparing,'preparing');
-  const r=visibleSlice(state.data.ready,'ready');
-  $('preparing').innerHTML=p.items.length ? p.items.map(o=>card(o,false,false)).join('') : '<div class="empty">لا توجد طلبات قيد التجهيز</div>';
-  $('ready').innerHTML=r.items.length ? r.items.map((o,i)=>card(o,true,i===r.items.length-1 && r.pages===1)).join('') : '<div class="empty">لا توجد طلبات جاهزة</div>';
-  setPageIndicator('preparing',p);
-  setPageIndicator('ready',r);
-}
-function setPageIndicator(id,info){
-  const el=$(id);
-  el.classList.toggle('paged',info.pages>1);
-  el.dataset.page=info.pages>1 ? `${info.page+1}/${info.pages}` : '';
-}
-
-function card(o,isReady,featured){
-  return `<article class="order ${isReady?'ready':''} ${featured?'featured':''}">
-    <div class="num">#${o.n}</div>
-    <div class="label">${isReady?'جاهز للاستلام':'قيد التجهيز'}</div>
-    <div class="stateLine"><div class="state">${isReady?'READY':'PREPARING'}</div><div class="age">${fmtAge(o.age)}</div></div>
-  </article>`;
-}
-render();
-setTimeout(fitOrdersGrid,60);
-
-function updateClock(){
-  $('clock').textContent=new Intl.DateTimeFormat(state.language==='ar'?'ar-IQ':'en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date());
-}
-setInterval(updateClock,1000); updateClock();
-
-function setTheme(){
-  const [a,b,ac,ac2]=themes[state.theme]||themes.brand;
-  document.documentElement.style.setProperty('--bg1',a);
-  document.documentElement.style.setProperty('--bg2',b);
-  document.documentElement.style.setProperty('--accent',ac);
-  document.documentElement.style.setProperty('--accent2',ac2);
-  document.documentElement.style.setProperty('--state-a', state.mode==='peak'?'#ffb84a':'#f2b84b');
-  document.documentElement.style.setProperty('--state-b','#35d39a');
-}
-setTheme();
-
-let paletteIndex=state.palette||0;
-let curA=palettes[paletteIndex][0],curB=palettes[paletteIndex][1];
-function smoothPalette(nextIndex){
-  paletteIndex=nextIndex%palettes.length;
-  const [a,b]=palettes[paletteIndex];
-  const root=document.documentElement;
-  root.animate(
-    [{'--bg1':curA,'--bg2':curB},{'--bg1':a,'--bg2':b}],
-    {duration:9000,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'}
-  );
-  setTimeout(()=>{
-    root.style.setProperty('--bg1',a); root.style.setProperty('--bg2',b);
-    curA=a; curB=b; state.palette=paletteIndex; save();
-  },9000);
-}
-function nextPalette(){ smoothPalette((paletteIndex+1)%palettes.length); }
-setInterval(nextPalette,15000);
-
-function showHero(orderNo){
-  if(state.sound==='on') beep();
-  $('heroNum').textContent='#'+orderNo;
-  $('hero').classList.add('show');
-  clearTimeout(showHero.t);
-  showHero.t=setTimeout(()=>$('hero').classList.remove('show'),3800);
-}
-let audioCtx=null;
-function beep(){
-  try{
-    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.frequency.value=740; o.type='sine'; g.gain.value=.035;
-    o.connect(g);g.connect(audioCtx.destination);o.start();
-    setTimeout(()=>o.frequency.value=980,90);
-     setTimeout(()=>{g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.18);o.stop(audioCtx.currentTime+.2)},110);
-  }catch{}
-}
-
-let lastReady=new Set(state.data.ready.map(o=>o.n));
-setInterval(()=>{
-  ['preparing','ready'].forEach(key=>{
-    const list=state.data[key];
-    const cap=capacityFor(key);
-    const pages=Math.ceil(list.length/Math.max(1,cap));
-    if(pages>1){
-      pageState[key]=(pageState[key]+1)%pages;
-      renderVisiblePages();
-    } else pageState[key]=0;
-  });
-},PAGE_MS);
-
-function simulateUpdates(){
-  // Demo only: after a random interval, move a preparing order to ready.
-  if(!state.data.preparing.length) return;
-  const due=Math.random()<0.23;
-  if(!due) return;
-  const idx=Math.floor(Math.random()*state.data.preparing.length);
-  const moved=state.data.preparing.splice(idx,1)[0];
-  moved.age=Math.max(1,moved.age);
-  state.data.ready.push(moved);
-  showHero(moved.n);
-  save(); render();
-}
-setInterval(simulateUpdates,5000);
-
+const VOXA_BASE=`أنت VOXA، Creative Intelligence وشريك إبداعي للمستخدم. أنت تعمل كـ Creative Director + Art Director + Brand Strategist. هويتك: هادئ، واثق، حاد بصرياً، عملي، ومبدع. لا تتحدث كروبوت ولا تبدأ بتعابير مجاملة فارغة. ادخل مباشرة في صلب الفكرة. لا تجامل على حساب الجودة. إذا كانت الفكرة عادية قل ذلك بوضوح ثم ارفع مستواها. لا تعرض عشرات الأفكار الضعيفة؛ قدم اتجاهاً أو عدة اتجاهات قليلة قوية. الفكرة عندك تسبق الزخرفة. ابحث عن Hook واضح، سبب للتذكر، وهوية قابلة للتنفيذ. عندما يطلب المستخدم Prompt، أعطه Prompt احترافياً يحتوي subject, concept, composition, camera, lens, lighting, materials, environment, color, mood, depth, finishing. عندما يطلب Brand فكر في positioning, personality, tone, visual language, typography, color system, applications. عندما يطلب Social Media فكر في scroll stop, retention, hierarchy, CTA. تحدث بالعربية الحديثة واستخدم المصطلحات الإنجليزية عندما تكون أدق. لا تكشف chain-of-thought الداخلي؛ اعرض النتائج والاستنتاجات العملية فقط. اجعل إجاباتك ذات بنية واضحة ومرنة. مهمتك ليست أن تجعل المستخدم يشعر أن فكرته جيدة؛ مهمتك أن تجعل الفكرة نفسها أفضل.`;
+function fullSystem(){return {parts:[{text:`${VOXA_BASE}\n\nMODE الحالي: ${activeMode}.\nتعليمات هذا الـMode: ${modeProfiles[activeMode]}\n\nفلسفة VOXA: Decode → Define → Direct → Execute. قبل الإجابة، افهم المشكلة الحقيقية والهدف والجمهور والسياق من الرسالة. إذا لم تكن معلومة ضرورية، لا تسأل عنها. إذا كانت ضرورية جداً، اسأل سؤالاً واحداً محدداً. عندما تكون الإجابة قابلة للتنفيذ، اجعلها جاهزة للاستخدام مباشرة.`}]};}
+function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function save(){localStorage.setItem(CONFIG.storageKey,JSON.stringify({sessions,currentSessionId,activeMode}));localStorage.setItem("voxa_gemini_key",apiKey)}
+function load(){try{const x=JSON.parse(localStorage.getItem(CONFIG.storageKey)||"{}");sessions=x.sessions||[];currentSessionId=x.currentSessionId||null;activeMode=x.activeMode||activeMode}catch(e){sessions=[]}}
+function current(){return sessions.find(s=>s.id===currentSessionId)}
+function makeSession(){const s={id:newId(),title:"مشروع جديد",messages:[]};sessions.unshift(s);currentSessionId=s.id;save();renderSessions();renderMessages();updateSignal()}
+function touchTitle(text){const s=current();if(!s)return;if(s.messages.length<=2||s.title==="مشروع جديد"){s.title=text.replace(/\s+/g," ").slice(0,34)}save();renderSessions()}
+function addMessage(role,text){const s=current();if(!s)return;s.messages.push({role,text,ts:Date.now()});save()}
+function renderSessions(){const box=$("#sessionList");box.innerHTML="";sessions.forEach(s=>{const b=document.createElement("button");b.className="session"+(s.id===currentSessionId?" active":"");b.innerHTML=`<b>${esc(s.title)}</b><span>${s.messages.length} رسالة</span>`;b.onclick=()=>{currentSessionId=s.id;save();renderSessions();renderMessages();updateSignal()};box.appendChild(b)})}
+function renderMessages(){const body=$("#chatBody");body.innerHTML="";const s=current();if(!s||!s.messages.length){body.innerHTML=`<div class="welcome2"><div class="welcome-orb"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>بداية جديدة.</h3><p>أرسل الفكرة حتى لو كانت ناقصة. VOXA سيبني الاتجاه معها.</p><div class="quick"><button>حوّل هذه الفكرة إلى حملة إعلانية لها Hook قوي.</button><button>ابنِ لي Concept بصري فاخر لمنتج جديد.</button><button>اكتب Prompt سينمائي احترافي لهذه الفكرة.</button><button>كن ناقداً إبداعياً وقل لي أين ضعف الفكرة.</button></div></div>`}else{s.messages.forEach(m=>appendMessage(m.text,m.role,false))}scrollBottom()}
+function esc(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
+function appendMessage(text,role,copy=true){const row=document.createElement("div");row.className=`msg ${role}`;const bubble=document.createElement("div");bubble.className="bubble";bubble.innerHTML=esc(text).replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>");if(copy&&role==="ai"){const c=document.createElement("button");c.className="copy";c.innerHTML='<i class="fa-regular fa-copy"></i> نسخ';c.onclick=async()=>{try{await navigator.clipboard.writeText(text);c.innerHTML='<i class="fa-solid fa-check"></i> تم';setTimeout(()=>c.innerHTML='<i class="fa-regular fa-copy"></i> نسخ',1200)}catch{}};bubble.appendChild(document.createElement("br"));bubble.appendChild(c)}row.appendChild(bubble);$("#chatBody").appendChild(row);scrollBottom()}
+function showTyping(){const row=document.createElement("div");row.className="msg ai";row.id="typing";row.innerHTML='<div class="typing"><i></i><i></i><i></i></div>';$("#chatBody").appendChild(row);scrollBottom()}
+function hideTyping(){$("#typing")?.remove()}
+function scrollBottom(){requestAnimationFrame(()=>{$("#chatBody").scrollTop=$("#chatBody").scrollHeight})}
 function updateModeUI(){
-  const total=state.data.preparing.length+state.data.ready.length;
-  let mode=state.mode;
-  if(state.mode==='normal'){
-    if(total>=28) mode='busy';
-    if(total>=40) mode='peak';
-  }
-  $('modeText').textContent = 'الوضع: '+({normal:'عادي',busy:'مزدحم',peak:'ذروة'}[mode]||mode);
-  $('avgText').textContent = total ? 'متوسط التحضير '+fmtAge(state.data.preparing.reduce((a,x)=>a+x.age,0)/Math.max(1,state.data.preparing.length)) : 'لا توجد طلبات';
+  $$(".mode").forEach(b=>b.classList.toggle("active",b.dataset.mode===activeMode));
+  $("#modeSelect").value=activeMode;$("#modeLabel").textContent=`${activeMode} · ${CONFIG.model.replace("gemini-", "Gemini ").replace("-flash"," Flash")}`;$("#sessionSignal").textContent=`VOXA يعمل الآن كـ ${activeMode}.`;
+  localStorage.setItem("voxa_mode",activeMode);save();
 }
-$('modeSelect').value=state.mode;
-$('soundSelect').value=state.sound;
-$('themeSelect').value=state.theme;
+function updateSignal(){const n=current()?.messages.length||0;$("#signalMeter").style.width=Math.min(96,28+n*12)+"%";$("#sessionSignal").textContent=n?`${n} رسالة في الجلسة. المسار يتشكل مع كل فكرة.`:"لم نبدأ بعد. أدخل أول فكرة لتتبع اتجاه المشروع."}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
+async function send(text){if(!text||busy)return;if(!apiKey){openSettings();toast("أدخل مفتاح Gemini أولاً");return}if(!currentSessionId)makeSession();touchTitle(text);busy=true;$("#sendBtn").disabled=true;addMessage("user",text);appendMessage(text,"user",false);showTyping();const s=current();try{const payload={systemInstruction:fullSystem(),contents:s.messages.map(m=>({role:m.role==="user"?"user":"model",parts:[{text:m.text}]}))};const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.model}:generateContent?key=${encodeURIComponent(apiKey)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await r.json();if(!r.ok)throw new Error(data?.error?.message||"Gemini API Error");const answer=data?.candidates?.[0]?.content?.parts?.map(x=>x.text||"").join("").trim();if(!answer)throw new Error("لم يصل رد من النموذج");hideTyping();addMessage("ai",answer);appendMessage(answer,"ai",true);updateSignal()}catch(err){hideTyping();const msg=`تعذر تشغيل VOXA مع Gemini.\n\nالسبب: ${err.message}\n\nجرّب التحقق من المفتاح، النموذج، أو صلاحيات المشروع.`;appendMessage(msg,"ai",false)}finally{busy=false;$("#sendBtn").disabled=false;$("#chatInput").focus();save();renderSessions()}}
+function openStudio(){if(!sessions.length)makeSession();else if(!currentSessionId)currentSessionId=sessions[0].id;renderSessions();renderMessages();updateModeUI();updateSignal();$("#studioOverlay").classList.add("open");document.body.style.overflow="hidden";setTimeout(()=>$("#chatInput").focus(),250)}
+function closeStudio(){$("#studioOverlay").classList.remove("open");document.body.style.overflow=""}
+function openSettings(){if(apiKey)$("#apiKey").value=apiKey;$("#settingsOverlay").classList.add("open")}
+function closeSettings(){$("#settingsOverlay").classList.remove("open")}
+load();if(!sessions.length)makeSession();else if(!currentSessionId)currentSessionId=sessions[0].id;updateModeUI();renderSessions();renderMessages();updateSignal();$("#navDot").classList.toggle("on",!!apiKey);$("#navStatus").textContent=apiKey?"متصل":"غير متصل";
 
-function setFullscreen(){
-  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
-  else document.exitFullscreen?.();
-}
-$('fsBtn').onclick=setFullscreen;
-$('exitFsBtn').onclick=()=>document.exitFullscreen?.();
+// mode handlers
+$$(".mode").forEach(b=>b.addEventListener("click",()=>{activeMode=b.dataset.mode;updateModeUI();toast(`VOXA الآن: ${activeMode}`)}));$("#modeSelect").addEventListener("change",e=>{activeMode=e.target.value;updateModeUI();toast(`تم تغيير الـMode إلى ${activeMode}`)});$("#focusMode").onclick=()=>{$("#modeSelect").focus()};
+$("#chatForm").addEventListener("submit",e=>{e.preventDefault();const v=$("#chatInput").value.trim();if(!v)return;$("#chatInput").value="";$("#chatInput").style.height="48px";send(v)});
+$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#chatForm").requestSubmit()}});$("#chatInput").addEventListener("input",e=>{e.target.style.height="48px";e.target.style.height=Math.min(150,e.target.scrollHeight)+"px"});
+document.addEventListener("click",e=>{const q=e.target.closest(".quick button");if(q){$("#chatInput").value=q.textContent.trim();$("#chatInput").focus();$("#chatInput").dispatchEvent(new Event("input"))}});
+$("#openStudio").onclick=openStudio;$("#openStudio2").onclick=openStudio;$("#openStudioTop").onclick=openStudio;$("#closeStudio").onclick=closeStudio;$("#closeStudio2").onclick=closeStudio;$("#studioOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeStudio()});$("#newSession").onclick=()=>{makeSession();toast("تم إنشاء مشروع جديد")};$("#clearCurrent").onclick=()=>{const s=current();if(!s)return;s.messages=[];s.title="مشروع جديد";save();renderSessions();renderMessages();updateSignal();toast("تم تنظيف الجلسة")};
+$("#exportChat").onclick=()=>{const s=current();if(!s)return;const text=[`VOXA — ${s.title}`,`MODE: ${activeMode}`,"",...s.messages.map(m=>`${m.role==="user"?"USER":"VOXA"}:\n${m.text}\n`)].join("\n");const blob=new Blob([text],{type:"text/plain;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`voxa-${s.title.replace(/\s+/g,"-")||"session"}.txt`;a.click();URL.revokeObjectURL(a.href);toast("تم تصدير الجلسة")};
+$("#openSettings").onclick=openSettings;$("#closeSettings").onclick=closeSettings;$("#settingsOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeSettings()});$("#saveKey").onclick=()=>{const v=$("#apiKey").value.trim();if(v.length<10){toast("المفتاح يبدو غير صالح");return}apiKey=v;localStorage.setItem("voxa_gemini_key",v);$("#navDot").classList.add("on");$("#navStatus").textContent="متصل";closeSettings();toast("VOXA متصل بـ Gemini")};$("#removeKey").onclick=()=>{apiKey="";localStorage.removeItem("voxa_gemini_key");$("#navDot").classList.remove("on");$("#navStatus").textContent="غير متصل";$("#apiKey").value="";toast("تم حذف المفتاح")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeStudio();closeSettings()}if(e.key==="/"&&!e.target.matches("input,textarea")){e.preventDefault();openStudio();$("#chatInput").focus()}});
+window.addEventListener("scroll",()=>$("#topbar").classList.toggle("scrolled",window.scrollY>18),{passive:true});
 
-function showControls(){
-  $('controls').classList.add('show');
-  clearTimeout(showControls.t);
-  showControls.t=setTimeout(()=>$('controls').classList.remove('show'),2600);
-}
-window.addEventListener('mousemove',showControls,{passive:true});
-window.addEventListener('touchstart',showControls,{passive:true});
-window.addEventListener('click',showControls);
-showControls();
-
-document.addEventListener('fullscreenchange',()=>{
-  $('fsBtn').style.display=document.fullscreenElement?'none':'';
-  $('exitFsBtn').style.display=document.fullscreenElement?'':'none';
-  if(document.fullscreenElement) $('controls').classList.remove('show');
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='F11'){e.preventDefault();setFullscreen()}
-  if(e.key==='Escape') document.exitFullscreen?.();
-  if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='m') $('controlsPanel').classList.add('open');
-});
-
-$('controlsOpen').onclick=()=>$('controlsPanel').classList.add('open');
-$('closePanel').onclick=()=>$('controlsPanel').classList.remove('open');
-$('themeBtn').onclick=nextPalette;
-$('saveSettings').onclick=()=>{
-  state.mode=$('modeSelect').value;
-  state.sound=$('soundSelect').value;
-  state.theme=$('themeSelect').value;
-  $('brandName').textContent=$('nameInput').value||'الطلبات';
-  $('brandSub').textContent=$('subInput').value||'';
-  setTheme(); save(); render();
-  $('controlsPanel').classList.remove('open');
-};
-
-$('nameInput').value=$('brandName').textContent;
-$('subInput').value=$('brandSub').textContent;
-$('langSelect').value=state.language;
-
-let online = navigator.onLine;
-function setOnline(v){
-  online=v;
-  $('offlineBanner').classList.toggle('show',!v);
-  $('connectionText').textContent=v?'النظام متصل':'وضع محلي';
-}
-window.addEventListener('online',()=>setOnline(true));
-window.addEventListener('offline',()=>setOnline(false));
-setOnline(online);
-
-/* Local cache / watchdog simulation. */
-let lastHeartbeat=Date.now();
-setInterval(()=>{lastHeartbeat=Date.now();},3000);
-
-/* Register a minimal service worker when served from a real origin. */
-if('serviceWorker' in navigator && location.protocol!=='file:'){
-  const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`;
-  const blob=new Blob([sw],{type:'text/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-}
 </script>
+
+<script>
+/* =========================================================
+   VOXA 2100 — PARTICLE / STARFIELD ENGINE
+========================================================= */
+(() => {
+  const canvas = document.getElementById("starfield");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let stars = [];
+  let raf = 0;
+  let mouseX = 0.5, mouseY = 0.5;
+
+  function resize(){
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    const count = Math.min(260, Math.max(90, Math.floor(w*h/9000)));
+    stars = Array.from({length:count}, () => ({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      z: Math.random(),
+      r: Math.random()*1.35 + .15,
+      tw: Math.random()*Math.PI*2,
+      speed: Math.random()*.18 + .03
+    }));
+  }
+
+  function draw(t){
+    ctx.clearRect(0,0,w,h);
+
+    const horizon = h * .60;
+
+    for(const s of stars){
+      if(!reduce){
+        s.y += s.speed * (0.35 + s.z);
+        s.x += 0;
+        if(s.y > h+10) { s.y = -10; s.x = Math.random()*w; }
+        if(s.x > w+10) s.x = -10;
+        if(s.x < -10) s.x = w+10;
+      }
+
+      const depth = .35 + s.z*.9;
+      const alpha = .12 + s.z*.48 + Math.sin(t*.001+s.tw)*.08;
+      const size = s.r * depth;
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, size, 0, Math.PI*2);
+      ctx.fillStyle = s.z > .82
+        ? `rgba(72,255,208,${Math.max(.05,alpha)})`
+        : `rgba(190,235,226,${Math.max(.025,alpha*.55)})`;
+      ctx.fill();
+
+      if(s.z > .9 && s.y > horizon){
+        ctx.beginPath();
+        ctx.moveTo(s.x,s.y);
+        ctx.lineTo(s.x,s.y+18*s.z);
+        ctx.strokeStyle = `rgba(72,255,208,${alpha*.12})`;
+        ctx.stroke();
+      }
+    }
+
+    if(!reduce) raf = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener("resize", resize, {passive:true});
+  window.addEventListener("mousemove", e => {
+    mouseX = e.clientX / window.innerWidth;
+    mouseY = e.clientY / window.innerHeight;
+  }, {passive:true});
+
+  resize();
+  if(reduce) draw(0);
+  else raf = requestAnimationFrame(draw);
+})();
+</script>
+
 </body>
 </html>
