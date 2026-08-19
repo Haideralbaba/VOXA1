@@ -1,978 +1,692 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#030504"/>
-<title>VOXA — Creative Intelligence Studio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<style>
-:root{
-  --bg:#020302;--bg2:#060907;--panel:rgba(9,13,11,.74);--panel2:rgba(255,255,255,.035);
-  --text:#f7faf9;--muted:#88938e;--dim:#5d6863;--line:rgba(255,255,255,.075);
-  --g1:#063e2f;--g2:#087a58;--g3:#39ddb0;--g4:#a6ffe3;
-  --r1:#2b070a;--r2:#74191b;--gold:#d3ad69;
-  --shadow:0 35px 110px rgba(0,0,0,.72);--softglow:0 0 80px rgba(8,122,88,.14);
-  --ease:cubic-bezier(.16,1,.3,1);
-}
-*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Cairo,system-ui,sans-serif;background:radial-gradient(900px 500px at 52% -12%,rgba(8,122,88,.16),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(116,25,27,.08),transparent 62%),var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}button,input,textarea,select{font:inherit}button{border:0}a{color:inherit;text-decoration:none}::selection{background:rgba(57,221,176,.22)}
-#scene{position:fixed;inset:0;z-index:-20;overflow:hidden;pointer-events:none}.aurora{position:absolute;border-radius:50%;filter:blur(50px);opacity:.3}.aurora.a{width:50vw;height:50vw;right:-16vw;top:-20vw;background:radial-gradient(circle,#0a5e47 0%,transparent 67%);animation:driftA 18s ease-in-out infinite}.aurora.b{width:42vw;height:42vw;left:-18vw;bottom:-15vw;background:radial-gradient(circle,#3a0709 0%,transparent 68%);animation:driftB 22s ease-in-out infinite}.aurora.c{width:28vw;height:28vw;left:33vw;top:45vh;background:radial-gradient(circle,rgba(57,221,176,.11),transparent 70%);animation:driftC 15s ease-in-out infinite}.gridveil{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:58px 58px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 92%)}.noise{position:absolute;inset:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}.cursor{position:fixed;width:420px;height:420px;right:8%;top:12%;left:auto;bottom:auto;border-radius:50%;pointer-events:none;z-index:-5;background:radial-gradient(circle,rgba(57,221,176,.07),transparent 67%);}
-@keyframes driftA{50%{transform:translate(-5vw,4vh) scale(1.12)}}@keyframes driftB{50%{transform:translate(6vw,-4vh) scale(1.09)}}@keyframes driftC{50%{transform:translate(3vw,-3vh) scale(1.1)}}
-.topbar{position:fixed;top:0;left:0;right:0;height:76px;z-index:500;display:flex;align-items:center;background:rgba(2,3,2,.5);backdrop-filter:blur(22px) saturate(140%);border-bottom:1px solid rgba(255,255,255,.05);transition:.35s var(--ease)}.topbar.scrolled{background:rgba(2,3,2,.82);box-shadow:0 16px 60px rgba(0,0,0,.28)}.nav{width:min(1240px,92%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:11px}.mark{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#0a6b4f,#043d2e);box-shadow:0 0 26px rgba(8,122,88,.28);position:relative}.mark:after{content:"";position:absolute;inset:-4px;border:1px solid rgba(57,221,176,.14);border-radius:16px}.brand-main{font-size:17px;font-weight:900;letter-spacing:2px}.brand-sub{display:block;color:#6f8980;font-size:7px;letter-spacing:2.3px;margin-top:-2px}.nav-center{display:flex;gap:8px;padding:5px;border:1px solid rgba(255,255,255,.05);border-radius:13px;background:rgba(255,255,255,.018)}.nav-link{padding:8px 13px;border-radius:9px;color:#77827d;font-size:11px;font-weight:700;transition:.25s}.nav-link:hover,.nav-link.active{color:#e4fff6;background:rgba(57,221,176,.07)}.nav-right{display:flex;align-items:center;gap:8px}.live{display:flex;align-items:center;gap:7px;color:#70807a;font-size:10px}.dot{width:7px;height:7px;border-radius:50%;background:#555;transition:.3s}.dot.on{background:#39ddb0;box-shadow:0 0 15px rgba(57,221,176,.85)}.top-icon{width:35px;height:35px;border-radius:10px;background:rgba(255,255,255,.04);color:#8a948f;cursor:pointer;transition:.25s}.top-icon:hover{color:#fff;background:rgba(255,255,255,.08);transform:translateY(-1px)}
-.hero{width:min(1240px,92%);min-height:100vh;margin:auto;padding:145px 0 72px;display:grid;grid-template-columns:1.18fr .82fr;gap:54px;align-items:center}.kicker{display:inline-flex;align-items:center;gap:9px;padding:7px 12px;border-radius:999px;border:1px solid rgba(57,221,176,.16);background:rgba(8,122,88,.055);color:#92dfc6;font-size:10px;font-weight:800;letter-spacing:1.2px;animation:fadeUp .8s var(--ease) both}.kicker i{color:#39ddb0}.hero h1{font-size:clamp(45px,7vw,89px);line-height:1.02;letter-spacing:-3.4px;font-weight:900;margin:24px 0 22px;max-width:820px;animation:fadeUp 1s .08s var(--ease) both}.hero h1 .accent{color:#39ddb0;text-shadow:0 0 45px rgba(57,221,176,.13)}.hero-copy{max-width:700px;color:#8d9993;font-size:15px;line-height:2;animation:fadeUp 1s .16s var(--ease) both}.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px;animation:fadeUp 1s .23s var(--ease) both}.btn{height:50px;padding:0 19px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;color:#fff;font-size:12px;font-weight:800;transition:.35s var(--ease)}.primary{background:linear-gradient(135deg,#09815e,#064331);box-shadow:0 17px 42px rgba(8,122,88,.23)}.primary:hover{box-shadow:0 22px 56px rgba(8,122,88,.38)}.ghost{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}.ghost:hover{background:rgba(255,255,255,.065)}.hero-meta{display:flex;gap:30px;margin-top:40px;animation:fadeUp 1s .30s var(--ease) both}.meta strong{font-size:19px;display:block}.meta span{display:block;color:#5e6a65;font-size:9px;margin-top:-2px}.meta-line{width:1px;height:32px;background:rgba(255,255,255,.07)}
-.hero-orbit{position:relative;min-height:480px;display:grid;place-items:center}.core{width:280px;height:280px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,rgba(57,221,176,.9),rgba(6,78,59,.8) 24%,rgba(3,9,6,.96) 61%);box-shadow:0 0 130px rgba(8,122,88,.15),inset 0 0 60px rgba(255,255,255,.05);position:relative;}.core:before,.core:after{content:"";position:absolute;border-radius:50%;inset:-25px;border:1px solid rgba(57,221,176,.12);animation:spin 15s linear infinite}.core:after{inset:-60px;border-style:dashed;opacity:.5;animation-direction:reverse;animation-duration:24s}.core-logo{width:90px;height:90px;border-radius:28px;display:grid;place-items:center;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 0 30px rgba(255,255,255,.04);font-size:31px;color:#eafff8}.orbit-card{position:absolute;width:180px;padding:12px;border-radius:15px;background:rgba(10,13,11,.68);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(13px);box-shadow:0 20px 60px rgba(0,0,0,.4)}.orbit-card b{display:block;font-size:11px}.orbit-card span{display:block;color:#66726c;font-size:9px;margin-top:2px}.o1{top:6%;right:0;}.o2{bottom:9%;left:4%;}.o3{top:44%;left:-2%;}.mini-bar{height:5px;border-radius:10px;background:rgba(255,255,255,.05);margin-top:9px;overflow:hidden}.mini-bar i{display:block;width:70%;height:100%;border-radius:10px;background:linear-gradient(90deg,#064e3b,#39ddb0)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes coreFloat{50%{transform:translateY(-12px) scale(1.02)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes float1{50%{transform:translate(8px,-12px)}}@keyframes float2{50%{transform:translate(-8px,10px)}}@keyframes float3{50%{transform:translate(-6px,-8px)}}
-.section{width:min(1240px,92%);margin:auto;padding:110px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:38px}.eyebrow{color:#39ddb0;font-size:9px;font-weight:800;letter-spacing:2.7px}.section-head h2{font-size:clamp(27px,4vw,48px);letter-spacing:-1.6px;margin-top:9px}.section-head p{max-width:440px;color:#69746f;font-size:11px;line-height:1.9}.modes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.mode{position:relative;text-align:right;min-height:168px;padding:20px;border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.065);overflow:hidden;cursor:pointer;transition:.45s var(--ease)}.mode:before{content:"";position:absolute;width:170px;height:170px;right:-70px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(57,221,176,.14),transparent 68%);transition:.45s}.mode:hover,.mode.active{border-color:rgba(57,221,176,.2);background:rgba(7,34,25,.18)}.mode:hover:before,.mode.active:before{opacity:.95}.mode-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#80e7c9;background:rgba(8,122,88,.11);margin-bottom:18px}.mode h3{font-size:13px}.mode p{font-size:9px;color:#65716c;line-height:1.7;margin-top:5px}.mode small{position:absolute;top:14px;left:14px;color:#4d5b55;font-size:8px}
-.workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}.step{padding:22px;border-radius:18px;background:rgba(255,255,255,.023);border:1px solid rgba(255,255,255,.05)}.step-num{color:#39ddb0;font-size:10px;font-weight:900}.step h4{margin-top:10px;font-size:12px}.step p{margin-top:6px;color:#5d6963;font-size:9px;line-height:1.8}
-.cta-band{width:min(1240px,92%);margin:0 auto 110px;padding:30px;border-radius:25px;background:linear-gradient(135deg,rgba(7,58,43,.35),rgba(56,7,9,.12));border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;gap:20px}.cta-band h3{font-size:22px}.cta-band p{color:#6b7771;font-size:10px;margin-top:5px}
-/* studio */
-.overlay{position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.6);backdrop-filter:blur(16px);display:grid;place-items:center;padding:14px;opacity:0;pointer-events:none;transition:opacity .35s ease}.overlay.open{opacity:1;pointer-events:auto}.studio{width:min(1320px,100%);height:min(820px,96vh);display:grid;grid-template-columns:240px 1fr 270px;background:linear-gradient(145deg,rgba(8,13,10,.98),rgba(3,5,4,.99));border:1px solid rgba(255,255,255,.1);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;transform:translateY(35px) scale(.97);transition:.5s var(--ease)}.overlay.open .studio{transform:none}
-.side{background:rgba(255,255,255,.016);border-left:1px solid rgba(255,255,255,.045);display:flex;flex-direction:column}.side.right{border-left:0;border-right:1px solid rgba(255,255,255,.045)}.side-head{padding:18px;border-bottom:1px solid rgba(255,255,255,.05)}.side-title{font-size:11px;font-weight:800}.side-sub{font-size:8px;color:#58645e;margin-top:2px}.session-list{padding:10px;overflow:auto;flex:1}.session{padding:11px 12px;border-radius:11px;cursor:pointer;border:1px solid transparent;margin-bottom:5px}.session:hover,.session.active{background:rgba(57,221,176,.045);border-color:rgba(57,221,176,.09)}.session b{font-size:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.session span{font-size:8px;color:#5b6761}.side-bottom{padding:10px;border-top:1px solid rgba(255,255,255,.05);display:grid;gap:6px}.side-btn{height:38px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);color:#8a9590;font-size:10px;cursor:pointer}.side-btn:hover{color:#fff;background:rgba(255,255,255,.065)}
-.chat{min-width:0;display:flex;flex-direction:column}.chat-top{height:70px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.055);background:rgba(255,255,255,.016)}.assistant{display:flex;gap:11px;align-items:center}.avatar{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0a7152,#043b2c);color:white;box-shadow:0 0 24px rgba(8,122,88,.25);position:relative}.avatar:after{content:"";position:absolute;inset:-4px;border-radius:17px;border:1px solid rgba(57,221,176,.13);animation:pulse 2.5s infinite}.assistant b{display:block;font-size:12px}.assistant span{font-size:8px;color:#5b6861}.chat-actions{display:flex;gap:7px}.chat-body{flex:1;overflow:auto;padding:24px}.chat-body::-webkit-scrollbar{width:5px}.chat-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:20px}.welcome2{text-align:center;max-width:620px;margin:26px auto 40px}.welcome-orb{width:64px;height:64px;border-radius:21px;margin:0 auto 15px;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#39ddb0,#07533d 63%,#02130c);box-shadow:0 18px 50px rgba(8,122,88,.22)}.welcome2 h3{font-size:20px}.welcome2 p{color:#657069;font-size:10px;line-height:1.9;margin-top:8px}.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px}.quick button{text-align:right;padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);color:#7c8882;font-size:9px;cursor:pointer;transition:.25s}.quick button:hover{background:rgba(8,122,88,.06);border-color:rgba(57,221,176,.15);color:#d9fff3}.msg{display:flex;margin-bottom:16px;animation:none}.msg.user{justify-content:flex-start}.msg.ai{justify-content:flex-end}.bubble{max-width:80%;padding:12px 14px;border-radius:16px;font-size:11px;line-height:1.95;white-space:pre-wrap;word-break:break-word}.msg.user .bubble{background:linear-gradient(135deg,#07513d,#087a58);border-bottom-right-radius:5px;box-shadow:0 10px 30px rgba(8,122,88,.12)}.msg.ai .bubble{background:rgba(255,255,255,.038);border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:5px;color:#d8e1dc}.bubble h4{font-size:12px;margin:10px 0 5px;color:#fff}.bubble strong{color:#fff}.copy{margin-top:8px;padding:5px 8px;border-radius:7px;background:rgba(255,255,255,.04);color:#68746e;font-size:8px;cursor:pointer}.typing{display:flex;gap:4px;width:max-content;padding:11px 13px;border-radius:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05)}.typing i{width:5px;height:5px;border-radius:50%;background:#708078;animation:blink 1.2s infinite}.typing i:nth-child(2){animation-delay:.16s}.typing i:nth-child(3){animation-delay:.32s}@keyframes blink{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-4px);opacity:1}}@keyframes pulse{50%{transform:scale(1.05);opacity:.65}}
-.composer{padding:12px 15px 15px;border-top:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.16)}.composer-box{display:flex;align-items:end;gap:8px;padding:6px;border-radius:16px;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.065);transition:.25s}.composer-box:focus-within{border-color:rgba(57,221,176,.22);box-shadow:0 0 35px rgba(8,122,88,.07)}textarea{flex:1;resize:none;min-height:48px;max-height:150px;padding:11px 12px;background:transparent;color:white;border:0;outline:0;font-size:11px;line-height:1.7}.composer-tools{display:flex;align-items:center;gap:5px}.tool{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.035);color:#79847f;cursor:pointer}.tool:hover{background:rgba(255,255,255,.07);color:#fff}.send{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0a825f,#06402f);color:#fff;cursor:pointer;box-shadow:0 10px 25px rgba(8,122,88,.18);transition:.25s}.send:hover{box-shadow:0 0 28px rgba(57,221,176,.16)}.send:disabled{opacity:.45;cursor:not-allowed}.hint{text-align:center;color:#4e5a54;font-size:8px;margin-top:6px}
-.right-body{padding:16px;overflow:auto}.info-card{padding:14px;border-radius:15px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.055);margin-bottom:10px}.info-card h4{font-size:10px}.info-card p,.kv span{font-size:8px;color:#617069;line-height:1.8}.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}.kv:last-child{border-bottom:0}.kv b{font-size:9px;color:#aeb8b3}.meter{height:5px;background:rgba(255,255,255,.05);border-radius:10px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:linear-gradient(90deg,#064e3b,#39ddb0);border-radius:10px;width:76%}.mode-select{width:100%;padding:10px;border-radius:10px;background:#07100b;border:1px solid rgba(255,255,255,.06);color:#b6c0bb;font-size:9px;outline:0}.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:9px 13px;border-radius:10px;background:rgba(7,12,9,.95);border:1px solid rgba(57,221,176,.15);box-shadow:0 15px 40px rgba(0,0,0,.35);color:#c8d5d0;font-size:9px;z-index:5000;transition:.3s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1100px){.hero{grid-template-columns:1fr}.hero-orbit{min-height:390px}.modes{grid-template-columns:repeat(3,1fr)}.studio{grid-template-columns:210px 1fr}.side.right{display:none}}@media(max-width:760px){.nav-center{display:none}.hero{padding-top:125px}.hero h1{letter-spacing:-2.2px}.hero-orbit{display:none}.section{padding:75px 0}.section-head{display:block}.section-head p{margin-top:10px}.modes{grid-template-columns:1fr 1fr}.workflow{grid-template-columns:1fr 1fr}.studio{grid-template-columns:1fr;height:calc(100vh - 10px);border-radius:20px}.side{display:none}.quick{grid-template-columns:1fr}.bubble{max-width:88%}.chat-body{padding:16px}.topbar{height:68px}.live{display:none}}@media(max-width:480px){.hero-actions,.hero-meta{flex-direction:column;align-items:flex-start}.modes,.workflow{grid-template-columns:1fr}.cta-band{display:block}.cta-band .btn{margin-top:16px}.hero h1{font-size:46px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#020504"/>
+  <meta name="description" content="VOXA — Creative Intelligence System 2100."/>
+  <title>VOXA — Creative Intelligence System</title>
 
-/* =========================================================
-   VOXA 2100 — FUTURE VISUAL SYSTEM
-========================================================= */
-:root{
-  --bg:#010203;
-  --bg2:#030708;
-  --panel:rgba(5,10,10,.62);
-  --panel2:rgba(255,255,255,.035);
-  --text:#f7fffc;
-  --muted:#7e918c;
-  --dim:#465b56;
-  --line:rgba(170,255,232,.10);
-  --g1:#003b31;
-  --g2:#00a77b;
-  --g3:#48ffd0;
-  --g4:#c4fff0;
-  --r1:#260308;
-  --r2:#8d1724;
-  --gold:#e9c77b;
-  --violet:#7568ff;
-  --cyan:#62f4ff;
-  --shadow:0 40px 140px rgba(0,0,0,.82);
-  --ease:cubic-bezier(.16,1,.3,1);
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-body{
-  font-family:"Alexandria",system-ui,sans-serif;
-  background:
-    radial-gradient(1000px 650px at 50% -18%,rgba(0,167,123,.18),transparent 62%),
-    radial-gradient(900px 700px at 110% 80%,rgba(141,23,36,.12),transparent 58%),
-    radial-gradient(700px 500px at -10% 30%,rgba(117,104,255,.07),transparent 60%),
-    #010203;
-}
+  <style>
+    :root{
+      --bg:#020403;
+      --bg-2:#050806;
+      --ink:#f6fffc;
+      --muted:#82918c;
+      --muted-2:#51605a;
+      --line:rgba(255,255,255,.08);
+      --line-2:rgba(78,255,210,.18);
+      --panel:rgba(7,13,11,.68);
+      --panel-strong:rgba(6,11,9,.9);
+      --emerald:#27e5b1;
+      --emerald-2:#05906e;
+      --emerald-dark:#042c23;
+      --burgundy:#7a1f2b;
+      --gold:#d6b56d;
+      --violet:#7469ff;
+      --cyan:#65f3ff;
+      --shadow:0 35px 110px rgba(0,0,0,.72);
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
 
-.brand-main,.nav-link,.kicker,.section-head,.eyebrow,.meta,.mode small,
-.step-num,.btn,.live,.top-icon,.future-hud,.manifesto-line{
-  font-family:"Space Grotesk","Alexandria",sans-serif;
-}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 500px at 50% -10%,rgba(6,93,69,.2),transparent 70%),
+        radial-gradient(700px 520px at 100% 72%,rgba(122,31,43,.09),transparent 70%),
+        #020403;
+      font-family:"Alexandria",system-ui,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    button,input,textarea{font:inherit}
+    button{border:0}
+    a{color:inherit;text-decoration:none}
+    ::selection{background:rgba(39,229,177,.24);color:#fff}
 
-#scene{
-  position:fixed;
-  inset:0;
-  z-index:-20;
-  overflow:hidden;
-  pointer-events:none;
-  perspective:1000px;
-}
+    /* Background: intentionally the ONLY large moving surface. */
+    #bg{position:fixed;inset:0;z-index:-20;overflow:hidden;pointer-events:none}
+    #stars{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+    .aurora{position:absolute;border-radius:999px;filter:blur(90px);opacity:.14}
+    .aurora.a{width:62vw;height:38vw;top:-14vw;right:-14vw;background:#00a67d;animation:auroraA 18s ease-in-out infinite}
+    .aurora.b{width:45vw;height:34vw;bottom:-15vw;left:-12vw;background:#641a23;animation:auroraB 24s ease-in-out infinite}
+    .aurora.c{width:34vw;height:34vw;top:28%;left:28%;background:#7568ff;opacity:.05;animation:auroraC 30s ease-in-out infinite}
+    @keyframes auroraA{50%{transform:translate3d(-7vw,5vh,0) scale(1.12)}}
+    @keyframes auroraB{50%{transform:translate3d(7vw,-4vh,0) scale(1.12)}}
+    @keyframes auroraC{50%{transform:translate3d(8vw,5vh,0)}}
+    .grid{
+      position:absolute;inset:auto 0 0;
+      height:64vh;
+      background-image:
+        linear-gradient(rgba(70,255,211,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(70,255,211,.045) 1px,transparent 1px);
+      background-size:72px 72px;
+      transform:perspective(800px) rotateX(68deg) scale(1.7);
+      transform-origin:50% 100%;
+      mask-image:linear-gradient(to top,rgba(0,0,0,.92),transparent 78%);
+      animation:gridScroll 16s linear infinite;
+    }
+    @keyframes gridScroll{to{background-position:0 720px,720px 0}}
+    .scan{position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 4px,rgba(255,255,255,.022) 5px,transparent 6px);opacity:.55}
+    .noise{
+      position:absolute;inset:0;opacity:.035;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+    }
+    .scan-line{
+      position:absolute;left:-20%;top:31%;width:140%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(39,229,177,.28),transparent);
+      box-shadow:0 0 24px rgba(39,229,177,.18);
+      transform:rotate(-7deg);
+      animation:scanLine 10s ease-in-out infinite;
+      opacity:.25
+    }
+    .scan-line.red{
+      top:70%;
+      transform:rotate(8deg);
+      background:linear-gradient(90deg,transparent,rgba(122,31,43,.45),transparent);
+      box-shadow:0 0 20px rgba(122,31,43,.2);
+      animation-duration:13s
+    }
+    @keyframes scanLine{50%{transform:translateX(15vw) rotate(-5deg);opacity:.55}}
+    .vignette{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,transparent 35%,rgba(0,0,0,.72) 100%)}
 
-#starfield{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  opacity:.9;
-}
+    /* App shell */
+    .app{width:min(1320px,94%);margin:auto;padding:14px 0 80px}
+    .topbar{
+      position:sticky;top:12px;z-index:50;
+      display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;
+      min-height:64px;padding:9px 12px 9px 16px;
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:rgba(2,5,4,.62);
+      backdrop-filter:blur(22px) saturate(140%);
+      box-shadow:0 20px 60px rgba(0,0,0,.28);
+    }
+    .brand{display:flex;align-items:center;gap:11px;min-width:0}
+    .brand-mark{
+      width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+      background:linear-gradient(145deg,#0e6b54,#012c23);
+      border:1px solid rgba(70,255,211,.18);
+      box-shadow:0 0 35px rgba(39,229,177,.14),inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .brand-name{font:700 18px/1 "Space Grotesk";letter-spacing:.18em}
+    .brand-sub{font:500 7px/1.5 "Space Grotesk";letter-spacing:.26em;color:#698079}
+    .nav{
+      display:flex;align-items:center;gap:6px;padding:4px;
+      border:1px solid rgba(255,255,255,.05);border-radius:14px;
+      background:rgba(255,255,255,.02)
+    }
+    .nav a{
+      padding:8px 14px;border-radius:10px;font-size:10px;font-weight:600;color:#788983;
+      transition:color .2s ease,background .2s ease
+    }
+    .nav a.active,.nav a:hover{color:#dffff5;background:rgba(39,229,177,.07)}
+    .system{
+      justify-self:end;display:flex;align-items:center;gap:12px;color:#62756e;font:500 8px "Space Grotesk";letter-spacing:.12em
+    }
+    .pulse{
+      width:7px;height:7px;border-radius:50%;background:var(--emerald);
+      box-shadow:0 0 13px rgba(39,229,177,.8)
+    }
+    .top-actions{display:flex;align-items:center;gap:7px;margin-left:8px}
+    .icon-btn{
+      width:34px;height:34px;display:grid;place-items:center;border-radius:11px;
+      border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.025);color:#78908a;
+      cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease
+    }
+    .icon-btn:hover{color:#ecfff9;background:rgba(255,255,255,.055);border-color:rgba(39,229,177,.13)}
 
-.gridveil{
-  opacity:.32!important;
-  transform:perspective(700px) rotateX(68deg) scale(1.8);
-  transform-origin:50% 100%;
-  background-size:72px 72px!important;
-  background-image:
-    linear-gradient(rgba(72,255,208,.055) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(72,255,208,.055) 1px,transparent 1px)!important;
-  animation:gridMove 16s linear infinite;
-  mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 72%);
-}
+    /* Hero */
+    .hero{
+      min-height:760px;
+      display:grid;
+      grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);
+      align-items:center;
+      gap:50px;
+      padding:85px 26px 55px;
+      position:relative
+    }
+    .hero-copy{max-width:760px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:9px;padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(39,229,177,.15);background:rgba(39,229,177,.045);color:#7ee7ca;
+      font:600 8px "Space Grotesk";letter-spacing:.18em
+    }
+    .eyebrow b{color:var(--gold);font-weight:600}
+    h1{
+      margin-top:25px;
+      font-size:clamp(52px,7.6vw,106px);
+      line-height:.94;
+      letter-spacing:-.055em;
+      font-weight:900
+    }
+    h1 .shine{
+      background:linear-gradient(110deg,#fff 10%,#c6fff0 36%,#34e9b6 68%,#78ffd9 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+    .hero-lead{
+      max-width:650px;margin-top:26px;color:#8b9994;font-size:15px;line-height:2
+    }
+    .hero-lead strong{color:#d8e8e3;font-weight:700}
+    .hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .btn{
+      min-height:49px;padding:0 19px;border-radius:14px;display:inline-flex;align-items:center;gap:9px;
+      cursor:pointer;font-size:11px;font-weight:800;transition:background .2s ease,box-shadow .2s ease,border-color .2s ease,color .2s ease
+    }
+    .btn.primary{
+      color:#04120e;background:linear-gradient(135deg,#52f1c5,#14b88d);
+      border:1px solid rgba(160,255,228,.34);
+      box-shadow:0 16px 40px rgba(39,229,177,.18),inset 0 1px 0 rgba(255,255,255,.38)
+    }
+    .btn.primary:hover{box-shadow:0 22px 55px rgba(39,229,177,.28)}
+    .btn.secondary{color:#d4e2de;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.09)}
+    .btn.secondary:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15)}
+    .hero-meta{display:flex;align-items:center;gap:20px;margin-top:23px;color:#53635d;font:500 8px "Space Grotesk";letter-spacing:.08em}
+    .hero-meta span{display:flex;align-items:center;gap:6px}.hero-meta b{color:#9fb5ae;font-weight:600}
+    .hero-meta i{color:var(--emerald);font-size:4px}
 
-@keyframes gridMove{
-  from{background-position:0 0,0 0}
-  to{background-position:0 720px,720px 0}
-}
+    /* Core */
+    .core-stage{min-height:480px;display:grid;place-items:center;position:relative}
+    .core-stage:before{
+      content:"";position:absolute;width:500px;height:500px;border-radius:50%;
+      border:1px solid rgba(39,229,177,.06);box-shadow:0 0 0 85px rgba(39,229,177,.015),0 0 0 165px rgba(39,229,177,.008)
+    }
+    .core-wrap{position:relative;width:290px;height:290px;display:grid;place-items:center}
+    .core-ring,.core-ring:before,.core-ring:after{position:absolute;border-radius:50%;content:""}
+    .core-ring{inset:0;border:1px solid rgba(39,229,177,.14)}
+    .core-ring:before{inset:-17px;border:1px dashed rgba(102,243,255,.10)}
+    .core-ring:after{inset:-35px;border:1px solid rgba(214,181,109,.05)}
+    .core{
+      width:178px;height:178px;border-radius:50%;
+      display:grid;place-items:center;
+      background:
+        radial-gradient(circle at 35% 28%,#6affd3 0,#17ae86 24%,#064b3b 48%,#02130f 76%,#010403 100%);
+      border:1px solid rgba(130,255,220,.32);
+      box-shadow:0 0 75px rgba(39,229,177,.24),0 0 180px rgba(39,229,177,.11),inset 0 0 55px rgba(145,255,228,.1);
+    }
+    .core-icon{
+      width:62px;height:62px;border-radius:19px;display:grid;place-items:center;font-size:23px;
+      background:rgba(3,31,25,.53);border:1px solid rgba(168,255,233,.16);box-shadow:inset 0 0 30px rgba(255,255,255,.04)
+    }
+    .core-label{
+      position:absolute;bottom:-61px;text-align:center;
+      font:600 9px "Space Grotesk";letter-spacing:.23em;color:#71857e
+    }
+    .core-label b{display:block;margin-top:6px;color:#d7e8e2;font-size:12px;letter-spacing:.12em}
+    .floating-card{
+      position:absolute;min-width:164px;padding:11px 12px;border-radius:14px;
+      background:rgba(5,12,10,.78);border:1px solid rgba(39,229,177,.11);backdrop-filter:blur(14px);
+      box-shadow:0 18px 50px rgba(0,0,0,.34)
+    }
+    .floating-card.left{left:-17px;top:30%}.floating-card.right{right:-17px;top:18%}.floating-card.bottom{left:8px;bottom:2%}
+    .floating-card span{display:block;font:700 8px "Space Grotesk";color:var(--emerald);letter-spacing:.12em}
+    .floating-card small{display:block;margin-top:5px;color:#6c8179;font-size:8px}
+    .bar{height:4px;margin-top:10px;border-radius:999px;background:#0d2520;overflow:hidden}
+    .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06614a,#59f5cf)}
+    .floating-card.left .bar i{width:86%}.floating-card.right .bar i{width:72%}.floating-card.bottom .bar i{width:92%}
 
-.scanlines{
-  position:absolute;
-  inset:0;
-  opacity:.07;
-  background:repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 3px,
-    rgba(255,255,255,.06) 4px,
-    transparent 5px
-  );
-  animation:scan 8s linear infinite;
-}
-@keyframes scan{
-  from{transform:translateY(-12px)}
-  to{transform:translateY(12px)}
-}
+    /* Command strip */
+    .command{
+      margin-top:-15px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      padding:12px;border:1px solid rgba(39,229,177,.12);border-radius:21px;background:rgba(4,10,8,.68);backdrop-filter:blur(20px);
+      box-shadow:0 26px 80px rgba(0,0,0,.28)
+    }
+    .command-input{
+      display:flex;align-items:center;gap:10px;min-width:0;padding:0 6px
+    }
+    .command-input i{color:var(--emerald);font-size:12px}
+    .command-input input{width:100%;background:transparent;border:0;outline:0;color:#effbf7;font-size:12px}
+    .command-input input::placeholder{color:#52635c}
+    .command-actions{display:flex;gap:7px}.chip{
+      padding:9px 11px;border-radius:11px;color:#82968e;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);cursor:pointer;font:600 9px "Space Grotesk"
+    }
+    .chip:hover{color:#c6fff0;background:rgba(39,229,177,.05);border-color:rgba(39,229,177,.12)}
 
-.horizon{
-  position:absolute;
-  left:50%;
-  bottom:-25%;
-  width:150vw;
-  height:65vh;
-  transform:translateX(-50%);
-  background:
-    radial-gradient(ellipse at center,
-      rgba(0,167,123,.14) 0%,
-      rgba(0,167,123,.05) 28%,
-      transparent 68%);
-  filter:blur(4px);
-  animation:horizonPulse 7s ease-in-out infinite;
-}
-@keyframes horizonPulse{
-  0%,100%{opacity:.5;transform:translateX(-50%) scaleX(.92)}
-  50%{opacity:1;transform:translateX(-50%) scaleX(1.04)}
-}
+    /* Sections */
+    .section{padding:110px 26px 30px}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:28px}
+    .section-kicker{font:700 8px "Space Grotesk";letter-spacing:.25em;color:var(--emerald)}
+    .section-head h2{font-size:clamp(30px,4vw,48px);font-weight:900;letter-spacing:-.045em;margin-top:9px}
+    .section-head p{max-width:500px;color:#687a72;font-size:12px;line-height:1.9}
 
-.laser{
-  position:absolute;
-  width:45vw;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(72,255,208,.8),transparent);
-  box-shadow:0 0 18px rgba(72,255,208,.55);
-  opacity:.3;
-  transform-origin:left center;
-}
-.laser-1{
-  top:29%;
-  left:-8%;
-  transform:rotate(-12deg);
-  animation:laser1 9s ease-in-out infinite;
-}
-.laser-2{
-  right:-10%;
-  top:61%;
-  transform:rotate(16deg);
-  background:linear-gradient(90deg,transparent,rgba(141,23,36,.8),transparent);
-  box-shadow:0 0 18px rgba(141,23,36,.45);
-  animation:laser2 12s ease-in-out infinite;
-}
-@keyframes laser1{
-  0%,100%{transform:translateX(-10%) rotate(-12deg);opacity:.12}
-  50%{transform:translateX(35%) rotate(-8deg);opacity:.5}
-}
-@keyframes laser2{
-  0%,100%{transform:translateX(10%) rotate(16deg);opacity:.08}
-  50%{transform:translateX(-28%) rotate(11deg);opacity:.38}
-}
+    .modes{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .mode{
+      min-height:180px;padding:18px;border-radius:19px;
+      border:1px solid rgba(255,255,255,.07);background:linear-gradient(150deg,rgba(9,16,13,.77),rgba(3,7,5,.55));
+      transition:border-color .2s ease,background .2s ease,box-shadow .2s ease
+    }
+    .mode:hover,.mode.active{border-color:rgba(39,229,177,.19);background:linear-gradient(150deg,rgba(5,36,27,.58),rgba(3,7,5,.72));box-shadow:0 20px 60px rgba(0,0,0,.22)}
+    .mode-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(39,229,177,.06);border:1px solid rgba(39,229,177,.1);color:var(--emerald);margin-bottom:35px}
+    .mode h3{font-size:13px;font-weight:800}.mode p{margin-top:8px;color:#65756e;font-size:9px;line-height:1.75}
 
-.aurora.a{
-  background:
-    radial-gradient(circle,#00a77b 0%,#003b31 30%,transparent 70%)!important;
-  filter:blur(75px)!important;
-  opacity:.32!important;
-  animation:futureA 14s ease-in-out infinite!important;
-}
-.aurora.b{
-  background:
-    radial-gradient(circle,#8d1724 0%,#260308 35%,transparent 70%)!important;
-  filter:blur(85px)!important;
-  opacity:.20!important;
-  animation:futureB 19s ease-in-out infinite!important;
-}
-.aurora.c{
-  background:
-    radial-gradient(circle,#7568ff 0%,transparent 68%)!important;
-  opacity:.08!important;
-  filter:blur(100px)!important;
-  animation:futureC 24s ease-in-out infinite!important;
-}
-@keyframes futureA{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  50%{transform:translate3d(-7vw,6vh,0) scale(1.18)}
-}
-@keyframes futureB{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  50%{transform:translate3d(7vw,-5vh,0) scale(1.12)}
-}
-@keyframes futureC{
-  0%,100%{transform:translate3d(0,0,0)}
-  50%{transform:translate3d(9vw,8vh,0)}
-}
+    .pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+    .step{position:relative;padding:22px;border-radius:19px;border:1px solid rgba(255,255,255,.065);background:rgba(7,12,10,.56)}
+    .step .num{font:700 9px "Space Grotesk";color:var(--emerald);letter-spacing:.18em}
+    .step h3{font-size:18px;margin-top:15px}.step p{margin-top:8px;color:#66766f;font-size:10px;line-height:1.8}
+    .step:after{content:"";position:absolute;top:50%;right:-18px;width:25px;height:1px;background:linear-gradient(90deg,rgba(39,229,177,.12),transparent)}
+    .step:last-child:after{display:none}
 
-.topbar{
-  background:rgba(1,3,4,.58)!important;
-  border-bottom:1px solid rgba(72,255,208,.09)!important;
-  box-shadow:0 1px 0 rgba(255,255,255,.02),0 20px 70px rgba(0,0,0,.22);
-}
-.topbar.scrolled{
-  background:rgba(1,3,4,.88)!important;
-  box-shadow:0 20px 90px rgba(0,0,0,.55),0 1px 0 rgba(72,255,208,.08);
-}
-.mark{
-  position:relative;
-  background:linear-gradient(135deg,#001f19,#00a77b)!important;
-  box-shadow:0 0 28px rgba(0,167,123,.35),inset 0 0 22px rgba(255,255,255,.08)!important;
-}
-.mark:after{
-  content:"";
-  position:absolute;
-  inset:-5px;
-  border:1px solid rgba(72,255,208,.16);
-  border-radius:inherit;
-  animation:markPulse 2.8s ease-in-out infinite;
-}
-@keyframes markPulse{
-  0%,100%{transform:scale(1);opacity:.25}
-  50%{transform:scale(1.15);opacity:.75}
-}
+    .footer{display:flex;justify-content:space-between;gap:15px;padding:70px 26px 10px;color:#4f6159;font:500 8px "Space Grotesk";letter-spacing:.08em}
 
-.hero{
-  min-height:100vh!important;
-  position:relative;
-}
-.hero:before{
-  content:"";
-  position:absolute;
-  width:760px;
-  height:760px;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-54%);
-  border:1px solid rgba(72,255,208,.035);
-  border-radius:50%;
-  box-shadow:
-    0 0 0 70px rgba(72,255,208,.012),
-    0 0 0 140px rgba(72,255,208,.009),
-    inset 0 0 100px rgba(0,167,123,.035);
-  animation:heroRing 18s linear infinite;
-  pointer-events:none;
-}
-@keyframes heroRing{
-  to{transform:translate(-50%,-54%) rotate(360deg)}
-}
+    /* Modal / chat */
+    .overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(0,2,2,.7);backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .25s ease}
+    .overlay.open{opacity:1;pointer-events:auto}
+    .studio{
+      width:min(1040px,100%);height:min(740px,92vh);display:grid;grid-template-columns:260px 1fr;
+      border-radius:28px;overflow:hidden;background:var(--panel-strong);border:1px solid rgba(39,229,177,.11);
+      box-shadow:0 50px 140px rgba(0,0,0,.78)
+    }
+    .studio-side{padding:18px;border-left:1px solid rgba(255,255,255,.055);background:rgba(255,255,255,.012)}
+    .studio-side h3{font-size:16px}.studio-side p{color:#60726a;font-size:9px;line-height:1.8;margin-top:6px}
+    .side-mode{display:flex;gap:10px;padding:11px;border-radius:12px;margin-top:7px;border:1px solid transparent;background:transparent;color:#72827d;cursor:pointer;text-align:right}
+    .side-mode.active{background:rgba(39,229,177,.05);border-color:rgba(39,229,177,.11);color:#d8fff4}
+    .side-mode i{color:var(--emerald);width:16px;margin-top:2px}.side-mode strong{display:block;font-size:10px}.side-mode small{display:block;color:#5b6c65;font-size:8px;margin-top:2px}
+    .studio-main{min-width:0;display:flex;flex-direction:column}
+    .chat-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .assistant{display:flex;align-items:center;gap:10px}.avatar{width:39px;height:39px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#0e7157,#032c22);border:1px solid rgba(39,229,177,.16)}
+    .assistant b{display:block;font-size:11px}.assistant small{display:block;margin-top:2px;color:#5c7169;font:500 8px "Space Grotesk"}
+    .chat-controls{display:flex;gap:6px}.chat-body{flex:1;overflow:auto;padding:20px 20px 8px}
+    .welcome{max-width:620px;margin:20px auto 36px;text-align:center}.welcome-orb{width:60px;height:60px;border-radius:20px;margin:auto;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#4bf4c6,#07513f 60%,#03120f);border:1px solid rgba(39,229,177,.2);box-shadow:0 0 50px rgba(39,229,177,.15)}
+    .welcome h2{font-size:25px;margin-top:16px}.welcome p{color:#677a72;font-size:10px;line-height:1.9;margin-top:8px}
+    .quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px}.quick button{padding:11px;border-radius:12px;text-align:right;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);color:#85968f;font-size:9px;cursor:pointer}
+    .quick button:hover{background:rgba(39,229,177,.05);border-color:rgba(39,229,177,.12);color:#d8fff4}
+    .msg{display:flex;margin-bottom:14px}.msg.user{justify-content:flex-start}.msg.ai{justify-content:flex-end}.bubble{max-width:82%;padding:12px 14px;border-radius:16px;font-size:11px;line-height:1.9;white-space:pre-wrap}
+    .msg.user .bubble{background:linear-gradient(135deg,#0c7d60,#064837);border:1px solid rgba(39,229,177,.12);border-bottom-right-radius:5px}.msg.ai .bubble{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.065);border-bottom-left-radius:5px;color:#d9e5e1}
+    .composer{padding:12px;border-top:1px solid rgba(255,255,255,.06)}.composer-box{display:flex;align-items:flex-end;gap:8px;padding:7px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+    textarea{flex:1;min-height:42px;max-height:150px;resize:none;border:0;outline:0;background:transparent;color:#effbf7;font-size:11px;line-height:1.7;padding:8px}
+    textarea::placeholder{color:#51635b}.send{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#51efc3,#10a981);color:#032118;cursor:pointer;display:grid;place-items:center}
+    .composer-note{text-align:center;color:#3f514a;font:500 7px "Space Grotesk;margin-top:7px}
+    .typing{display:inline-flex;gap:4px}.typing i{width:4px;height:4px;border-radius:50%;background:#7e9189}
 
-.kicker{
-  position:relative;
-  border-color:rgba(72,255,208,.18)!important;
-  background:linear-gradient(90deg,rgba(0,167,123,.10),rgba(255,255,255,.025),rgba(141,23,36,.06))!important;
-  box-shadow:inset 0 0 20px rgba(72,255,208,.025),0 0 30px rgba(0,167,123,.05);
-  letter-spacing:2px!important;
-}
-.kicker-year{
-  color:var(--gold);
-  margin-right:8px;
-  padding-right:8px;
-  border-right:1px solid rgba(233,199,123,.25);
-}
+    .toast{
+      position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+      z-index:1500;padding:10px 14px;border-radius:12px;background:rgba(5,10,8,.9);border:1px solid rgba(39,229,177,.16);color:#dffaf1;font-size:9px;
+      opacity:0;pointer-events:none;transition:opacity .2s ease
+    }
+    .toast.show{opacity:1}
 
-.future-hud{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:22px;
-  margin:-14px auto 24px;
-  color:#4f6861;
-  font-size:8px;
-  letter-spacing:1.7px;
-  opacity:.8;
-}
-.future-hud span{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.future-hud i{
-  color:var(--g3);
-  font-size:5px;
-  animation:blinkDot 1.6s infinite;
-}
-.future-hud b{
-  color:#9db4ad;
-  font-weight:600;
-}
-@keyframes blinkDot{50%{opacity:.2}}
-
-.hero h1{
-  font-size:clamp(56px,8.8vw,112px)!important;
-  line-height:.98!important;
-  letter-spacing:-4.5px!important;
-  font-weight:900!important;
-  text-shadow:0 0 80px rgba(0,167,123,.08);
-}
-.hero h1 .accent{
-  background:linear-gradient(110deg,#fff 0%,#48ffd0 38%,#00a77b 68%,#e9c77b 100%)!important;
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  position:relative;
-}
-.hero h1 .accent:after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-7px;
-  height:2px;
-  background:linear-gradient(90deg,transparent,#48ffd0,transparent);
-  filter:blur(.4px);
-  opacity:.55;
-  animation:underlineFlow 3.2s ease-in-out infinite;
-}
-@keyframes underlineFlow{
-  0%,100%{transform:scaleX(.55);opacity:.25}
-  50%{transform:scaleX(1);opacity:.75}
-}
-
-.hero-copy{
-  max-width:760px!important;
-  color:#91a39d!important;
-  font-size:15px!important;
-}
-
-.manifesto-line{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  color:#536963;
-  font-size:8px;
-  letter-spacing:3px;
-  margin:0 0 20px;
-}
-.manifesto-line span{
-  transition:.4s ease;
-}
-.manifesto-line span:hover{color:#48ffd0;text-shadow:0 0 15px rgba(72,255,208,.35)}
-.manifesto-line i{
-  display:block;
-  width:28px;
-  height:1px;
-  background:linear-gradient(90deg,transparent,#48ffd0,transparent);
-  opacity:.45;
-}
-
-.btn.primary{
-  background:linear-gradient(135deg,#00a77b 0%,#005f4b 52%,#003b31 100%)!important;
-  border:1px solid rgba(72,255,208,.22);
-  box-shadow:
-    0 15px 40px rgba(0,167,123,.20),
-    inset 0 1px 0 rgba(255,255,255,.16);
-}
-.btn.primary:hover{
-  box-shadow:
-    0 22px 65px rgba(0,167,123,.38),
-    0 0 0 1px rgba(72,255,208,.16);
-}
-.btn.ghost{
-  background:rgba(255,255,255,.025)!important;
-  border-color:rgba(255,255,255,.10)!important;
-  box-shadow:inset 0 0 20px rgba(255,255,255,.015);
-}
-
-.hero-orbit{
-  filter:drop-shadow(0 0 30px rgba(0,167,123,.08));
-}
-.core{
-  background:
-    radial-gradient(circle at 35% 25%,#48ffd0,#006c54 30%,#001c17 67%,#010203 100%)!important;
-  box-shadow:
-    0 0 0 1px rgba(72,255,208,.18),
-    0 0 55px rgba(0,167,123,.28),
-    0 0 130px rgba(0,167,123,.10),
-    inset 0 0 50px rgba(72,255,208,.12)!important;
-}
-.core:before{
-  border-color:rgba(72,255,208,.18)!important;
-  animation:coreSpin 10s linear infinite!important;
-}
-.core:after{
-  border-color:rgba(233,199,123,.10)!important;
-  animation:coreSpin 15s linear infinite reverse!important;
-}
-@keyframes coreSpin{to{transform:rotate(360deg)}}
-
-.orbit-card{
-  background:linear-gradient(145deg,rgba(8,18,15,.82),rgba(2,5,4,.70))!important;
-  border-color:rgba(72,255,208,.12)!important;
-  box-shadow:
-    0 25px 70px rgba(0,0,0,.5),
-    inset 0 1px 0 rgba(255,255,255,.05)!important;
-  backdrop-filter:blur(18px)!important;
-}
-.orbit-card b{color:#48ffd0!important}
-.orbit-card span{color:#70847d!important}
-.mini-bar{background:rgba(255,255,255,.05)!important}
-.mini-bar i{background:linear-gradient(90deg,#005f4b,#48ffd0)!important;box-shadow:0 0 10px rgba(72,255,208,.35)}
-
-.section{
-  position:relative;
-}
-.section:before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:8%;
-  right:8%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(72,255,208,.10),rgba(233,199,123,.08),transparent);
-}
-
-.mode,.service-card,.step{
-  background:
-    linear-gradient(145deg,rgba(8,15,13,.66),rgba(2,5,4,.48))!important;
-  border-color:rgba(255,255,255,.075)!important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.035),
-    0 25px 80px rgba(0,0,0,.18);
-  backdrop-filter:blur(14px);
-}
-.mode:hover,.service-card:hover,.step:hover{
-  border-color:rgba(72,255,208,.20)!important;
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.35),
-    0 0 45px rgba(0,167,123,.055);
-}
-.mode.active{
-  background:
-    linear-gradient(145deg,rgba(0,83,65,.28),rgba(4,11,9,.64))!important;
-  border-color:rgba(72,255,208,.26)!important;
-  box-shadow:
-    0 30px 90px rgba(0,0,0,.42),
-    0 0 55px rgba(0,167,123,.08),
-    inset 0 1px 0 rgba(72,255,208,.08);
-}
-.mode-icon{
-  background:rgba(0,167,123,.10)!important;
-  border-color:rgba(72,255,208,.12)!important;
-  color:#48ffd0!important;
-  box-shadow:inset 0 0 20px rgba(72,255,208,.04);
-}
-.eyebrow{color:#48ffd0!important}
-.section-head h2{
-  font-weight:900!important;
-  letter-spacing:-2px!important;
-}
-.step-num{color:#48ffd0!important}
-
-.cta-band{
-  background:
-    radial-gradient(circle at 15% 50%,rgba(0,167,123,.14),transparent 42%),
-    radial-gradient(circle at 85% 50%,rgba(141,23,36,.10),transparent 42%),
-    linear-gradient(145deg,rgba(7,14,12,.82),rgba(2,5,4,.78))!important;
-  border-color:rgba(72,255,208,.12)!important;
-  box-shadow:
-    0 35px 100px rgba(0,0,0,.5),
-    inset 0 1px 0 rgba(255,255,255,.04);
-  overflow:hidden;
-}
-.cta-band:after{
-  content:"2100";
-  position:absolute;
-  left:-20px;
-  bottom:-70px;
-  font:900 180px/1 "Space Grotesk";
-  color:rgba(72,255,208,.018);
-  pointer-events:none;
-}
-
-.cursor{
-  width:18px!important;
-  height:18px!important;
-  border:1px solid rgba(72,255,208,.65)!important;
-  box-shadow:0 0 20px rgba(72,255,208,.22),inset 0 0 8px rgba(72,255,208,.08);
-  mix-blend-mode:screen;
-}
-.cursor:after{
-  content:"";
-  position:absolute;
-  width:4px;
-  height:4px;
-  border-radius:50%;
-  background:#48ffd0;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  box-shadow:0 0 12px #48ffd0;
-}
-
-.overlay{
-  background:rgba(0,2,3,.72)!important;
-  backdrop-filter:blur(22px)!important;
-}
-
-.studio{
-  background:
-    linear-gradient(145deg,rgba(7,14,12,.97),rgba(1,3,3,.98))!important;
-  border-color:rgba(72,255,208,.12)!important;
-  box-shadow:0 50px 150px rgba(0,0,0,.9),0 0 100px rgba(0,167,123,.07)!important;
-}
-
-@media(max-width:700px){
-  .future-hud{gap:10px;font-size:6px;letter-spacing:1px}
-  .future-hud span:nth-child(2){display:none}
-  .hero h1{font-size:clamp(48px,14vw,76px)!important;letter-spacing:-3px!important}
-  .hero:before{width:420px;height:420px}
-  .manifesto-line{gap:7px;font-size:6px}
-}
-
-</style>
-
-<style id="voxa-stability-fix">
-/* Cards are intentionally stationary. Only the background and ambient light move. */
-.mode,.service-card,.step,.orbit-card{transform:none!important;}
-.mode:hover,.service-card:hover,.step:hover,.orbit-card:hover{transform:none!important;}
-.mode,.service-card,.step,.orbit-card{will-change:auto;}
-</style>
-<style id="voxa-stable-ui">
-/* =========================================================
-   VOXA STABLE UI — NO UI DRIFT / NO UI FLICKER
-   Background motion is allowed. Interface geometry is locked.
-========================================================= */
-.mode,
-.service-card,
-.step,
-.orbit-card,
-.btn,
-.top-icon,
-.topbar,
-.nav-link,
-.quick button,
-.tool,
-.send,
-.core,
-.hero h1,
-.hero-copy,
-.hero-actions,
-.hero-meta,
-.kicker,
-.manifesto-line,
-.future-hud,
-.chat-top,
-.composer-box,
-.bubble,
-.msg,
-.welcome2,
-.welcome-orb,
-.avatar {
-  animation: none !important;
-  transform: none !important;
-  translate: none !important;
-  rotate: none !important;
-  scale: none !important;
-}
-
-.mode,
-.service-card,
-.step,
-.orbit-card,
-.btn,
-.top-icon,
-.nav-link,
-.quick button,
-.tool,
-.send {
-  transition:
-    background-color .22s ease,
-    border-color .22s ease,
-    color .22s ease,
-    box-shadow .22s ease,
-    opacity .22s ease !important;
-}
-
-.mode:hover,
-.service-card:hover,
-.step:hover,
-.orbit-card:hover,
-.btn:hover,
-.top-icon:hover,
-.nav-link:hover,
-.quick button:hover,
-.tool:hover,
-.send:hover,
-.mode.active {
-  transform: none !important;
-}
-
-.hero:before {
-  animation: none !important;
-  transform: translate(-50%, -54%) !important;
-}
-
-.core:before,
-.core:after {
-  animation: none !important;
-}
-
-.mark:after,
-.avatar:after {
-  animation: none !important;
-}
-
-.aurora,
-.laser,
-.horizon,
-.gridveil,
-.scanlines,
-.noise,
-.cursor,
-#starfield {
-  pointer-events: none !important;
-}
-
-body {
-  animation: none !important;
-}
-
-/* Hard lock: UI elements never fade, drift, float, or pulse. */
-.topbar,
-.mark,
-.nav-link,
-.top-icon,
-.live,
-.btn,
-.hero,
-.hero > div,
-.kicker,
-.hero h1,
-.hero-copy,
-.manifesto-line,
-.future-hud,
-.hero-actions,
-.hero-meta,
-.hero-orbit,
-.core,
-.core-logo,
-.orbit-card,
-.section,
-.section-head,
-.mode,
-.mode:before,
-.mode-icon,
-.mode h3,
-.mode p,
-.step,
-.cta-band,
-.studio,
-.settings-panel,
-.chat-top,
-.assistant,
-.avatar,
-.welcome2,
-.welcome-orb,
-.quick,
-.quick button,
-.msg,
-.bubble,
-.info-card,
-.tool,
-.send {
-  animation: none !important;
-  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-</style>
+    @media(max-width:1040px){
+      .modes{grid-template-columns:repeat(3,1fr)}
+      .hero{grid-template-columns:1fr;min-height:900px}.core-stage{order:-1;min-height:390px}
+      .core-stage:before{width:420px;height:420px}.core-wrap{transform:scale(.88)}
+      .studio{grid-template-columns:210px 1fr}
+    }
+    @media(max-width:720px){
+      .app{width:100%;padding:8px 10px 50px}.topbar{top:7px;grid-template-columns:1fr auto;padding:8px 9px}.nav{display:none}.system{gap:7px}.system .label{display:none}
+      .hero{padding:62px 12px 28px;min-height:auto;gap:8px}.core-stage{min-height:330px;order:-1}.core-stage:before{width:320px;height:320px}.core-wrap{transform:scale(.72)}
+      h1{font-size:clamp(48px,13.8vw,72px);letter-spacing:-.05em}.hero-lead{font-size:12px;line-height:2}.hero-meta{flex-wrap:wrap;gap:11px}
+      .command{grid-template-columns:1fr;margin-top:18px}.command-actions{display:none}
+      .section{padding:72px 12px 14px}.section-head{display:block}.section-head p{margin-top:10px}.modes{grid-template-columns:1fr 1fr}
+      .mode{min-height:150px}.pipeline{grid-template-columns:1fr 1fr}.step:after{display:none}.step h3{font-size:15px}
+      .floating-card{min-width:135px}.floating-card.left{left:-32px}.floating-card.right{right:-32px}
+      .studio{height:calc(100vh - 16px);grid-template-columns:1fr;border-radius:20px}.studio-side{display:none}.chat-body{padding:16px 12px}.quick{grid-template-columns:1fr}.bubble{max-width:90%}
+      .footer{padding:50px 12px 5px;display:block}.footer div+div{margin-top:8px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .aurora,.grid,.scan-line{animation:none!important}
+    }
+  </style>
 </head>
 <body>
-<div id="scene">
-  <canvas id="starfield"></canvas>
-  <div class="aurora a"></div>
-  <div class="aurora b"></div>
-  <div class="aurora c"></div>
-  <div class="laser laser-1"></div>
-  <div class="laser laser-2"></div>
-  <div class="horizon"></div>
-  <div class="gridveil"></div>
-  <div class="scanlines"></div>
-  <div class="noise"></div>
-</div>
-<div class="cursor" id="cursor"></div>
-
-<header class="topbar" id="topbar">
-  <div class="nav">
-    <a class="brand" href="#">
-      <div class="mark"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-      <div><div class="brand-main">VOXA</div><span class="brand-sub">CREATIVE INTELLIGENCE</span></div>
-    </a>
-    <nav class="nav-center">
-      <a class="nav-link active" href="#home">الرئيسية</a>
-      <a class="nav-link" href="#modes">Modes</a>
-      <a class="nav-link" href="#workflow">Workflow</a>
-    </nav>
-    <div class="nav-right">
-      <div class="live"><span class="dot" id="navDot"></span><span id="navStatus">غير متصل</span></div>
-      <button class="top-icon" id="openSettings" title="الإعدادات"><i class="fa-solid fa-sliders"></i></button>
-      <button class="top-icon" id="openStudioTop" title="فتح الاستوديو"><i class="fa-solid fa-expand"></i></button>
-    </div>
+  <div id="bg" aria-hidden="true">
+    <canvas id="stars"></canvas>
+    <div class="aurora a"></div><div class="aurora b"></div><div class="aurora c"></div>
+    <div class="grid"></div><div class="scan"></div><div class="scan-line"></div><div class="scan-line red"></div><div class="vignette"></div><div class="noise"></div>
   </div>
-</header>
 
-<main id="home">
-<section class="hero">
-  <div>
-    <div class="kicker"><i class="fa-solid fa-sparkles"></i> VOXA / CREATIVE INTELLIGENCE <span class="kicker-year">SYSTEM 2100</span></div>
-    <div class="future-hud">
-      <span><i class="fa-solid fa-circle"></i> NEURAL LINK ACTIVE</span>
-      <span>LATENCY <b>0.04s</b></span>
-      <span>CREATIVE CORE <b>∞</b></span>
-    </div>
-    <h1>المستقبل لا ينتظر<br><span class="accent">أن تتخيله.</span><br>اصنعه.</h1>
-    <p class="hero-copy">VOXA هو شريكك الإبداعي: يفكك المشكلة، يحدد الاتجاه، يقوي الـ Hook، ويحوّل الفكرة الخام إلى Concept قابل للتنفيذ — من الهوية والحملة إلى الصورة والـ Prompt.</p>
-    <div class="manifesto-line">
-      <span>IDEA</span><i></i><span>INTENT</span><i></i><span>IMPACT</span>
-    </div>
-    <div class="hero-actions">
-      <button class="btn primary" id="openStudio"><i class="fa-solid fa-arrow-right"></i> افتح VOXA Studio</button>
-      <a class="btn ghost" href="#modes"><i class="fa-solid fa-layer-group"></i> استكشف العقول</a>
-    </div>
-    <div class="hero-meta">
-      <div class="meta"><strong>05</strong><span>Creative Modes</span></div><div class="meta-line"></div>
-      <div class="meta"><strong>01</strong><span>Unified Brain</span></div><div class="meta-line"></div>
-      <div class="meta"><strong>24/7</strong><span>Always Ready</span></div>
-    </div>
-  </div>
-  <div class="hero-orbit">
-    <div class="core"><div class="core-logo"><i class="fa-solid fa-wand-magic-sparkles"></i></div></div>
-    <div class="orbit-card o1"><b>CONCEPT</b><span>فكرة تمتلك سبباً لوجودها</span><div class="mini-bar"><i></i></div></div>
-    <div class="orbit-card o2"><b>DIRECTION</b><span>لغة بصرية متماسكة</span><div class="mini-bar"><i style="width:86%"></i></div></div>
-    <div class="orbit-card o3"><b>EXECUTION</b><span>خطوة قابلة للتنفيذ</span><div class="mini-bar"><i style="width:92%"></i></div></div>
-  </div>
-</section>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="#top">
+        <div class="brand-mark"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div><div class="brand-name">VOXA</div><div class="brand-sub">CREATIVE INTELLIGENCE</div></div>
+      </a>
 
-<section class="section" id="modes">
-  <div class="section-head"><div><div class="eyebrow">VOXA MODES</div><h2>اختر العقل الذي تحتاجه.</h2></div><p>كل Mode يغيّر طريقة تفكير VOXA وصياغة الإجابة، بينما تبقى الهوية الأساسية ثابتة: وضوح، جرأة، وتنفيذ.</p></div>
-  <div class="modes">
-    <button class="mode active" data-mode="Creative Director"><small>01</small><div class="mode-icon"><i class="fa-solid fa-compass-drafting"></i></div><h3>Creative Director</h3><p>يبني الفكرة، الـHook، والاتجاه الإبداعي الكامل.</p></button>
-    <button class="mode" data-mode="Art Director"><small>02</small><div class="mode-icon"><i class="fa-solid fa-bezier-curve"></i></div><h3>Art Director</h3><p>يركز على الصورة، الضوء، المواد، التكوين والهوية البصرية.</p></button>
-    <button class="mode" data-mode="Prompt Engineer"><small>03</small><div class="mode-icon"><i class="fa-solid fa-terminal"></i></div><h3>Prompt Engineer</h3><p>يحوّل الفكرة إلى Prompts دقيقة للصور والفيديو والتصميم.</p></button>
-    <button class="mode" data-mode="Brand Strategist"><small>04</small><div class="mode-icon"><i class="fa-solid fa-chess-knight"></i></div><h3>Brand Strategist</h3><p>يبني positioning، personality، tone، والـvisual language.</p></button>
-    <button class="mode" data-mode="Creative Critic"><small>05</small><div class="mode-icon"><i class="fa-solid fa-crosshairs"></i></div><h3>Creative Critic</h3><p>يقول ما لا تريد سماعه عندما تكون الفكرة ضعيفة ويقترح بديلها.</p></button>
-  </div>
-</section>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="active" href="#top">الرئيسية</a>
+        <a href="#modes">Modes</a>
+        <a href="#workflow">Workflow</a>
+      </nav>
 
-<section class="section" id="workflow">
-  <div class="section-head"><div><div class="eyebrow">THE VOXA METHOD</div><h2>من الفوضى إلى فكرة لها اتجاه.</h2></div><p>VOXA لا يقفز مباشرة إلى الزخرفة. المنهج يبدأ من المشكلة وينتهي بالتنفيذ.</p></div>
-  <div class="workflow">
-    <article class="step"><div class="step-num">01 / DECODE</div><h4>فهم المشكلة</h4><p>ما الهدف الحقيقي؟ لمن؟ وما الذي يجب أن يتغير بعد رؤية العمل؟</p></article>
-    <article class="step"><div class="step-num">02 / DEFINE</div><h4>تحديد الفكرة</h4><p>اختيار Concept واضح له Hook وسبب بصري واستراتيجي.</p></article>
-    <article class="step"><div class="step-num">03 / DIRECT</div><h4>بناء الاتجاه</h4><p>تحويل المفهوم إلى composition، lighting، palette، typography وtone.</p></article>
-    <article class="step"><div class="step-num">04 / EXECUTE</div><h4>تجهيز التنفيذ</h4><p>Prompt أو creative brief أو copy أو خطوات تنفيذ جاهزة.</p></article>
-  </div>
-</section>
-
-<div class="cta-band">
-  <div><h3>جاهز نبني شيئاً لا يشبه الباقي؟</h3><p>أدخل الفكرة كما هي. VOXA يتولى ترتيب الفوضى.</p></div>
-  <button class="btn primary" id="openStudio2"><i class="fa-solid fa-wand-magic-sparkles"></i> تحدث مع VOXA</button>
-</div>
-</main>
-
-<!-- SETTINGS -->
-<div class="overlay" id="settingsOverlay">
-  <div class="settings-panel" style="width:min(460px,100%);padding:25px;border-radius:24px;background:linear-gradient(145deg,rgba(10,15,12,.98),rgba(3,5,4,.99));border:1px solid rgba(255,255,255,.09);box-shadow:0 35px 100px rgba(0,0,0,.8)" onclick="event.stopPropagation()">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div class="eyebrow">VOXA CONNECTION</div><h3 style="margin-top:7px;font-size:20px">إعدادات Gemini</h3></div><button class="top-icon" id="closeSettings"><i class="fa-solid fa-xmark"></i></button></div>
-    <p style="color:#69746f;font-size:10px;line-height:1.9;margin:14px 0">النسخة التجريبية تحفظ المفتاح محلياً داخل المتصفح. للإطلاق الحقيقي، انقل الطلب إلى Backend ولا تضع مفتاح Gemini داخل JavaScript المنشور. Google توصي بنقل المفتاح إلى Backend عند إطلاق النسخة الإنتاجية.</p>
-    <input id="apiKey" type="password" placeholder="Gemini API Key" autocomplete="off" style="width:100%;padding:13px;border-radius:12px;background:rgba(255,255,255,.035);color:#fff;border:1px solid rgba(255,255,255,.07);outline:0;font-size:11px">
-    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn primary" style="flex:1" id="saveKey">حفظ الاتصال</button><button class="btn ghost" id="removeKey">حذف المفتاح</button></div>
-  </div>
-</div>
-
-<!-- STUDIO -->
-<div class="overlay" id="studioOverlay">
-  <div class="studio" onclick="event.stopPropagation()">
-    <aside class="side">
-      <div class="side-head"><div class="side-title">PROJECTS</div><div class="side-sub">جلسات VOXA على هذا الجهاز</div></div>
-      <div class="session-list" id="sessionList"></div>
-      <div class="side-bottom"><button class="side-btn" id="newSession"><i class="fa-solid fa-plus"></i> مشروع جديد</button><button class="side-btn" id="exportChat"><i class="fa-solid fa-download"></i> تصدير الجلسة</button><button class="side-btn" id="closeStudio"><i class="fa-solid fa-xmark"></i> إغلاق الاستوديو</button></div>
-    </aside>
-
-    <section class="chat">
-      <header class="chat-top">
-        <div class="assistant"><div class="avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><b>VOXA</b><span id="modeLabel">Creative Director · Gemini 3.6 Flash</span></div></div>
-        <div class="chat-actions"><button class="top-icon" id="clearCurrent" title="مسح المحادثة"><i class="fa-solid fa-broom"></i></button><button class="top-icon" id="closeStudio2" title="إغلاق"><i class="fa-solid fa-xmark"></i></button></div>
-      </header>
-      <div class="chat-body" id="chatBody">
-        <div class="welcome2" id="welcome2"><div class="welcome-orb"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>مرحباً. أنا VOXA.</h3><p>لا تحتاج أن تصيغ الفكرة بشكل مثالي. أعطني ما لديك، وسأحوّل الغموض إلى اتجاه واضح.</p><div class="quick"><button>حوّل هذه الفكرة إلى حملة إعلانية لها Hook قوي.</button><button>ابنِ لي Concept بصري فاخر لمنتج جديد.</button><button>اكتب Prompt سينمائي احترافي لهذه الفكرة.</button><button>كن ناقداً إبداعياً وقل لي أين ضعف الفكرة.</button></div></div>
+      <div class="system">
+        <span class="pulse"></span><span class="label">SECURE NEURAL LINK</span><b>ONLINE</b>
+        <div class="top-actions">
+          <button class="icon-btn" id="openStudio" aria-label="Open studio"><i class="fa-solid fa-expand"></i></button>
+          <button class="icon-btn" id="newChat" aria-label="New session"><i class="fa-solid fa-plus"></i></button>
+        </div>
       </div>
-      <div class="composer"><form class="composer-box" id="chatForm"><textarea id="chatInput" rows="1" placeholder="احكِ لي الفكرة كما هي..."></textarea><div class="composer-tools"><button type="button" class="tool" id="focusMode" title="تغيير الـMode"><i class="fa-solid fa-sliders"></i></button><button type="submit" class="send" id="sendBtn" title="إرسال"><i class="fa-solid fa-arrow-up"></i></button></div></form><div class="hint">Enter للإرسال · Shift + Enter لسطر جديد · VOXA لا يجاملك على حساب الفكرة</div></div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><i class="fa-solid fa-sparkles"></i> SYSTEM 2100 <b> / </b> CREATIVE INTELLIGENCE</div>
+          <h1>المستقبل<br>لا ينتظر <span class="shine">أن تتخيله.</span><br>اصنعه.</h1>
+          <p class="hero-lead">
+            <strong>VOXA</strong> ليست مولّد أفكار. إنها طبقة تفكير إبداعية تحوّل الفكرة الخام إلى
+            <strong>اتجاه، مفهوم، لغة بصرية، وتنفيذ</strong> يمكن بناءه فعلياً.
+          </p>
+          <div class="hero-cta">
+            <button class="btn primary" id="startBtn">افتح VOXA Studio <i class="fa-solid fa-arrow-left"></i></button>
+            <a class="btn secondary" href="#modes">استكشف العقل <i class="fa-solid fa-layer-group"></i></a>
+          </div>
+          <div class="hero-meta">
+            <span><i class="fa-solid fa-circle"></i> CORE <b>ACTIVE</b></span>
+            <span><i class="fa-solid fa-circle"></i> LATENCY <b>LOW</b></span>
+            <span><i class="fa-solid fa-circle"></i> MODEL <b>GEMINI 3.6 FLASH</b></span>
+          </div>
+        </div>
+
+        <div class="core-stage" aria-hidden="true">
+          <div class="core-wrap">
+            <div class="core-ring"></div>
+            <div class="core">
+              <div class="core-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            </div>
+            <div class="core-label">VOXA CREATIVE CORE<b>IDEA → IMPACT</b></div>
+
+            <div class="floating-card left">
+              <span>EXECUTION</span><small>نحوّل الفكرة إلى تنفيذ</small>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="floating-card right">
+              <span>CONCEPT</span><small>نستخرج الفكرة الأوضح</small>
+              <div class="bar"><i></i></div>
+            </div>
+            <div class="floating-card bottom">
+              <span>DIRECTION</span><small>نحدد الاتجاه قبل الزخرفة</small>
+              <div class="bar"><i></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="command">
+        <div class="command-input">
+          <i class="fa-solid fa-terminal"></i>
+          <input id="commandInput" placeholder="اكتب تحديك الإبداعي مباشرة…" autocomplete="off">
+        </div>
+        <div class="command-actions">
+          <button class="chip" data-prompt="أريد فكرة حملة إعلانية غير مألوفة لعلامة فاخرة">Campaign</button>
+          <button class="chip" data-prompt="حوّل هذه الفكرة إلى Prompt بصري سينمائي قوي">Prompt</button>
+          <button class="chip" data-prompt="قيّم فكرتي بصرامة وطوّرها من منظور Creative Director">Critique</button>
+        </div>
+      </div>
+
+      <section class="section" id="modes">
+        <div class="section-head">
+          <div><div class="section-kicker">THE CREATIVE BRAIN</div><h2>خمسة عقول.<br>نظام واحد.</h2></div>
+          <p>اختَر زاوية التفكير التي تحتاجها الآن. VOXA تغيّر طريقة التحليل والإجابة، وليس اللون فقط.</p>
+        </div>
+        <div class="modes" id="modeGrid">
+          <button class="mode active" data-mode="creative-director"><div class="mode-icon"><i class="fa-solid fa-compass-drafting"></i></div><h3>Creative Director</h3><p>اتجاه، فكرة، Hook، قرار إبداعي.</p></button>
+          <button class="mode" data-mode="art-director"><div class="mode-icon"><i class="fa-solid fa-eye"></i></div><h3>Art Director</h3><p>تكوين، إضاءة، مادة، لون، مشهد.</p></button>
+          <button class="mode" data-mode="prompt-engineer"><div class="mode-icon"><i class="fa-solid fa-code"></i></div><h3>Prompt Architect</h3><p>Prompts دقيقة وجاهزة للإنتاج.</p></button>
+          <button class="mode" data-mode="brand-strategist"><div class="mode-icon"><i class="fa-solid fa-bezier-curve"></i></div><h3>Brand Strategist</h3><p>Positioning، شخصية، لغة، نظام.</p></button>
+          <button class="mode" data-mode="creative-critic"><div class="mode-icon"><i class="fa-solid fa-crosshairs"></i></div><h3>Creative Critic</h3><p>نقد صريح، حذف، تقوية، قرار.</p></button>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <div class="section-head">
+          <div><div class="section-kicker">VOXA WORKFLOW</div><h2>الفكرة لا تتوقف عند فكرة.</h2></div>
+          <p>كل جلسة تمر عبر أربع طبقات: فهم النية، بناء المفهوم، تحديد الاتجاه، ثم تحويله إلى تنفيذ قابل للاستخدام.</p>
+        </div>
+        <div class="pipeline">
+          <article class="step"><div class="num">01 / INTENT</div><h3>النية</h3><p>ما الذي تريد أن يشعر به الناس؟ وما المشكلة الحقيقية خلف الطلب؟</p></article>
+          <article class="step"><div class="num">02 / CONCEPT</div><h3>المفهوم</h3><p>نبني فكرة لها Hook وسبب وميزة يمكن الدفاع عنها.</p></article>
+          <article class="step"><div class="num">03 / DIRECTION</div><h3>الاتجاه</h3><p>نحدد الأسلوب البصري، التكوين، المادة، اللون واللغة.</p></article>
+          <article class="step"><div class="num">04 / EXECUTION</div><h3>التنفيذ</h3><p>Prompt، Copy، CTA، Storyboard أو أي مخرجات يحتاجها المشروع.</p></article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div>VOXA / CREATIVE INTELLIGENCE SYSTEM</div>
+        <div>SECURE SERVERLESS GEMINI LINK · SYSTEM 2100</div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <section class="studio" role="dialog" aria-modal="true" aria-labelledby="studioTitle">
+      <aside class="studio-side">
+        <h3>VOXA Studio</h3>
+        <p>غيّر العقل الذي يفكر معك.</p>
+        <div id="sideModes"></div>
+      </aside>
+
+      <div class="studio-main">
+        <header class="chat-head">
+          <div class="assistant">
+            <div class="avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div><b id="studioTitle">VOXA · Creative Director</b><small>SECURE NEURAL LINK · GEMINI 3.6 FLASH</small></div>
+          </div>
+          <div class="chat-controls">
+            <button class="icon-btn" id="exportChat" title="Export"><i class="fa-solid fa-download"></i></button>
+            <button class="icon-btn" id="closeStudio" title="Close"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </header>
+
+        <div class="chat-body" id="chatBody">
+          <div class="welcome" id="welcome">
+            <div class="welcome-orb"><i class="fa-solid fa-sparkles"></i></div>
+            <h2>ما الذي سنصنعه؟</h2>
+            <p>أعطني الفكرة كما هي في رأسك. ناقصة، خام، أو حتى سيئة. VOXA ستفككها ثم تبني منها اتجاهاً أقوى.</p>
+            <div class="quick">
+              <button data-prompt="أريد حملة إعلانية تتوقف عندها العين من أول ثانية.">حملة توقف الـScroll</button>
+              <button data-prompt="ابنِ هوية بصرية لعلامة تبدو فاخرة ولكن غير تقليدية.">هوية بصرية فاخرة</button>
+              <button data-prompt="حوّل فكرتي إلى Prompt سينمائي بمستوى commercial campaign.">Prompt سينمائي</button>
+              <button data-prompt="سأعطيك فكرة. أريد منك أن تنتقدها بلا مجاملة ثم تعيد بناءها.">نقد صارم</button>
+            </div>
+          </div>
+        </div>
+
+        <form class="composer" id="composer">
+          <div class="composer-box">
+            <textarea id="messageInput" rows="1" placeholder="احكِ لـ VOXA ما الذي يدور في رأسك…"></textarea>
+            <button class="send" id="sendBtn" type="submit"><i class="fa-solid fa-arrow-up"></i></button>
+          </div>
+          <div class="composer-note">ENTER للإرسال · SHIFT + ENTER لسطر جديد</div>
+        </form>
+      </div>
     </section>
-
-    <aside class="side right">
-      <div class="side-head"><div class="side-title">CREATIVE PANEL</div><div class="side-sub">حالة العقل الحالي</div></div>
-      <div class="right-body">
-        <div class="info-card"><h4>Current Mode</h4><select class="mode-select" id="modeSelect" style="margin-top:9px"><option>Creative Director</option><option>Art Director</option><option>Prompt Engineer</option><option>Brand Strategist</option><option>Creative Critic</option></select></div>
-        <div class="info-card"><h4>VOXA Principles</h4><div class="kv"><b>Idea</b><span>قبل الزخرفة</span></div><div class="kv"><b>Hook</b><span>يوقف التمرير</span></div><div class="kv"><b>Emotion</b><span>سبب للتذكر</span></div><div class="kv"><b>Execution</b><span>قابل للتطبيق</span></div></div>
-        <div class="info-card"><h4>Session Signal</h4><p id="sessionSignal">لم نبدأ بعد. أدخل أول فكرة لتتبع اتجاه المشروع.</p><div class="meter"><i id="signalMeter"></i></div></div>
-        <div class="info-card"><h4>Model</h4><p id="modelInfo">Gemini 3.6 Flash · REST generateContent</p></div>
-      </div>
-    </aside>
   </div>
-</div>
-<div class="toast" id="toast"></div>
 
-<script>
-/* =====================================================
-   VOXA STUDIO — FRONTEND DEMO
-   Gemini 3.6 Flash is the current stable model listed by Google.
-===================================================== */
-const CONFIG={
-  model:"gemini-3.6-flash",
-  key:"AQ.Ab8RN6IA-WXQJVaruLKpD1moXUkDWcgMb7ufHyHaJnxgKsKioQ",
-  storageKey:"voxa-studio-v1"
-};
+  <div class="toast" id="toast"></div>
 
-const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
-let apiKey=localStorage.getItem("voxa_gemini_key")||CONFIG.key;
-let activeMode=localStorage.getItem("voxa_mode")||"Creative Director";
-let sessions=[];let currentSessionId=null;let busy=false;
+  <script>
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+    const overlay = $('#overlay');
+    const body = $('#chatBody');
+    const input = $('#messageInput');
+    const composer = $('#composer');
+    const sendBtn = $('#sendBtn');
+    const commandInput = $('#commandInput');
+    const toast = $('#toast');
 
-const modeProfiles={
- "Creative Director":"وازن بين الفكرة والاستراتيجية والتنفيذ. ابحث عن Hook، Concept، audience، emotion، ثم حوّلها إلى اتجاه إبداعي واضح.",
- "Art Director":"فكر بصرياً: composition، lighting، materials، camera، lens، depth، palette، typography، environment، motion، finishing.",
- "Prompt Engineer":"حوّل الفكرة إلى Prompt شديد الدقة وقابل للاستخدام. اجعل الوصف منظماً وغنياً بصرياً، مع negative constraints عندما تكون مفيدة.",
- "Brand Strategist":"ابدأ من positioning، audience، differentiation، personality، tone of voice، visual language، color system، typography، touchpoints.",
- "Creative Critic":"كن صريحاً. حدّد ما هو مبتذل أو ضعيف أو غير واضح، ولماذا، ثم اقترح نسخة أقوى قابلة للتنفيذ."
-};
-const VOXA_BASE=`أنت VOXA، Creative Intelligence وشريك إبداعي للمستخدم. أنت تعمل كـ Creative Director + Art Director + Brand Strategist. هويتك: هادئ، واثق، حاد بصرياً، عملي، ومبدع. لا تتحدث كروبوت ولا تبدأ بتعابير مجاملة فارغة. ادخل مباشرة في صلب الفكرة. لا تجامل على حساب الجودة. إذا كانت الفكرة عادية قل ذلك بوضوح ثم ارفع مستواها. لا تعرض عشرات الأفكار الضعيفة؛ قدم اتجاهاً أو عدة اتجاهات قليلة قوية. الفكرة عندك تسبق الزخرفة. ابحث عن Hook واضح، سبب للتذكر، وهوية قابلة للتنفيذ. عندما يطلب المستخدم Prompt، أعطه Prompt احترافياً يحتوي subject, concept, composition, camera, lens, lighting, materials, environment, color, mood, depth, finishing. عندما يطلب Brand فكر في positioning, personality, tone, visual language, typography, color system, applications. عندما يطلب Social Media فكر في scroll stop, retention, hierarchy, CTA. تحدث بالعربية الحديثة واستخدم المصطلحات الإنجليزية عندما تكون أدق. لا تكشف chain-of-thought الداخلي؛ اعرض النتائج والاستنتاجات العملية فقط. اجعل إجاباتك ذات بنية واضحة ومرنة. مهمتك ليست أن تجعل المستخدم يشعر أن فكرته جيدة؛ مهمتك أن تجعل الفكرة نفسها أفضل.`;
-function fullSystem(){return {parts:[{text:`${VOXA_BASE}\n\nMODE الحالي: ${activeMode}.\nتعليمات هذا الـMode: ${modeProfiles[activeMode]}\n\nفلسفة VOXA: Decode → Define → Direct → Execute. قبل الإجابة، افهم المشكلة الحقيقية والهدف والجمهور والسياق من الرسالة. إذا لم تكن معلومة ضرورية، لا تسأل عنها. إذا كانت ضرورية جداً، اسأل سؤالاً واحداً محدداً. عندما تكون الإجابة قابلة للتنفيذ، اجعلها جاهزة للاستخدام مباشرة.`}]};}
-function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function save(){localStorage.setItem(CONFIG.storageKey,JSON.stringify({sessions,currentSessionId,activeMode}));localStorage.setItem("voxa_gemini_key",apiKey)}
-function load(){try{const x=JSON.parse(localStorage.getItem(CONFIG.storageKey)||"{}");sessions=x.sessions||[];currentSessionId=x.currentSessionId||null;activeMode=x.activeMode||activeMode}catch(e){sessions=[]}}
-function current(){return sessions.find(s=>s.id===currentSessionId)}
-function makeSession(){const s={id:newId(),title:"مشروع جديد",messages:[]};sessions.unshift(s);currentSessionId=s.id;save();renderSessions();renderMessages();updateSignal()}
-function touchTitle(text){const s=current();if(!s)return;if(s.messages.length<=2||s.title==="مشروع جديد"){s.title=text.replace(/\s+/g," ").slice(0,34)}save();renderSessions()}
-function addMessage(role,text){const s=current();if(!s)return;s.messages.push({role,text,ts:Date.now()});save()}
-function renderSessions(){const box=$("#sessionList");box.innerHTML="";sessions.forEach(s=>{const b=document.createElement("button");b.className="session"+(s.id===currentSessionId?" active":"");b.innerHTML=`<b>${esc(s.title)}</b><span>${s.messages.length} رسالة</span>`;b.onclick=()=>{currentSessionId=s.id;save();renderSessions();renderMessages();updateSignal()};box.appendChild(b)})}
-function renderMessages(){const body=$("#chatBody");body.innerHTML="";const s=current();if(!s||!s.messages.length){body.innerHTML=`<div class="welcome2"><div class="welcome-orb"><i class="fa-solid fa-wand-magic-sparkles"></i></div><h3>بداية جديدة.</h3><p>أرسل الفكرة حتى لو كانت ناقصة. VOXA سيبني الاتجاه معها.</p><div class="quick"><button>حوّل هذه الفكرة إلى حملة إعلانية لها Hook قوي.</button><button>ابنِ لي Concept بصري فاخر لمنتج جديد.</button><button>اكتب Prompt سينمائي احترافي لهذه الفكرة.</button><button>كن ناقداً إبداعياً وقل لي أين ضعف الفكرة.</button></div></div>`}else{s.messages.forEach(m=>appendMessage(m.text,m.role,false))}scrollBottom()}
-function esc(t){const d=document.createElement("div");d.textContent=t;return d.innerHTML}
-function appendMessage(text,role,copy=true){const row=document.createElement("div");row.className=`msg ${role}`;const bubble=document.createElement("div");bubble.className="bubble";bubble.innerHTML=esc(text).replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br>");if(copy&&role==="ai"){const c=document.createElement("button");c.className="copy";c.innerHTML='<i class="fa-regular fa-copy"></i> نسخ';c.onclick=async()=>{try{await navigator.clipboard.writeText(text);c.innerHTML='<i class="fa-solid fa-check"></i> تم';setTimeout(()=>c.innerHTML='<i class="fa-regular fa-copy"></i> نسخ',1200)}catch{}};bubble.appendChild(document.createElement("br"));bubble.appendChild(c)}row.appendChild(bubble);$("#chatBody").appendChild(row);scrollBottom()}
-function showTyping(){const row=document.createElement("div");row.className="msg ai";row.id="typing";row.innerHTML='<div class="typing"><i></i><i></i><i></i></div>';$("#chatBody").appendChild(row);scrollBottom()}
-function hideTyping(){$("#typing")?.remove()}
-function scrollBottom(){requestAnimationFrame(()=>{$("#chatBody").scrollTop=$("#chatBody").scrollHeight})}
-function updateModeUI(){
-  $$(".mode").forEach(b=>b.classList.toggle("active",b.dataset.mode===activeMode));
-  $("#modeSelect").value=activeMode;$("#modeLabel").textContent=`${activeMode} · ${CONFIG.model.replace("gemini-", "Gemini ").replace("-flash"," Flash")}`;$("#sessionSignal").textContent=`VOXA يعمل الآن كـ ${activeMode}.`;
-  localStorage.setItem("voxa_mode",activeMode);save();
-}
-function updateSignal(){const n=current()?.messages.length||0;$("#signalMeter").style.width=Math.min(96,28+n*12)+"%";$("#sessionSignal").textContent=n?`${n} رسالة في الجلسة. المسار يتشكل مع كل فكرة.`:"لم نبدأ بعد. أدخل أول فكرة لتتبع اتجاه المشروع."}
-function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800)}
-async function send(text){if(!text||busy)return;if(!apiKey){openSettings();toast("أدخل مفتاح Gemini أولاً");return}if(!currentSessionId)makeSession();touchTitle(text);busy=true;$("#sendBtn").disabled=true;addMessage("user",text);appendMessage(text,"user",false);showTyping();const s=current();try{const payload={systemInstruction:fullSystem(),contents:s.messages.map(m=>({role:m.role==="user"?"user":"model",parts:[{text:m.text}]}))};const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.model}:generateContent?key=${encodeURIComponent(apiKey)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await r.json();if(!r.ok)throw new Error(data?.error?.message||"Gemini API Error");const answer=data?.candidates?.[0]?.content?.parts?.map(x=>x.text||"").join("").trim();if(!answer)throw new Error("لم يصل رد من النموذج");hideTyping();addMessage("ai",answer);appendMessage(answer,"ai",true);updateSignal()}catch(err){hideTyping();const msg=`تعذر تشغيل VOXA مع Gemini.\n\nالسبب: ${err.message}\n\nجرّب التحقق من المفتاح، النموذج، أو صلاحيات المشروع.`;appendMessage(msg,"ai",false)}finally{busy=false;$("#sendBtn").disabled=false;$("#chatInput").focus();save();renderSessions()}}
-function openStudio(){if(!sessions.length)makeSession();else if(!currentSessionId)currentSessionId=sessions[0].id;renderSessions();renderMessages();updateModeUI();updateSignal();$("#studioOverlay").classList.add("open");document.body.style.overflow="hidden";setTimeout(()=>$("#chatInput").focus(),250)}
-function closeStudio(){$("#studioOverlay").classList.remove("open");document.body.style.overflow=""}
-function openSettings(){if(apiKey)$("#apiKey").value=apiKey;$("#settingsOverlay").classList.add("open")}
-function closeSettings(){$("#settingsOverlay").classList.remove("open")}
-load();if(!sessions.length)makeSession();else if(!currentSessionId)currentSessionId=sessions[0].id;updateModeUI();renderSessions();renderMessages();updateSignal();$("#navDot").classList.toggle("on",!!apiKey);$("#navStatus").textContent=apiKey?"متصل":"غير متصل";
+    const MODES = {
+      "creative-director": {label:"Creative Director", icon:"fa-compass-drafting"},
+      "art-director": {label:"Art Director", icon:"fa-eye"},
+      "prompt-engineer": {label:"Prompt Architect", icon:"fa-code"},
+      "brand-strategist": {label:"Brand Strategist", icon:"fa-bezier-curve"},
+      "creative-critic": {label:"Creative Critic", icon:"fa-crosshairs"}
+    };
 
-// mode handlers
-$$(".mode").forEach(b=>b.addEventListener("click",()=>{activeMode=b.dataset.mode;updateModeUI();toast(`VOXA الآن: ${activeMode}`)}));$("#modeSelect").addEventListener("change",e=>{activeMode=e.target.value;updateModeUI();toast(`تم تغيير الـMode إلى ${activeMode}`)});$("#focusMode").onclick=()=>{$("#modeSelect").focus()};
-$("#chatForm").addEventListener("submit",e=>{e.preventDefault();const v=$("#chatInput").value.trim();if(!v)return;$("#chatInput").value="";$("#chatInput").style.height="48px";send(v)});
-$("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#chatForm").requestSubmit()}});$("#chatInput").addEventListener("input",e=>{e.target.style.height="48px";e.target.style.height=Math.min(150,e.target.scrollHeight)+"px"});
-document.addEventListener("click",e=>{const q=e.target.closest(".quick button");if(q){$("#chatInput").value=q.textContent.trim();$("#chatInput").focus();$("#chatInput").dispatchEvent(new Event("input"))}});
-$("#openStudio").onclick=openStudio;$("#openStudio2").onclick=openStudio;$("#openStudioTop").onclick=openStudio;$("#closeStudio").onclick=closeStudio;$("#closeStudio2").onclick=closeStudio;$("#studioOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeStudio()});$("#newSession").onclick=()=>{makeSession();toast("تم إنشاء مشروع جديد")};$("#clearCurrent").onclick=()=>{const s=current();if(!s)return;s.messages=[];s.title="مشروع جديد";save();renderSessions();renderMessages();updateSignal();toast("تم تنظيف الجلسة")};
-$("#exportChat").onclick=()=>{const s=current();if(!s)return;const text=[`VOXA — ${s.title}`,`MODE: ${activeMode}`,"",...s.messages.map(m=>`${m.role==="user"?"USER":"VOXA"}:\n${m.text}\n`)].join("\n");const blob=new Blob([text],{type:"text/plain;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`voxa-${s.title.replace(/\s+/g,"-")||"session"}.txt`;a.click();URL.revokeObjectURL(a.href);toast("تم تصدير الجلسة")};
-$("#openSettings").onclick=openSettings;$("#closeSettings").onclick=closeSettings;$("#settingsOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeSettings()});$("#saveKey").onclick=()=>{const v=$("#apiKey").value.trim();if(v.length<10){toast("المفتاح يبدو غير صالح");return}apiKey=v;localStorage.setItem("voxa_gemini_key",v);$("#navDot").classList.add("on");$("#navStatus").textContent="متصل";closeSettings();toast("VOXA متصل بـ Gemini")};$("#removeKey").onclick=()=>{apiKey="";localStorage.removeItem("voxa_gemini_key");$("#navDot").classList.remove("on");$("#navStatus").textContent="غير متصل";$("#apiKey").value="";toast("تم حذف المفتاح")};
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeStudio();closeSettings()}if(e.key==="/"&&!e.target.matches("input,textarea")){e.preventDefault();openStudio();$("#chatInput").focus()}});
-window.addEventListener("scroll",()=>$("#topbar").classList.toggle("scrolled",window.scrollY>18),{passive:true});
+    let activeMode = localStorage.getItem("voxa-mode") || "creative-director";
+    let history = JSON.parse(localStorage.getItem("voxa-history") || "[]");
+    let busy = false;
 
-</script>
+    function toastMsg(t){
+      toast.textContent=t;
+      toast.classList.add('show');
+      clearTimeout(toastMsg.t);
+      toastMsg.t=setTimeout(()=>toast.classList.remove('show'),1800);
+    }
 
-<script>
-/* =========================================================
-   VOXA 2100 — PARTICLE / STARFIELD ENGINE
-========================================================= */
-(() => {
-  const canvas = document.getElementById("starfield");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function setMode(mode){
+      if(!MODES[mode]) return;
+      activeMode=mode;
+      localStorage.setItem("voxa-mode",mode);
+      $$('.mode').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));
+      renderSideModes();
+      $('#studioTitle').textContent = `VOXA · ${MODES[mode].label}`;
+    }
 
-  let w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
-  let stars = [];
-  let raf = 0;
-  let mouseX = 0.5, mouseY = 0.5;
+    function renderSideModes(){
+      const host=$('#sideModes');
+      host.innerHTML='';
+      Object.entries(MODES).forEach(([id,m])=>{
+        const b=document.createElement('button');
+        b.className='side-mode'+(id===activeMode?' active':'');
+        b.dataset.mode=id;
+        b.innerHTML=`<i class="fa-solid ${m.icon}"></i><span><strong>${m.label}</strong><small>${id===activeMode?'ACTIVE':'SWITCH MODE'}</small></span>`;
+        b.onclick=()=>setMode(id);
+        host.appendChild(b);
+      });
+    }
+    $$('.mode').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+    renderSideModes();
+    setMode(activeMode);
 
-  function resize(){
-    w = window.innerWidth;
-    h = window.innerHeight;
-    canvas.width = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    function openStudio(prefill=''){
+      overlay.classList.add('open');
+      if(prefill){input.value=prefill; autoGrow();}
+      setTimeout(()=>input.focus(),120);
+    }
+    function closeStudio(){overlay.classList.remove('open')}
+    $('#openStudio').onclick=()=>openStudio();
+    $('#startBtn').onclick=()=>openStudio();
+    $('#closeStudio').onclick=closeStudio;
+    overlay.addEventListener('click',e=>{if(e.target===overlay) closeStudio()});
 
-    const count = Math.min(260, Math.max(90, Math.floor(w*h/9000)));
-    stars = Array.from({length:count}, () => ({
-      x: Math.random()*w,
-      y: Math.random()*h,
-      z: Math.random(),
-      r: Math.random()*1.35 + .15,
-      tw: Math.random()*Math.PI*2,
-      speed: Math.random()*.18 + .03
-    }));
-  }
+    function autoGrow(){
+      input.style.height='auto';
+      input.style.height=Math.min(input.scrollHeight,150)+'px';
+    }
+    input.addEventListener('input',autoGrow);
+    input.addEventListener('keydown',e=>{
+      if(e.key==='Enter' && !e.shiftKey){e.preventDefault();composer.requestSubmit();}
+    });
 
-  function draw(t){
-    ctx.clearRect(0,0,w,h);
+    function sanitize(s){
+      return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    }
 
-    const horizon = h * .60;
+    function addMsg(text,role){
+      const row=document.createElement('div');
+      row.className=`msg ${role}`;
+      const bubble=document.createElement('div');
+      bubble.className='bubble';
+      bubble.innerHTML=sanitize(text);
+      row.appendChild(bubble);
+      body.appendChild(row);
+      body.scrollTop=body.scrollHeight;
+      return row;
+    }
 
-    for(const s of stars){
-      if(!reduce){
-        s.y += s.speed * (0.35 + s.z);
-        s.x += 0;
-        if(s.y > h+10) { s.y = -10; s.x = Math.random()*w; }
-        if(s.x > w+10) s.x = -10;
-        if(s.x < -10) s.x = w+10;
-      }
+    function addTyping(){
+      const row=document.createElement('div');
+      row.className='msg ai'; row.id='typing';
+      row.innerHTML='<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div>';
+      body.appendChild(row); body.scrollTop=body.scrollHeight;
+    }
 
-      const depth = .35 + s.z*.9;
-      const alpha = .12 + s.z*.48 + Math.sin(t*.001+s.tw)*.08;
-      const size = s.r * depth;
+    function removeTyping(){$('#typing')?.remove()}
 
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, size, 0, Math.PI*2);
-      ctx.fillStyle = s.z > .82
-        ? `rgba(72,255,208,${Math.max(.05,alpha)})`
-        : `rgba(190,235,226,${Math.max(.025,alpha*.55)})`;
-      ctx.fill();
+    function save(){
+      localStorage.setItem("voxa-history",JSON.stringify(history.slice(-40)));
+    }
 
-      if(s.z > .9 && s.y > horizon){
-        ctx.beginPath();
-        ctx.moveTo(s.x,s.y);
-        ctx.lineTo(s.x,s.y+18*s.z);
-        ctx.strokeStyle = `rgba(72,255,208,${alpha*.12})`;
-        ctx.stroke();
+    function exportChat(){
+      const txt=history.map(x=>`${x.role==="user"?"YOU":"VOXA"}:\n${x.parts?.map(p=>p.text||'').join('')||''}`).join('\n\n---\n\n');
+      const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='VOXA-session.txt'; a.click(); URL.revokeObjectURL(a.href);
+    }
+    $('#exportChat').onclick=exportChat;
+
+    function renderStored(){
+      if(!history.length) return;
+      $('#welcome')?.remove();
+      history.forEach(m=>addMsg(m.parts?.map(p=>p.text||'').join('')||'',m.role==='user'?'user':'ai'));
+    }
+
+    async function sendText(text){
+      text=(text||'').trim(); if(!text||busy) return;
+      busy=true; sendBtn.disabled=true; $('#welcome')?.remove();
+      addMsg(text,'user');
+      history.push({role:'user',parts:[{text}]}); save();
+      addTyping();
+
+      try{
+        const r=await fetch('/api/chat',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({mode:activeMode,history:history.slice(-30)})
+        });
+        const data=await r.json();
+        if(!r.ok) throw new Error(data?.error || 'تعذر الاتصال بالخادم');
+        const answer=data.text || 'لم يصل رد من VOXA.';
+        removeTyping();
+        addMsg(answer,'ai');
+        history.push({role:'model',parts:[{text:answer}]}); save();
+      }catch(err){
+        removeTyping();
+        addMsg(`تعذر تشغيل VOXA حالياً.\n\n${err.message}\n\nتأكد من وجود GEMINI_API_KEY في Vercel Environment Variables ثم أعد النشر.`,'ai');
+      }finally{
+        busy=false; sendBtn.disabled=false; input.focus(); autoGrow();
       }
     }
 
-    if(!reduce) raf = requestAnimationFrame(draw);
-  }
+    composer.addEventListener('submit',e=>{e.preventDefault();sendText(input.value);input.value='';autoGrow()});
 
-  window.addEventListener("resize", resize, {passive:true});
-  window.addEventListener("mousemove", e => {
-    mouseX = e.clientX / window.innerWidth;
-    mouseY = e.clientY / window.innerHeight;
-  }, {passive:true});
+    $$('.quick button').forEach(b=>b.onclick=()=>{openStudio(b.dataset.prompt)});
+    $$('.chip').forEach(b=>b.onclick=()=>openStudio(b.dataset.prompt));
+    commandInput.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){e.preventDefault();openStudio(commandInput.value); commandInput.value='';}
+    });
 
-  resize();
-  if(reduce) draw(0);
-  else raf = requestAnimationFrame(draw);
-})();
-</script>
+    $('#newChat').onclick=()=>{
+      history=[]; localStorage.removeItem("voxa-history");
+      body.innerHTML=`<div class="welcome" id="welcome"><div class="welcome-orb"><i class="fa-solid fa-sparkles"></i></div><h2>جلسة جديدة.</h2><p>ابدأ من الصفر. أعطني المشكلة، الفكرة، أو الهدف.</p></div>`;
+      toastMsg('تم إنشاء جلسة جديدة');
+      openStudio();
+    };
 
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape') closeStudio();
+      if((e.key==='/' || (e.ctrlKey&&e.key.toLowerCase()==='k')) && document.activeElement!==input && document.activeElement!==commandInput){
+        e.preventDefault(); openStudio();
+      }
+    });
+
+    /* Starfield: ambient only, never moves UI. */
+    const canvas=$('#stars'), ctx=canvas.getContext('2d'); let W=0,H=0,pts=[];
+    function resizeStars(){
+      const dpr=Math.min(devicePixelRatio||1,2);
+      W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);
+      pts=Array.from({length:Math.min(220,Math.max(90,Math.floor(W*H/10000)))},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random(),r:.15+Math.random()*1.1,t:Math.random()*Math.PI*2,s:.03+Math.random()*.12}));
+    }
+    function stars(t){
+      ctx.clearRect(0,0,W,H);
+      for(const p of pts){
+        p.y+=p.s;if(p.y>H+5){p.y=-5;p.x=Math.random()*W}
+        const a=.12+p.z*.42+Math.sin(t*.001+p.t)*.06;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r*(.5+p.z),0,Math.PI*2);
+        ctx.fillStyle=p.z>.86?`rgba(72,255,208,${a})`:`rgba(208,238,230,${a*.55})`;ctx.fill();
+      }
+      requestAnimationFrame(stars);
+    }
+    addEventListener('resize',resizeStars,{passive:true}); resizeStars(); requestAnimationFrame(stars);
+
+    renderStored();
+  </script>
 </body>
 </html>

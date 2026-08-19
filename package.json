@@ -1,0 +1,9 @@
+{
+  "name": "voxa-creative-intelligence-2100",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
