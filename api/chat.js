@@ -61,13 +61,13 @@ export default async function handler(req, res) {
       contents: cleanHistory
     };
 
+    // تم تعديل اسم النموذج إلى gemini-1.5-flash وتمرير المفتاح في الـ URL
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": key
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
       }
